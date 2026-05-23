@@ -1,0 +1,523 @@
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --font-sans:Inter,Segoe UI,Arial,sans-serif;
+  --color-background-primary:#111827;
+  --color-background-secondary:#1F2937;
+  --color-text-primary:#F9FAFB;
+  --color-text-secondary:#D1D5DB;
+  --color-text-tertiary:#9CA3AF;
+  --color-border-secondary:#4B5563;
+  --color-border-tertiary:#374151;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+body{font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);font-size:17px;line-height:1.65}
+.pill{padding:5px 12px;border-radius:99px;border:0.5px solid var(--color-border-secondary);font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);margin:0 4px 6px 0;display:inline-block}
+.pill.on{background:#E1F5EE;color:#085041;border-color:#5DCAA5;font-weight:500}
+.pill:hover:not(.on){background:var(--color-background-secondary)}
+.pg{display:none;padding:1rem 0}
+.pg.on{display:block}
+.pt{font-size:17px;font-weight:500;margin-bottom:3px}
+.ps{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.2rem}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.ch{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-primary)}
+.ch:hover{background:var(--color-background-secondary)}
+.cht{font-size:13px;font-weight:500}
+.cb{display:none;padding:12px 14px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.cb.on{display:block}
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500}
+.tip{border-left:3px solid #0F6E56;padding:10px 14px;background:#E1F5EE;margin:10px 0;font-size:13px;color:#085041;line-height:1.5;border-radius:0}
+.warn{border-left:3px solid #854F0B;padding:10px 14px;background:#FAEEDA;margin:10px 0;font-size:13px;color:#633806;line-height:1.5;border-radius:0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+.tbl th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tbl td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-secondary)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--color-text-primary);font-weight:500}
+.qb{border:0.5px solid var(--color-border-tertiary);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.qh{padding:12px 14px;font-size:13px;font-weight:500;background:var(--color-background-primary);line-height:1.5}
+.qo{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.qopt{padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:8px;font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);text-align:left;line-height:1.4}
+.qopt:hover:not([disabled]){background:var(--color-background-secondary)}
+.qopt.ok{background:#EAF3DE;color:#27500A;border-color:#3B6D11}
+.qopt.bad{background:#FCEBEB;color:#791F1F;border-color:#A32D2D}
+.qex{margin:0 14px 12px;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.5;display:none;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.qex.on{display:block}
+.frow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.fb{padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;text-align:center;line-height:1.4;min-width:80px}
+.fa{color:var(--color-text-tertiary);font-size:14px;flex-shrink:0}
+.nr{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;margin-top:.5rem;border-top:0.5px solid var(--color-border-tertiary)}
+.nb{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:8px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
+.nb:hover{background:var(--color-background-secondary)}
+.nb:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:5px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer}
+.dot.on{background:#0F6E56}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}
+.sc{border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:10px 12px;background:var(--color-background-primary)}
+.sn{font-size:13px;font-weight:500;margin-bottom:3px}
+.sd{font-size:12px;color:var(--color-text-secondary);line-height:1.4}
+.dr-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.dr-card{border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:10px 12px;background:var(--color-background-primary)}
+.dr-label{font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;display:inline-block;margin-bottom:6px}
+.dr-name{font-size:13px;font-weight:500;margin-bottom:4px}
+.dr-stat{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.meter-wrap{margin:10px 0}
+.meter-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.meter-label{font-size:12px;color:var(--color-text-secondary);width:110px;flex-shrink:0}
+.meter-bar{flex:1;height:6px;border-radius:99px;background:var(--color-border-tertiary);overflow:hidden}
+.meter-fill{height:100%;border-radius:99px}
+.meter-val{font-size:12px;font-weight:500;width:60px;text-align:right;flex-shrink:0}
+[style*="font-size:11px"]{font-size:13px!important}
+[style*="font-size:12px"],.pill,.badge,.fb,.sd,.dr-label,.dr-stat,.meter-label,.meter-val{font-size:14px!important}
+[style*="font-size:13px"],.cht,.cb,.tbl,.qh,.qopt,.qex,.nb,.sn,.dr-name{font-size:16px!important}
+[style*="font-size:14px"],.fa{font-size:17px!important}
+.pt{font-size:22px}
+.ps{font-size:16px}
+.ch,.cb,.qopt,.qex,.nb,.sc,.dr-card{background:var(--color-background-primary)}
+.card,.qb,.qopt,.qex,.sc,.dr-card{border-color:var(--color-border-tertiary)}
+.pill.on,[style*="background:#E1F5EE"]{background:#123A31!important;color:#D1FAE5!important;border-color:#34D399!important}
+[style*="background:#E6F1FB"]{background:#17365F!important;color:#DBEAFE!important;border-color:#3B82F6!important}
+[style*="background:#EEEDFE"]{background:#2E2A5F!important;color:#EDE9FE!important;border-color:#8B5CF6!important}
+[style*="background:#FAEEDA"],.warn{background:#3B2A12!important;color:#FDE68A!important;border-color:#F59E0B!important}
+[style*="background:#EAF3DE"],.qopt.ok{background:#1F3A1D!important;color:#DCFCE7!important;border-color:#22C55E!important}
+[style*="background:#FAECE7"]{background:#442016!important;color:#FED7AA!important;border-color:#F97316!important}
+.qopt.bad{background:#4A1515!important;color:#FECACA!important;border-color:#EF4444!important}
+body[data-theme="light"]{
+  --color-background-primary:#F8FAFC;
+  --color-background-secondary:#EEF2F7;
+  --color-text-primary:#111827;
+  --color-text-secondary:#374151;
+  --color-text-tertiary:#6B7280;
+  --color-border-secondary:#CBD5E1;
+  --color-border-tertiary:#E2E8F0;
+}
+body[data-theme="light"] .pill.on,body[data-theme="light"] [style*="background:#E1F5EE"]{background:#E1F5EE!important;color:#085041!important;border-color:#5DCAA5!important}
+body[data-theme="light"] [style*="background:#E6F1FB"]{background:#E6F1FB!important;color:#0C447C!important;border-color:#85B7EB!important}
+body[data-theme="light"] [style*="background:#EEEDFE"]{background:#EEEDFE!important;color:#3C3489!important;border-color:#AFA9EC!important}
+body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] .warn{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
+body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
+body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
+body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle:hover{border-color:#34D399}
+body:not([data-theme="light"]) .theme-sun{display:none}
+body[data-theme="light"] .theme-moon{display:none}
+body{width:min(100%,1100px);margin:0 auto;padding:1.25rem clamp(12px,3vw,28px)}
+button{max-width:100%;white-space:normal}
+.pg,.card,.qb,.qopt,.qex,.sc,.dr-card{min-width:0}
+.ch{gap:10px}
+.cht,.dr-stat{overflow-wrap:anywhere}
+.tbl{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+code{white-space:normal;overflow-wrap:anywhere}
+@media (max-width:700px){
+  body{font-size:16px;padding:1rem 12px}
+  #pills{display:grid;grid-template-columns:1fr;gap:8px}
+  .pill{width:100%;margin:0;text-align:left;padding:9px 12px}
+  .pt{font-size:20px;line-height:1.3}
+  .ps{font-size:15px}
+  .ch{align-items:flex-start;padding:11px 12px}
+  .cb{padding:12px}
+  .cgrid,.sgrid,.dr-row{grid-template-columns:1fr}
+  .meter-row{display:grid;grid-template-columns:1fr;gap:4px}
+  .meter-label,.meter-val{width:auto;text-align:left}
+  .frow{align-items:stretch;gap:8px}
+  .fb{flex:1 1 140px}
+  .nr{display:grid;grid-template-columns:1fr;gap:10px}
+  .dots{justify-content:center;order:-1}
+  .nb{width:100%}
+}
+@media (max-width:420px){
+  .frow{display:grid;grid-template-columns:1fr}
+  .fa{display:none}
+}
+</style>
+
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<h2 class="sr-only">Domain 2 SOA-C03 lesson: Reliability and Business Continuity — scaling, HA, backup, and DR patterns</h2>
+<div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
+<div id="content"></div>
+
+<script>
+(() => {
+  const savedTheme = localStorage.getItem('soaTheme') || 'dark';
+  document.body.dataset.theme = savedTheme;
+  window.toggleTheme = () => {
+    const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+    document.body.dataset.theme = nextTheme;
+    localStorage.setItem('soaTheme', nextTheme);
+  };
+})();
+const QS=[
+{q:"A company runs a web application on EC2 instances behind an ALB. During peak traffic events, some users experience slow response times. The Auto Scaling group uses a simple scaling policy based on a CloudWatch alarm. What change would provide the most responsive and stable scaling behavior?",
+ o:["Switch to scheduled scaling so instances launch before the peak window","Replace the simple scaling policy with a target tracking scaling policy based on ALBRequestCountPerTarget","Increase the desired capacity of the Auto Scaling group permanently","Add a second ALB to distribute load across two groups of instances"],
+ c:1,e:"Target tracking scaling is more responsive and stable than simple scaling because it continuously adjusts capacity to maintain a target metric value (e.g. 1000 requests per target). Simple scaling adds/removes a fixed number of instances and has a cooldown period that can cause under- or over-scaling. Scheduled scaling helps for predictable patterns but not unpredictable peaks. Increasing desired capacity permanently wastes cost at non-peak times."},
+{q:"An RDS MySQL database must survive an Availability Zone failure with automatic failover and minimal data loss. The recovery must happen without manual intervention. What is the correct configuration?",
+ o:["Create a read replica in a second AZ and update the application connection string on failure","Enable RDS Multi-AZ deployment — AWS automatically provisions a standby in a second AZ with synchronous replication","Take daily automated snapshots and restore to a new instance in a different AZ on failure","Deploy two separate RDS instances and use Route 53 failover routing between them"],
+ c:1,e:"RDS Multi-AZ is the correct answer. It provisions a synchronous standby replica in a different AZ. On failure, AWS automatically updates the DNS endpoint to point to the standby — typically within 1-2 minutes — with zero data loss (synchronous replication). Read replicas use asynchronous replication and require manual promotion. Manual snapshot restore can take 30+ minutes and has data loss equal to the time since the last snapshot. Two separate instances with Route 53 require custom logic."},
+{q:"A company's RPO for their S3-hosted data is 1 hour, and they need data replicated to a different AWS Region. S3 versioning is already enabled. What additional configuration satisfies the RPO requirement?",
+ o:["Configure S3 Cross-Region Replication (CRR) with Replication Time Control (RTC) to replicate objects within 15 minutes","Enable S3 Transfer Acceleration on the source bucket","Configure an S3 lifecycle policy to transition objects to S3 Glacier every hour","Create an AWS Backup plan with hourly backups that copies to the destination region"],
+ c:0,e:"S3 CRR with Replication Time Control (RTC) replicates 99.99% of objects within 15 minutes — well within the 1-hour RPO. RTC provides predictable replication time and includes replication metrics in CloudWatch. S3 Transfer Acceleration speeds up uploads to S3 but doesn't replicate data. Lifecycle policies move data to cheaper storage classes, not to another region. AWS Backup with hourly schedule would be technically correct but CRR+RTC is the purpose-built, more efficient solution."},
+{q:"A CloudOps engineer is designing a disaster recovery strategy for a critical application. The RTO is 4 hours and the RPO is 1 hour. The business wants the lowest cost option that meets these requirements. Which DR strategy is most appropriate?",
+ o:["Multi-site active-active: run full production in two regions simultaneously","Warm standby: maintain a scaled-down but functional version of the stack in the DR region","Pilot light: keep only the core database running in DR; use CloudFormation and AMIs to launch other components on failover","Backup and restore: take hourly backups to S3 and restore from scratch on a failure event"],
+ c:2,e:"Pilot light meets a 4-hour RTO and 1-hour RPO at the lowest cost for these requirements. The core database is kept running and replicated (satisfying RPO). Pre-created AMIs and CloudFormation templates allow launching compute and app servers in roughly 1-2 hours (satisfying RTO). Warm standby is more expensive as it keeps a scaled-down fleet running continuously. Multi-site active-active is the most expensive option. Backup and restore would likely exceed the 4-hour RTO since it includes restoring databases from scratch."},
+{q:"An application uses DynamoDB as its primary database. The team needs to ensure that if an engineer accidentally deletes critical items, they can restore the table to its state from 2 hours ago. What feature enables this with the least operational overhead?",
+ o:["Enable DynamoDB Streams and use Lambda to copy item changes to S3 every hour","Enable DynamoDB point-in-time recovery (PITR) — restore the table to any second in the last 35 days","Take a manual DynamoDB backup every hour using AWS Backup","Export DynamoDB table data to S3 every hour using DynamoDB Export to S3"],
+ c:1,e:"DynamoDB PITR allows restoring a table to any point in time within the last 35 days with one-click precision — down to the second. It has no performance impact on the table, no operational overhead after enabling, and directly addresses accidental deletion scenarios. DynamoDB Streams + Lambda is complex to build and maintain. Manual backups via AWS Backup require scheduling and don't allow sub-hour granularity. Export to S3 creates data exports but is not a restore mechanism."}
+];
+
+const PAGES=[
+{id:"overview",label:"Overview",title:"Domain 2: Reliability and Business Continuity",sub:"22% of exam — ~11 questions out of 50",html:`
+<div class="cgrid">
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #0F6E56">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">What this domain tests</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Your ability to design and operate workloads that survive failures — whether that's an AZ outage, accidental data deletion, or a full regional disaster. The exam tests both the <em>design</em> of resilient architecture and the <em>operational</em> steps to recover.</div>
+</div>
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #3B6D11">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">Core mental model</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Every question in this domain is ultimately about two axes: <em>how fast can you recover</em> (RTO) and <em>how much data can you afford to lose</em> (RPO). Match the right AWS tool to the RTO/RPO requirement.</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin-bottom:8px">Four task areas</div>
+<div class="frow">
+<div class="fb" style="background:#E1F5EE;color:#085041">Task 2.1<br><span style="font-size:11px;font-weight:400">Scalability &amp; elasticity</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#E6F1FB;color:#0C447C">Task 2.2<br><span style="font-size:11px;font-weight:400">High availability</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#EEEDFE;color:#3C3489">Task 2.3<br><span style="font-size:11px;font-weight:400">Backup &amp; restore</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#FAEEDA;color:#633806">Task 2.4<br><span style="font-size:11px;font-weight:400">Disaster recovery</span></div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
+<div class="sgrid">
+<div class="sc"><div class="sn">EC2 Auto Scaling</div><div class="sd">Dynamic scaling policies, launch templates</div></div>
+<div class="sc"><div class="sn">ALB / NLB / GWLB</div><div class="sd">Load distribution, health checks, target groups</div></div>
+<div class="sc"><div class="sn">RDS Multi-AZ</div><div class="sd">Synchronous standby, automatic failover</div></div>
+<div class="sc"><div class="sn">Route 53</div><div class="sd">Health checks, failover routing, latency routing</div></div>
+<div class="sc"><div class="sn">AWS Backup</div><div class="sd">Centralised backup plans, vaults, cross-region copy</div></div>
+<div class="sc"><div class="sn">S3 / CRR / Versioning</div><div class="sd">Object durability, cross-region replication</div></div>
+<div class="sc"><div class="sn">DynamoDB PITR</div><div class="sd">Point-in-time restore, 35-day window</div></div>
+<div class="sc"><div class="sn">CloudFormation</div><div class="sd">IaC-based environment recreation for DR</div></div>
+</div>
+<div class="tip"><strong>Exam tip:</strong> Domain 2 questions almost always contain RTO and/or RPO numbers. Before picking an answer, translate those numbers into a DR tier: seconds/minutes = warm standby or active-active; hours = pilot light; many hours to days = backup and restore.</div>`},
+
+{id:"task21",label:"Task 2.1 – Scaling",title:"Task 2.1: Implement scalability and elasticity",sub:"Know every Auto Scaling policy type and when to choose each",html:`
+<div style="font-size:13px;font-weight:500;margin-bottom:10px">EC2 Auto Scaling policy types — comparison</div>
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Target tracking scaling</span><span class="badge" style="background:#E1F5EE;color:#085041">Best default</span></div>
+<div class="cb">
+Works like a thermostat: you name a metric and a target value, and Auto Scaling continuously adjusts to maintain it.<br><br>
+<strong>Common metrics:</strong><br>
+• <code>ASGAverageCPUUtilization</code> — target 50%<br>
+• <code>ALBRequestCountPerTarget</code> — target 1000<br>
+• <code>ASGAverageNetworkIn/Out</code><br><br>
+<strong>Why it's preferred:</strong> no cooldown tuning needed, scales both in and out automatically, and responds proportionally to the gap between actual and target.<br><br>
+<strong>Exam tip:</strong> if the question says "responsive, stable scaling" without a specific schedule — target tracking is the answer.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Step scaling</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Controlled steps</span></div>
+<div class="cb">
+Triggered by CloudWatch alarms. You define "steps" — ranges of the metric that map to different adjustment sizes.<br><br>
+<strong>Example:</strong><br>
+• CPU 60–70% → add 1 instance<br>
+• CPU 70–85% → add 2 instances<br>
+• CPU 85%+ → add 4 instances<br><br>
+<strong>Use when:</strong> you need fine-grained control over how aggressively to scale at different severity levels.<br><br>
+<strong>vs Simple scaling:</strong> step scaling does NOT wait for the cooldown period to finish before evaluating additional alarms — it can add instances in multiple steps mid-event.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Scheduled scaling</span><span class="badge" style="background:#EEEDFE;color:#3C3489">Known patterns</span></div>
+<div class="cb">
+Sets min/max/desired capacity at a specific time or on a recurring schedule (cron expression).<br><br>
+<strong>Use when:</strong> traffic patterns are predictable — e.g. business hours, weekly batch jobs, seasonal promotions.<br><br>
+<strong>Example:</strong> Every weekday at 08:00, set desired=20. At 20:00, set desired=5.<br><br>
+<strong>Combine with target tracking:</strong> use scheduled scaling to pre-warm capacity before a known event, and target tracking to handle the actual load variation.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Predictive scaling</span><span class="badge" style="background:#FAEEDA;color:#633806">ML-based</span></div>
+<div class="cb">
+Uses machine learning to forecast future traffic based on historical CloudWatch data and proactively scales before demand arrives.<br><br>
+<strong>Requires:</strong> at least 24 hours of data to generate a forecast; more accurate with 14+ days.<br><br>
+<strong>Use when:</strong> traffic follows a repeating pattern and you want to avoid reactive scaling lag entirely.<br><br>
+<strong>Can run in:</strong> forecast-only mode (just show predictions, no action) or forecast-and-scale mode.
+</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:12px 0 8px">Scaling across other services</div>
+<table class="tbl">
+<tr><th>Service</th><th>How it scales</th><th>Key detail</th></tr>
+<tr><td>DynamoDB</td><td>Auto scaling on RCU/WCU, or on-demand mode</td><td>On-demand = pay per request, no capacity planning. Provisioned + auto scaling = predictable cost. Exam prefers on-demand for unpredictable workloads.</td></tr>
+<tr><td>RDS read replicas</td><td>Add up to 15 read replicas (Aurora), 5 for MySQL/PostgreSQL</td><td>Asynchronous replication. Use for read-heavy workloads. Not a HA solution — no automatic failover without manual promotion.</td></tr>
+<tr><td>Aurora Auto Scaling</td><td>Automatically adds/removes Aurora Replicas based on connections or CPU</td><td>Aurora Global Database for cross-region read scaling with &lt;1s replication lag.</td></tr>
+<tr><td>Lambda</td><td>Scales automatically per invocation (concurrency)</td><td>Default concurrency limit = 1000 per region (soft limit). Reserved concurrency = guarantee + cap. Provisioned concurrency = pre-warm to eliminate cold starts.</td></tr>
+<tr><td>ECS / Fargate</td><td>Application Auto Scaling on ECS service desired count</td><td>Target tracking on ECSServiceAverageCPUUtilization or custom metrics via ALB.</td></tr>
+</table>
+<div class="tip"><strong>Warm-up / cooldown trick:</strong> Auto Scaling has a default cooldown of 300 seconds after a scale-in event. If instances take time to initialise, set the instance warm-up period so new instances are not counted in metrics until ready — prevents premature scale-in.</div>`},
+
+{id:"task22",label:"Task 2.2 – High Availability",title:"Task 2.2: High availability and fault-tolerant architectures",sub:"Multi-AZ everything — know exactly what each service does on failure",html:`
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">RDS Multi-AZ vs read replicas</span><span class="badge" style="background:#E1F5EE;color:#085041">Most-tested</span></div>
+<div class="cb">
+<strong>Multi-AZ:</strong><br>
+• Purpose: high availability and automatic failover<br>
+• Replication: synchronous (zero data loss)<br>
+• Standby: not readable — it exists purely for failover<br>
+• Failover time: ~1–2 minutes, DNS endpoint updated automatically<br>
+• Triggers: AZ failure, DB instance failure, OS patching<br><br>
+<strong>Read replica:</strong><br>
+• Purpose: read scaling (offload SELECT queries)<br>
+• Replication: asynchronous (small lag, possible data loss)<br>
+• Readable: yes — point your read traffic here<br>
+• Failover: manual promotion only (not automatic)<br>
+• Cross-region: yes, useful for cross-region DR<br><br>
+<strong>Can you combine them?</strong> Yes — you can have Multi-AZ enabled AND have read replicas. Each read replica can also be Multi-AZ.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Route 53 health checks and failover</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>Health checks:</strong> Route 53 polls your endpoints (HTTP, HTTPS, TCP) at configurable intervals. Marks them healthy or unhealthy.<br><br>
+<strong>Failover routing policy:</strong><br>
+• One record is PRIMARY, one is SECONDARY<br>
+• Route 53 routes to PRIMARY while it passes health checks<br>
+• Automatically switches to SECONDARY when PRIMARY fails<br>
+• Works at DNS level — transparent to users<br><br>
+<strong>Other useful routing policies:</strong><br>
+• <strong>Latency:</strong> route to the region with lowest latency for the user<br>
+• <strong>Weighted:</strong> send X% to region A, Y% to region B (blue/green, canary)<br>
+• <strong>Geolocation:</strong> route based on user's country or continent<br>
+• <strong>Multivalue answer:</strong> return up to 8 healthy records (basic client-side load balancing)<br><br>
+<strong>Alias records:</strong> use instead of CNAME for apex domains (e.g. example.com) pointing to ALB, CloudFront, or S3.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">EC2 placement groups</span><span class="badge" style="background:#FAEEDA;color:#633806">Know it</span></div>
+<div class="cb">
+<strong>Cluster:</strong> pack instances close together in one AZ for ultra-low latency (10 Gbps network). Used for HPC, tightly coupled workloads. Risk: single AZ failure takes all instances.<br><br>
+<strong>Spread:</strong> place each instance on distinct underlying hardware. Max 7 instances per AZ per group. Used for critical instances that must not fail together.<br><br>
+<strong>Partition:</strong> divide instances into partitions on separate racks. Each partition has its own power and network. Used for distributed systems (HDFS, Cassandra, Kafka).<br><br>
+<strong>Exam tip:</strong> "Instances must not share the same physical rack" → Spread or Partition. "Minimum latency between instances" → Cluster.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Load balancer types — when to use each</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>ALB (Application Load Balancer):</strong> HTTP/HTTPS, Layer 7. Supports path-based routing (/api → target A), host-based routing, WebSockets, Lambda targets, authentication via Cognito/OIDC.<br><br>
+<strong>NLB (Network Load Balancer):</strong> TCP/UDP/TLS, Layer 4. Ultra-low latency, preserves source IP, static IP per AZ, supports PrivateLink. Use for non-HTTP protocols or when you need static IPs.<br><br>
+<strong>GWLB (Gateway Load Balancer):</strong> Routes traffic through third-party virtual appliances (firewalls, IDS/IPS) transparently at Layer 3. Use for inline security inspection.<br><br>
+<strong>CLB (Classic):</strong> Legacy — avoid. Not created for new workloads.<br><br>
+<strong>Connection draining / deregistration delay:</strong> ALB/NLB wait for in-flight requests to complete before removing an instance from a target group (default 300s). Reduce this value for faster Auto Scaling.
+</div>
+</div>
+</div>
+<div class="tip"><strong>Multi-AZ architecture pattern:</strong> ALB (spans all AZs) → EC2 Auto Scaling group (instances in 2+ AZs) → RDS Multi-AZ (primary in AZ-a, standby in AZ-b) → ElastiCache Multi-AZ → Route 53 health check on ALB DNS name. This pattern survives any single AZ failure automatically.</div>`},
+
+{id:"task23",label:"Task 2.3 – Backup & Restore",title:"Task 2.3: Backup and restore strategies",sub:"Know what AWS Backup covers, and the key feature of each service",html:`
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">AWS Backup — centralised management</span><span class="badge" style="background:#E1F5EE;color:#085041">Core</span></div>
+<div class="cb">
+AWS Backup is a fully managed service that centralises and automates backups across AWS services from a single place.<br><br>
+<strong>What it covers:</strong> EC2 (AMI-based), EBS volumes, RDS, Aurora, DynamoDB, EFS, FSx, S3, Storage Gateway, DocumentDB, Neptune, VMware on-premises.<br><br>
+<strong>Backup plan:</strong> defines backup frequency (e.g. daily), retention period (e.g. 30 days), and lifecycle rules (move to cold storage after N days).<br><br>
+<strong>Backup vault:</strong> an encrypted container for backup recovery points. Can be locked with <em>vault lock</em> (WORM — write-once-read-many) to prevent deletion even by administrators.<br><br>
+<strong>Cross-region and cross-account copy:</strong> configure copy rules in a backup plan to automatically copy backups to another region or account for DR purposes.<br><br>
+<strong>Exam tip:</strong> "Centralise backup management across multiple accounts" → AWS Backup with AWS Organizations integration.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">S3 versioning, replication, and durability</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>Versioning:</strong> keeps all versions of an object. Protects against accidental deletes (delete creates a delete marker, doesn't remove the object). Required before you can enable replication.<br><br>
+<strong>S3 Cross-Region Replication (CRR):</strong> asynchronously copies objects to a bucket in another region. Requires versioning on both source and destination.<br><br>
+<strong>S3 Replication Time Control (RTC):</strong> guarantees 99.99% of objects replicate within 15 minutes. Includes CloudWatch replication metrics. Use when you have a strict RPO for S3 data.<br><br>
+<strong>S3 Same-Region Replication (SRR):</strong> copies objects to a bucket in the same region (different account, log aggregation, compliance copy).<br><br>
+<strong>MFA Delete:</strong> requires MFA to permanently delete object versions or suspend versioning. Protects against accidental or malicious permanent deletion.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">RDS backup features</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>Automated backups:</strong> enabled by default. Daily full snapshot + transaction logs → enables point-in-time recovery to any second within the retention window (1–35 days).<br><br>
+<strong>Manual snapshots:</strong> user-initiated. Persist beyond the retention window and even after the DB instance is deleted. You control when they expire.<br><br>
+<strong>Restore:</strong> always creates a NEW RDS instance — you cannot restore in-place. Update your connection strings after restore.<br><br>
+<strong>Cross-region snapshot copy:</strong> manually copy a snapshot to another region for DR.<br><br>
+<strong>Exam trap:</strong> "We deleted the RDS instance but need the data" — automated backups are deleted with the instance unless you take a final snapshot before deletion. Manual snapshots survive instance deletion.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">DynamoDB backup options</span><span class="badge" style="background:#EEEDFE;color:#3C3489">Important</span></div>
+<div class="cb">
+<strong>Point-in-time recovery (PITR):</strong> continuously backs up your table. Restore to any second in the last 35 days. No performance impact. Enable per table. Creates a new table on restore.<br><br>
+<strong>On-demand backups:</strong> full table snapshot at a specific point. Retained until explicitly deleted. No impact on performance or availability.<br><br>
+<strong>Export to S3:</strong> exports table data to S3 in DynamoDB JSON or Amazon Ion format. Does NOT consume read capacity. Good for analytics, not for point-in-time restore.<br><br>
+<strong>Global Tables:</strong> multi-region, multi-active replication. Not a backup feature — it's for active-active global HA, but also provides cross-region data durability.
+</div>
+</div>
+</div>
+<div class="tip"><strong>EBS snapshot key facts:</strong> Incremental (only changed blocks). Stored in S3 (managed by AWS, not visible in your S3 console). Can be copied to another region. Data Lifecycle Manager (DLM) can automate snapshot creation and retention. Fast Snapshot Restore (FSR) eliminates initialisation latency on restored volumes.</div>
+<table class="tbl">
+<tr><th>What you need</th><th>Right tool</th></tr>
+<tr><td>Centralise backups across all services and accounts</td><td>AWS Backup with Organizations integration</td></tr>
+<tr><td>Protect S3 data from accidental deletion</td><td>S3 Versioning + MFA Delete</td></tr>
+<tr><td>Replicate S3 objects to another region within 15 min</td><td>S3 CRR + Replication Time Control (RTC)</td></tr>
+<tr><td>Restore DynamoDB to exactly 3 hours ago</td><td>DynamoDB PITR (35-day window, per-second granularity)</td></tr>
+<tr><td>Keep RDS backups after deleting the instance</td><td>Take a final manual snapshot before deletion</td></tr>
+<tr><td>Automate EBS snapshot lifecycle</td><td>Amazon Data Lifecycle Manager (DLM)</td></tr>
+<tr><td>Prevent backup vault deletion (ransomware protection)</td><td>AWS Backup Vault Lock (WORM)</td></tr>
+</table>`},
+
+{id:"task24",label:"Task 2.4 – Disaster Recovery",title:"Task 2.4: Disaster recovery strategies",sub:"The four DR patterns — know the cost/RTO/RPO tradeoff cold",html:`
+<div style="font-size:13px;font-weight:500;margin-bottom:10px">RTO vs RPO — the core framework</div>
+<div class="cgrid">
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">RTO — Recovery Time Objective</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">How long can the business tolerate the system being down? This drives <em>how fast you need to restore</em>. Lower RTO = more pre-provisioned infrastructure = higher cost.</div>
+</div>
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">RPO — Recovery Point Objective</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">How much data loss is acceptable? RPO = maximum age of data you can restore from. Lower RPO = more frequent backups or continuous replication = higher cost.</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:14px 0 10px">The four DR patterns</div>
+<div class="dr-row">
+<div class="dr-card">
+<span class="dr-label" style="background:#FCEBEB;color:#791F1F">Highest cost</span>
+<div class="dr-name">Multi-site active-active</div>
+<div class="dr-stat"><strong>RTO:</strong> near-zero (seconds)<br><strong>RPO:</strong> near-zero<br><strong>How:</strong> Full production stack running simultaneously in 2+ regions. Route 53 weighted or latency routing distributes live traffic. No failover — traffic just shifts.<br><strong>Use for:</strong> mission-critical systems where any downtime is unacceptable.</div>
+</div>
+<div class="dr-card">
+<span class="dr-label" style="background:#FAEEDA;color:#633806">High cost</span>
+<div class="dr-name">Warm standby</div>
+<div class="dr-stat"><strong>RTO:</strong> minutes (scale up existing fleet)<br><strong>RPO:</strong> minutes (continuous replication)<br><strong>How:</strong> A scaled-down but <em>fully functional</em> version of the app runs in the DR region. On failover, scale it up and redirect DNS.<br><strong>Use for:</strong> important systems where hours of downtime are unacceptable but active-active cost is too high.</div>
+</div>
+<div class="dr-card">
+<span class="dr-label" style="background:#E1F5EE;color:#085041">Moderate cost</span>
+<div class="dr-name">Pilot light</div>
+<div class="dr-stat"><strong>RTO:</strong> hours (launch from AMIs + CloudFormation)<br><strong>RPO:</strong> minutes to hours (DB replication kept live)<br><strong>How:</strong> Only the <em>core database</em> runs in DR (replicated and current). All other components (EC2, app servers) are pre-baked in AMIs and CloudFormation templates — launched only on failover.<br><strong>Use for:</strong> important systems with moderate downtime tolerance.</div>
+</div>
+<div class="dr-card">
+<span class="dr-label" style="background:#EAF3DE;color:#27500A">Lowest cost</span>
+<div class="dr-name">Backup &amp; restore</div>
+<div class="dr-stat"><strong>RTO:</strong> hours to days<br><strong>RPO:</strong> hours (last backup)<br><strong>How:</strong> Regular backups to S3. Restore from scratch on failure using stored backups and IaC templates. No infrastructure pre-provisioned in DR.<br><strong>Use for:</strong> non-critical systems or when cost is the primary constraint.</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:14px 0 8px">Cost vs recovery speed</div>
+<div class="meter-wrap">
+<div class="meter-row"><span class="meter-label">Multi-site active-active</span><div class="meter-bar"><div class="meter-fill" style="width:100%;background:#A32D2D"></div></div><span class="meter-val" style="color:#A32D2D">Very high</span></div>
+<div class="meter-row"><span class="meter-label">Warm standby</span><div class="meter-bar"><div class="meter-fill" style="width:70%;background:#854F0B"></div></div><span class="meter-val" style="color:#854F0B">High</span></div>
+<div class="meter-row"><span class="meter-label">Pilot light</span><div class="meter-bar"><div class="meter-fill" style="width:35%;background:#0F6E56"></div></div><span class="meter-val" style="color:#0F6E56">Moderate</span></div>
+<div class="meter-row"><span class="meter-label">Backup &amp; restore</span><div class="meter-bar"><div class="meter-fill" style="width:15%;background:#3B6D11"></div></div><span class="meter-val" style="color:#3B6D11">Low</span></div>
+</div>
+<div class="cgrid" style="margin-top:12px">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">AWS Elastic Disaster Recovery (DRS)</span><span class="badge" style="background:#E1F5EE;color:#085041">Know it</span></div>
+<div class="cb">
+Continuously replicates source servers (on-premises, other clouds, or AWS regions) to a staging area in your target AWS region. On failover, launches full-scale servers in minutes from the latest replicated state.<br><br>
+<strong>RPO:</strong> typically seconds (continuous block-level replication)<br>
+<strong>RTO:</strong> minutes (automated launch of recovery instances)<br><br>
+<strong>Use cases:</strong> migrating on-premises workloads to AWS, cross-region DR for EC2.<br><br>
+<strong>Exam tip:</strong> DRS is the answer when the question mentions "on-premises servers" + "replicate to AWS" + low RTO/RPO requirements.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Aurora Global Database</span><span class="badge" style="background:#EEEDFE;color:#3C3489">Important</span></div>
+<div class="cb">
+Aurora Global Database spans multiple AWS regions with a single primary region (read-write) and up to 5 secondary regions (read-only).<br><br>
+<strong>Replication lag:</strong> typically under 1 second.<br><br>
+<strong>Failover (managed):</strong> promote a secondary region to primary in under 1 minute (RTO ~60s, RPO &lt;1s).<br><br>
+<strong>Use for:</strong> globally distributed applications that need sub-second cross-region reads AND fast DR failover for relational data.<br><br>
+<strong>Exam tip:</strong> if the question mentions "global application" + "relational database" + "sub-second replication" → Aurora Global Database.
+</div>
+</div>
+</div>
+<div class="warn"><strong>Common trap — pilot light vs warm standby:</strong> In pilot light, only the database runs in DR — compute is launched on failover. In warm standby, a scaled-down but complete application (web, app, and DB tier) runs continuously. If the question says "the DR environment already has all components running at reduced capacity", that's warm standby, not pilot light.</div>`},
+
+{id:"exam",label:"Practice Questions",title:"Domain 2 practice questions",sub:"5 exam-style scenarios — pick an answer, then read the explanation",
+html:QS.map((q,i)=>`
+<div class="qb" id="qb${i}">
+<div class="qh">Q${i+1}. ${q.q}</div>
+<div class="qo">${q.o.map((o,j)=>`<button class="qopt" id="qo${i}_${j}" onclick="ans(${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}</div>
+<div class="qex" id="qe${i}"></div>
+</div>`).join('')},
+
+{id:"tips",label:"Exam Tips & Traps",title:"Domain 2 exam tips and common traps",sub:"The distinctions that cost candidates marks most often",html:`
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="warn"><strong>Trap 1 — Multi-AZ standby is NOT readable:</strong> The RDS Multi-AZ standby instance cannot serve read traffic. It exists only for failover. If you need a readable replica, create a Read Replica separately. Many exam questions try to trick you by implying Multi-AZ gives you read scaling — it does not.</div>
+<div class="warn"><strong>Trap 2 — Read replicas don't auto-failover:</strong> RDS Read Replicas use asynchronous replication and require manual promotion. They are a scaling tool, not a HA tool. "Automatic failover" always means Multi-AZ, not read replicas.</div>
+<div class="warn"><strong>Trap 3 — Pilot light vs warm standby distinction:</strong> Pilot light = only the DB runs in DR; compute is spun up on failover using AMIs and IaC. Warm standby = a complete but scaled-down application stack runs continuously. RTO for pilot light is longer because you have to wait for compute to launch. Watch for the phrase "all components are already running" — that's warm standby.</div>
+<div class="warn"><strong>Trap 4 — RDS restore creates a new instance:</strong> Restoring an RDS snapshot or point-in-time recovery always creates a NEW DB instance with a NEW endpoint. Your application must update its connection string. You cannot restore in-place. If a question asks about minimising downtime during restore, the answer includes updating connection strings or using Route 53 CNAME to abstract the endpoint.</div>
+<div class="warn"><strong>Trap 5 — S3 CRR requires versioning enabled on BOTH buckets:</strong> Cross-Region Replication will not work if versioning is not enabled on both source and destination buckets. Also, CRR only replicates new objects after it's configured — existing objects are NOT copied automatically. Use S3 Batch Replication for existing objects.</div>
+<div class="warn"><strong>Trap 6 — Target tracking cooldown vs instance warm-up:</strong> The Auto Scaling cooldown period prevents any further scaling actions after a scale-out event. The instance warm-up period tells Auto Scaling not to count new instances in metrics until they are ready. Confusing the two leads to under- or over-scaling. Questions about "instances launching before they are ready affecting metrics" → set the instance warm-up period.</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:16px 0 8px">Quick-fire cheat sheet</div>
+<table class="tbl">
+<tr><th>Question trigger</th><th>Answer</th></tr>
+<tr><td>Survive AZ failure, automatic DB failover</td><td>RDS Multi-AZ (synchronous, auto-failover)</td></tr>
+<tr><td>Read scaling for RDS</td><td>Read Replica (manual promotion, asynchronous)</td></tr>
+<tr><td>RTO near-zero, RPO near-zero</td><td>Multi-site active-active</td></tr>
+<tr><td>RTO minutes, cost-conscious</td><td>Warm standby</td></tr>
+<tr><td>RTO hours, only DB pre-provisioned</td><td>Pilot light</td></tr>
+<tr><td>RTO hours/days, lowest cost</td><td>Backup and restore</td></tr>
+<tr><td>Replicate S3 cross-region with SLA</td><td>S3 CRR + Replication Time Control</td></tr>
+<tr><td>Restore DynamoDB to a past point in time</td><td>DynamoDB PITR</td></tr>
+<tr><td>Centralise backups across accounts</td><td>AWS Backup + Organizations</td></tr>
+<tr><td>On-premises → AWS with low RTO/RPO</td><td>AWS Elastic Disaster Recovery (DRS)</td></tr>
+<tr><td>Global relational DB, sub-second replication</td><td>Aurora Global Database</td></tr>
+<tr><td>"Most responsive scaling" for web app</td><td>Target tracking on ALBRequestCountPerTarget</td></tr>
+</table>
+<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 2 of SOA-C03')">More practice questions ↗</button>
+<button class="nb" onclick="sendPrompt('Teach me Domain 3 of SOA-C03 (Deployment, Provisioning and Automation) in depth with examples and exam tips')">Next: Domain 3 ↗</button>
+</div>`}
+];
+
+function tog(h){h.nextElementSibling.classList.toggle('on')}
+function ans(qi,oi){
+  const q=QS[qi];
+  document.querySelectorAll('#qb'+qi+' .qopt').forEach((o,j)=>{
+    o.disabled=true;
+    if(j===q.c)o.classList.add('ok');
+    else if(j===oi&&j!==q.c)o.classList.add('bad');
+  });
+  const ex=document.getElementById('qe'+qi);
+  ex.innerHTML='<strong>'+(oi===q.c?'Correct!':'Incorrect.')+'</strong> '+q.e;
+  ex.classList.add('on');
+}
+window.tog=tog; window.ans=ans;
+
+let cur=0;
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.pill').forEach((p,j)=>p.classList.toggle('on',j===i));
+}
+window.go=go;
+
+const pEl=document.getElementById('pills');
+const cEl=document.getElementById('content');
+PAGES.forEach((p,i)=>{
+  const btn=document.createElement('button');
+  btn.className='pill'+(i===0?' on':'');
+  btn.textContent=p.label;
+  btn.onclick=()=>go(i);
+  pEl.appendChild(btn);
+  const pg=document.createElement('div');
+  pg.className='pg'+(i===0?' on':'');
+  pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
+<div class="nr">
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+</div>`;
+  cEl.appendChild(pg);
+});
+</script>

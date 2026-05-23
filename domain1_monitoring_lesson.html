@@ -1,0 +1,462 @@
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --font-sans:Inter,Segoe UI,Arial,sans-serif;
+  --color-background-primary:#111827;
+  --color-background-secondary:#1F2937;
+  --color-text-primary:#F9FAFB;
+  --color-text-secondary:#D1D5DB;
+  --color-text-tertiary:#9CA3AF;
+  --color-border-secondary:#4B5563;
+  --color-border-tertiary:#374151;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+body{font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);font-size:17px;line-height:1.65}
+.pill{padding:5px 12px;border-radius:99px;border:0.5px solid var(--color-border-secondary);font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);margin:0 4px 6px 0;display:inline-block}
+.pill.on{background:#E6F1FB;color:#0C447C;border-color:#85B7EB;font-weight:500}
+.pill:hover:not(.on){background:var(--color-background-secondary)}
+.pg{display:none;padding:1rem 0}
+.pg.on{display:block}
+.pt{font-size:17px;font-weight:500;margin-bottom:3px}
+.ps{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.2rem}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.ch{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-primary)}
+.ch:hover{background:var(--color-background-secondary)}
+.cht{font-size:13px;font-weight:500}
+.cb{display:none;padding:10px 14px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.cb.on{display:block}
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500}
+.tip{border-left:3px solid #185FA5;padding:10px 14px;background:#E6F1FB;margin:10px 0;font-size:13px;color:#0C447C;line-height:1.5}
+.warn{border-left:3px solid #854F0B;padding:10px 14px;background:#FAEEDA;margin:10px 0;font-size:13px;color:#633806;line-height:1.5}
+.ok{border-left:3px solid #3B6D11;padding:10px 14px;background:#EAF3DE;margin:10px 0;font-size:13px;color:#27500A;line-height:1.5}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+.tbl th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tbl td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-secondary)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--color-text-primary);font-weight:500}
+.qb{border:0.5px solid var(--color-border-tertiary);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.qh{padding:12px 14px;font-size:13px;font-weight:500;background:var(--color-background-primary)}
+.qo{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.qopt{padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:8px;font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);text-align:left;line-height:1.4}
+.qopt:hover:not([disabled]){background:var(--color-background-secondary)}
+.qopt.ok2{background:#EAF3DE;color:#27500A;border-color:#3B6D11}
+.qopt.bad{background:#FCEBEB;color:#791F1F;border-color:#A32D2D}
+.qex{margin:0 14px 12px;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.5;display:none;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.qex.on{display:block}
+.frow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.fb{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:500;text-align:center;line-height:1.4}
+.fa{color:var(--color-text-tertiary);font-size:14px}
+.nr{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;margin-top:.5rem;border-top:0.5px solid var(--color-border-tertiary)}
+.nb{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:8px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
+.nb:hover{background:var(--color-background-secondary)}
+.nb:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:5px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer}
+.dot.on{background:#185FA5}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}
+.sc{border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:10px 12px;background:var(--color-background-primary)}
+.sn{font-size:13px;font-weight:500;margin-bottom:3px}
+.sd{font-size:12px;color:var(--color-text-secondary);line-height:1.4}
+[style*="font-size:11px"]{font-size:13px!important}
+[style*="font-size:12px"],.pill,.badge,.fb,.sd{font-size:14px!important}
+[style*="font-size:13px"],.cht,.cb,.tbl,.qh,.qopt,.qex,.nb,.sn{font-size:16px!important}
+[style*="font-size:14px"],.fa{font-size:17px!important}
+.pt{font-size:22px}
+.ps{font-size:16px}
+.ch,.cb,.qopt,.qex,.nb,.sc{background:var(--color-background-primary)}
+.card,.qb,.qopt,.qex,.sc{border-color:var(--color-border-tertiary)}
+.pill.on,[style*="background:#E6F1FB"]{background:#17365F!important;color:#DBEAFE!important;border-color:#3B82F6!important}
+[style*="background:#E1F5EE"],.qopt.ok2,.ok{background:#123A31!important;color:#D1FAE5!important;border-color:#34D399!important}
+[style*="background:#EEEDFE"]{background:#2E2A5F!important;color:#EDE9FE!important;border-color:#8B5CF6!important}
+[style*="background:#FAEEDA"],.warn{background:#3B2A12!important;color:#FDE68A!important;border-color:#F59E0B!important}
+[style*="background:#EAF3DE"]{background:#1F3A1D!important;color:#DCFCE7!important;border-color:#22C55E!important}
+[style*="background:#FAECE7"]{background:#442016!important;color:#FED7AA!important;border-color:#F97316!important}
+.qopt.bad{background:#4A1515!important;color:#FECACA!important;border-color:#EF4444!important}
+body[data-theme="light"]{
+  --color-background-primary:#F8FAFC;
+  --color-background-secondary:#EEF2F7;
+  --color-text-primary:#111827;
+  --color-text-secondary:#374151;
+  --color-text-tertiary:#6B7280;
+  --color-border-secondary:#CBD5E1;
+  --color-border-tertiary:#E2E8F0;
+}
+body[data-theme="light"] .pill.on,body[data-theme="light"] [style*="background:#E6F1FB"]{background:#E6F1FB!important;color:#0C447C!important;border-color:#85B7EB!important}
+body[data-theme="light"] [style*="background:#E1F5EE"]{background:#E1F5EE!important;color:#085041!important;border-color:#5DCAA5!important}
+body[data-theme="light"] [style*="background:#EEEDFE"]{background:#EEEDFE!important;color:#3C3489!important;border-color:#AFA9EC!important}
+body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] .warn{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
+body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok2,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
+body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
+body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle:hover{border-color:#60A5FA}
+body:not([data-theme="light"]) .theme-sun{display:none}
+body[data-theme="light"] .theme-moon{display:none}
+body{width:min(100%,1100px);margin:0 auto;padding:1.25rem clamp(12px,3vw,28px)}
+button{max-width:100%;white-space:normal}
+.pg,.card,.qb,.qopt,.qex,.sc{min-width:0}
+.ch{gap:10px}
+.cht{overflow-wrap:anywhere}
+.tbl{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+code{white-space:normal;overflow-wrap:anywhere}
+@media (max-width:700px){
+  body{font-size:16px;padding:1rem 12px}
+  #pills{display:grid;grid-template-columns:1fr;gap:8px}
+  .pill{width:100%;margin:0;text-align:left;padding:9px 12px}
+  .pt{font-size:20px;line-height:1.3}
+  .ps{font-size:15px}
+  .ch{align-items:flex-start;padding:11px 12px}
+  .cb{padding:12px}
+  .cgrid,.sgrid{grid-template-columns:1fr}
+  .frow{align-items:stretch;gap:8px}
+  .fb{flex:1 1 140px}
+  .nr{display:grid;grid-template-columns:1fr;gap:10px}
+  .dots{justify-content:center;order:-1}
+  .nb{width:100%}
+  .qopt{text-align:left}
+}
+@media (max-width:420px){
+  .frow{display:grid;grid-template-columns:1fr}
+  .fa{display:none}
+}
+</style>
+
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<h2 class="sr-only">Domain 1 SOA-C03 full lesson: monitoring, logging, remediation with practice questions</h2>
+<div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
+<div id="content"></div>
+
+<script>
+(() => {
+  const savedTheme = localStorage.getItem('soaTheme') || 'dark';
+  document.body.dataset.theme = savedTheme;
+  window.toggleTheme = () => {
+    const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+    document.body.dataset.theme = nextTheme;
+    localStorage.setItem('soaTheme', nextTheme);
+  };
+})();
+const QS=[
+{q:"A company's app logs are in CloudWatch Logs. The team needs to be alerted when ERROR messages exceed 10 per minute. What is the most efficient solution?",
+ o:["Run a Logs Insights query every minute and send email if errors > 10","Create a metric filter on the log group to count ERRORs as a custom metric, then alarm on that metric","Export logs to S3 every minute and run Athena queries to count errors","Enable X-Ray and set a threshold on error rate"],
+ c:1,e:"Metric filters are the right tool for converting log patterns into ongoing CloudWatch metrics that you can alarm on. Logs Insights is for ad-hoc queries, not ongoing alerting. S3+Athena adds unnecessary complexity and latency. X-Ray is for distributed tracing, not log-based alerting."},
+{q:"An EC2 alarm is in INSUFFICIENT_DATA state after being created 8 minutes ago. Standard monitoring is enabled. What is the most likely cause?",
+ o:["The threshold is set too high","Not enough metric data points have been published yet (standard = 5-min intervals, 2 periods needed)","Detailed monitoring must be enabled for alarms to function","SNS must be configured before the alarm can evaluate"],
+ c:1,e:"INSUFFICIENT_DATA means CloudWatch hasn't received enough data points yet to evaluate the alarm. Standard monitoring publishes every 5 minutes. With a 2-period evaluation window, you need at least 10 minutes. This is independent of SNS configuration or threshold value."},
+{q:"A security team needs to audit all API calls made in the last 18 months, including who terminated EC2 instances. CloudTrail Event History is insufficient. What should be configured?",
+ o:["Enable VPC Flow Logs on all subnets and export to S3","Create a CloudTrail Trail delivering events to an S3 bucket with log file validation enabled","Enable AWS Config recording and query configuration history","Use CloudWatch Logs Insights to query the CloudTrail log group"],
+ c:1,e:"CloudTrail Event History only retains 90 days. For long-term retention, create a Trail that continuously delivers to S3. Log file validation ensures integrity. VPC Flow Logs capture network metadata, not API calls. Config records configuration changes but not who made API calls. Logs Insights can query logs but doesn't solve the retention problem."},
+{q:"An S3 bucket that should be private was found to have public access. The team wants to automatically detect and fix this in future without manual action. What combination achieves this?",
+ o:["CloudTrail + Lambda reading API events and calling s3:PutBucketAcl","AWS Config rule (s3-bucket-public-read-prohibited) with SSM Automation auto-remediation","CloudWatch alarm on S3 metrics + EventBridge + Lambda","GuardDuty + Security Hub auto-remediation pipeline"],
+ c:1,e:"AWS Config is designed for continuous compliance evaluation and auto-remediation. The managed rule detects public buckets. Auto-remediation can be set to run an SSM Automation document automatically on NON_COMPLIANT resources. CloudTrail+Lambda would work but is less operationally standard. GuardDuty is a threat detection service, not a compliance enforcement tool."},
+{q:"A microservices app has intermittent high latency spanning multiple Lambda functions and API Gateway. Which service best identifies which specific component in the call chain is causing the delay?",
+ o:["CloudWatch Logs Insights — query all Lambda log groups for duration","VPC Flow Logs — analyse network round-trip times","AWS X-Ray — view service map and trace individual requests across all services","CloudWatch Contributor Insights — find Lambda function with highest invocation count"],
+ c:2,e:"X-Ray is purpose-built for distributed tracing. Its service map shows every component, average latency on each connection, and error rates. You can drill into individual traces to see exactly which segment consumed the most time. Logs Insights can show individual Lambda durations but cannot correlate them into a single end-to-end trace. VPC Flow Logs show network metadata, not application latency. Contributor Insights shows top contributors by volume, not latency breakdown."}
+];
+
+const PAGES=[
+{id:"overview",label:"Overview",
+ title:"Domain 1: Monitoring, Logging & Remediation",sub:"22% of exam — ~11 questions out of 50",
+ html:`
+<div class="cgrid">
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #185FA5">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">What this domain tests</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Your ability to collect, analyse, and act on operational data. The exam frames this as a continuous loop: <em>observe → detect → remediate → optimise.</em></div>
+</div>
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #3B6D11">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">Real-world job this maps to</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">A CloudOps engineer who keeps production healthy: sets up dashboards, receives alerts, digs through logs, and builds automations so the same problem never needs manual fixing twice.</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin-bottom:8px">Three task areas</div>
+<div class="frow">
+<div class="fb" style="background:#E6F1FB;color:#0C447C">Task 1.1<br><span style="font-weight:400;font-size:11px">Metrics &amp; alarms</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#E1F5EE;color:#085041">Task 1.2<br><span style="font-weight:400;font-size:11px">Logs &amp; tracing</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#EEEDFE;color:#3C3489">Task 1.3<br><span style="font-weight:400;font-size:11px">Remediate &amp; optimise</span></div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
+<div class="sgrid">
+<div class="sc"><div class="sn">CloudWatch</div><div class="sd">Metrics, alarms, dashboards, composite alarms</div></div>
+<div class="sc"><div class="sn">CloudWatch Logs</div><div class="sd">Log groups, metric filters, Logs Insights</div></div>
+<div class="sc"><div class="sn">CloudTrail</div><div class="sd">API audit trail across accounts and regions</div></div>
+<div class="sc"><div class="sn">VPC Flow Logs</div><div class="sd">Network traffic accept/reject records per ENI</div></div>
+<div class="sc"><div class="sn">X-Ray</div><div class="sd">Distributed tracing, service maps, latency</div></div>
+<div class="sc"><div class="sn">EventBridge</div><div class="sd">Event rules → Lambda / SSM / SNS actions</div></div>
+<div class="sc"><div class="sn">AWS Config</div><div class="sd">Config rules, compliance drift, auto-remediation</div></div>
+<div class="sc"><div class="sn">Compute Optimizer</div><div class="sd">Right-sizing for EC2, Lambda, EBS, ASG</div></div>
+</div>
+<div class="tip"><strong>Exam tip:</strong> About a third of Domain 1 questions are scenario-based. You'll be given a symptom and asked which combination of services solves it. Always think: <em>CloudWatch metric → alarm → action.</em></div>`},
+
+{id:"task11",label:"Task 1.1 – Metrics & Alarms",
+ title:"Task 1.1: Metrics, alarms, and filters",sub:"The foundation of everything — know this cold",
+ html:`
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">CloudWatch metrics fundamentals</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>Namespace:</strong> logical grouping, e.g. AWS/EC2, AWS/RDS, your own custom namespace.<br><br>
+<strong>Metric:</strong> a time-series data point, e.g. CPUUtilization.<br><br>
+<strong>Dimension:</strong> a name/value pair that identifies what produced the metric, e.g. InstanceId=i-abc123.<br><br>
+<strong>Standard vs Detailed monitoring:</strong> Standard = 5-min intervals (free). Detailed = 1-min intervals (paid, must be explicitly enabled on EC2).<br><br>
+<strong>Custom metrics:</strong> pushed via PutMetricData API. Resolution can be standard (60s) or high-resolution (1s — set StorageResolution=1). High-resolution alarms can evaluate as frequently as every 10 seconds.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">CloudWatch alarm states and actions</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>Three states:</strong> OK, ALARM, INSUFFICIENT_DATA.<br><br>
+<strong>Evaluation period:</strong> how many data points are collected before evaluating the threshold.<br><br>
+<strong>Datapoints to alarm:</strong> how many of those must breach to trigger ALARM. e.g. "3 out of 5" = M out of N evaluation.<br><br>
+<strong>Actions you can trigger:</strong><br>
+• SNS notification (→ email, SMS, Lambda)<br>
+• Auto Scaling: scale out or in<br>
+• EC2 action: stop, terminate, reboot, recover<br>
+• Systems Manager OpsItem<br><br>
+<strong>Composite alarms:</strong> combine multiple alarms with AND/OR logic to reduce noise. One composite alarm triggers a single action instead of many individual alarms firing at once.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Metric filters on log groups</span><span class="badge" style="background:#E1F5EE;color:#085041">Important</span></div>
+<div class="cb">
+Metric filters turn <em>log data</em> into <em>CloudWatch metrics</em>.<br><br>
+<strong>Workflow:</strong> log group → create filter with pattern → filter publishes a count to a custom metric → set alarm on that metric.<br><br>
+<strong>Pattern examples:</strong><br>
+• <code>[ERROR]</code> matches lines containing ERROR<br>
+• <code>[status=5*]</code> matches 5xx HTTP status codes<br>
+• <code>{ $.errorCode = "AccessDenied" }</code> for JSON logs<br><br>
+<strong>Exam gotcha:</strong> metric filters only apply to <em>new</em> log events after creation — they do not backfill historical data.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Contributor Insights</span><span class="badge" style="background:#FAEEDA;color:#633806">Know it</span></div>
+<div class="cb">
+Analyses log data to find the <em>top contributors</em> to operational problems — designed for high-cardinality data like IP addresses, user agents, or customer IDs.<br><br>
+<strong>Works with:</strong> CloudWatch Logs, DynamoDB (built-in), API Gateway access logs, VPC Flow Logs.<br><br>
+<strong>Exam tip:</strong> if the question asks "how do you find which IPs/users are causing the most traffic or errors?", the answer is Contributor Insights — not Logs Insights, which is for ad-hoc querying.
+</div>
+</div>
+</div>
+<div class="tip"><strong>Memorise this chain:</strong> EC2 CPUUtilization (Detailed Monitoring ON, 1-min data) → CloudWatch Alarm with 3/5 M-of-N breach → SNS topic → email + Lambda for auto-remediation.</div>
+<table class="tbl">
+<tr><th>Scenario</th><th>Right solution</th></tr>
+<tr><td>Alert when CPU stays above 80% for 10 min</td><td>Alarm on CPUUtilization, period=300s, threshold=80, datapoints=2/2</td></tr>
+<tr><td>Reduce noise from 20 alarms firing at once</td><td>Composite Alarm with AND/OR logic, single SNS action</td></tr>
+<tr><td>Alert on application-level error rate from logs</td><td>Metric filter → custom metric → CloudWatch Alarm</td></tr>
+<tr><td>Find top 10 IPs causing 4xx errors</td><td>Contributor Insights rule on access log group</td></tr>
+<tr><td>Alert within seconds (sub-minute)</td><td>High-resolution custom metric (StorageResolution=1) + 10s alarm period</td></tr>
+</table>`},
+
+{id:"task12",label:"Task 1.2 – Logs & Tracing",
+ title:"Task 1.2: Collect, analyse, and manage log data",sub:"Know which log source tells you what — and how to query it",
+ html:`
+<table class="tbl">
+<tr><th>Log source</th><th>What it captures</th><th>Key detail</th></tr>
+<tr><td>CloudTrail</td><td>AWS API calls (who, what, from where, when)</td><td>Event History = 90 days only. For longer retention, create a Trail → S3. Enable multi-region trail for org-wide coverage.</td></tr>
+<tr><td>VPC Flow Logs</td><td>Network traffic metadata per ENI/subnet/VPC</td><td>Records source/dest IP, port, protocol, bytes, ACCEPT/REJECT. Does NOT capture packet contents or DNS queries.</td></tr>
+<tr><td>CloudWatch Logs</td><td>App logs, OS logs, Lambda logs, custom logs</td><td>Use CloudWatch Unified Agent (newer, recommended over Logs Agent). Set retention policies — default is never-expire (costly).</td></tr>
+<tr><td>X-Ray</td><td>End-to-end traces for distributed applications</td><td>Requires SDK instrumentation or X-Ray daemon. Produces service maps and trace IDs. Sampling is on by default (5% + first req/sec).</td></tr>
+<tr><td>ALB / S3 / CloudFront access logs</td><td>HTTP request details per service</td><td>ALB logs to S3. Query with Athena. Distinct from CloudWatch Logs.</td></tr>
+</table>
+<div style="font-size:13px;font-weight:500;margin:14px 0 8px">CloudWatch Logs Insights — key query syntax</div>
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Core Logs Insights commands</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Exam-tested</span></div>
+<div class="cb">
+<code>fields @timestamp, @message</code> — select fields<br>
+<code>filter @message like /ERROR/</code> — filter by pattern<br>
+<code>stats count(*) by bin(5m)</code> — aggregate over time<br>
+<code>stats avg(duration) by requestId</code> — average by group<br>
+<code>sort @timestamp desc</code> — sort results<br>
+<code>limit 20</code> — cap result count<br><br>
+<strong>Exam tip:</strong> Logs Insights is for ad-hoc analysis. For <em>ongoing alerting from logs</em>, use metric filters. Questions test whether you know when to use each.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Log retention and real-time export</span><span class="badge" style="background:#FAECE7;color:#712B13">Common trap</span></div>
+<div class="cb">
+<strong>Default retention:</strong> Never expires — logs accumulate and incur ongoing cost.<br><br>
+<strong>Best practice:</strong> Set retention policy per log group (1 day to 10 years).<br><br>
+<strong>Export to S3:</strong> CreateExportTask = one-time batch export, takes <strong>up to 12 hours</strong>. NOT real-time.<br><br>
+<strong>For near-real-time streaming to S3:</strong> use a Subscription Filter → Kinesis Data Firehose → S3.<br><br>
+<strong>Exam trap:</strong> if the question says "stream logs to S3 in near-real-time", the answer is always Firehose, never CreateExportTask.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">X-Ray tracing concepts</span><span class="badge" style="background:#E1F5EE;color:#085041">Important</span></div>
+<div class="cb">
+<strong>Trace:</strong> end-to-end record of one request across all services.<br>
+<strong>Segment:</strong> one service's contribution to a trace.<br>
+<strong>Subsegment:</strong> detail within a segment (e.g. a downstream call or SQL query).<br>
+<strong>Annotations:</strong> indexed key-value pairs you can filter on in the console.<br>
+<strong>Metadata:</strong> non-indexed additional data for debugging.<br><br>
+<strong>Sampling:</strong> default = 5% of requests + first request per second per host. Customise sampling rules for higher-traffic services.<br><br>
+<strong>Service map:</strong> shows all services, avg latency and error rate on each connection.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">CloudTrail event types</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>Management events:</strong> API calls that manage AWS resources (on by default). e.g. RunInstances, DeleteBucket, CreateUser.<br><br>
+<strong>Data events:</strong> object-level operations. e.g. S3 GetObject/PutObject, Lambda Invoke. Off by default, extra cost.<br><br>
+<strong>Insights events:</strong> detect unusual API call patterns (e.g. sudden spike in TerminateInstances calls).<br><br>
+<strong>Log file validation:</strong> enable to detect if log files were tampered with after delivery to S3.
+</div>
+</div>
+</div>
+<div class="warn"><strong>CloudTrail vs CloudWatch Logs:</strong> CloudTrail = AWS API/audit events (who called what AWS API). CloudWatch Logs = application and system logs. "Who deleted the S3 bucket?" → CloudTrail. "Why is the app returning 500 errors?" → CloudWatch Logs.</div>`},
+
+{id:"task13",label:"Task 1.3 – Remediation",
+ title:"Task 1.3: Remediate issues and optimise performance",sub:"Automate the response — this is what separates CloudOps from just monitoring",
+ html:`
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">EventBridge — event-driven remediation</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+EventBridge is the glue between AWS events and automated actions.<br><br>
+<strong>Event sources:</strong><br>
+• AWS service events: EC2 state change, S3 object created, etc.<br>
+• CloudWatch Alarm state changes<br>
+• Scheduled (cron) events<br>
+• Custom events from your own applications<br><br>
+<strong>Common targets:</strong> Lambda, SSM Automation, Step Functions, SNS, SQS, CodePipeline.<br><br>
+<strong>Exam pattern:</strong> "Alert fires → automatically restart EC2" → EventBridge rule on alarm state change → SSM Automation document <em>AWS-RestartEC2Instance</em> as target.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">AWS Config — compliance and auto-remediation</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+Config continuously records resource configuration changes and evaluates them against rules.<br><br>
+<strong>Managed rule examples:</strong><br>
+• <code>restricted-ssh</code> — no security group allows port 22 open to 0.0.0.0/0<br>
+• <code>s3-bucket-public-read-prohibited</code><br>
+• <code>encrypted-volumes</code> — all EBS volumes must be encrypted<br>
+• <code>required-tags</code><br><br>
+<strong>Auto-remediation:</strong> Config rule fires NON_COMPLIANT → triggers SSM Automation document automatically. e.g. S3 bucket goes public → Config → SSM sets it back to private.<br><br>
+<strong>Conformance packs:</strong> bundles of Config rules + remediation actions, e.g. CIS AWS Benchmark, NIST, PCI DSS.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Compute Optimizer vs Trusted Advisor</span><span class="badge" style="background:#FAEEDA;color:#633806">Know it</span></div>
+<div class="cb">
+<strong>Compute Optimizer:</strong> uses ML on CloudWatch metrics to recommend right-sized resources for EC2, EBS, Lambda, ECS on Fargate, and Auto Scaling groups. Requires 14+ days of metric data. Opt-in required. Gives specific resize recommendations with estimated savings.<br><br>
+<strong>Trusted Advisor:</strong> broad best-practice checks across five categories: cost, performance, security, fault tolerance, service limits. Basic support = 7 checks only. Business/Enterprise = all checks + API access.<br><br>
+<strong>Key difference:</strong> Compute Optimizer = deep right-sizing from your <em>actual usage patterns</em>. Trusted Advisor = broad best-practice scan across all five Well-Architected pillars.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">EFS and FSx storage optimisation</span><span class="badge" style="background:#FAEEDA;color:#633806">Know it</span></div>
+<div class="cb">
+<strong>EFS lifecycle policies:</strong> automatically move files not accessed in N days to EFS-IA (Infrequent Access) — 92% cheaper than standard EFS. Files move back to Standard when accessed again.<br><br>
+<strong>EFS performance modes:</strong><br>
+• General Purpose (default): low latency, good for web serving, CMS<br>
+• Max I/O: higher throughput, slightly higher latency — for massively parallel workloads<br><br>
+<strong>FSx for Windows:</strong> SMB protocol, Windows ACLs, Active Directory integration → lift-and-shift Windows file shares.<br><br>
+<strong>FSx for Lustre:</strong> high-performance, native S3 integration → ML training data, HPC, media processing.
+</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:14px 0 8px">Remediation flows</div>
+<div class="frow">
+<div class="fb" style="background:#E6F1FB;color:#0C447C">CloudWatch Alarm<br><span style="font-size:11px;font-weight:400">threshold breached</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#E1F5EE;color:#085041">EventBridge Rule<br><span style="font-size:11px;font-weight:400">alarm state change</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#EEEDFE;color:#3C3489">SSM Automation<br><span style="font-size:11px;font-weight:400">runbook executes</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#EAF3DE;color:#27500A">Resource fixed<br><span style="font-size:11px;font-weight:400">alarm returns OK</span></div>
+</div>
+<div class="frow">
+<div class="fb" style="background:#FAECE7;color:#712B13">Config rule<br><span style="font-size:11px;font-weight:400">NON_COMPLIANT</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#EEEDFE;color:#3C3489">SSM Automation<br><span style="font-size:11px;font-weight:400">auto-remediation</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#EAF3DE;color:#27500A">COMPLIANT<br><span style="font-size:11px;font-weight:400">config restored</span></div>
+</div>`},
+
+{id:"exam",label:"Practice Questions",
+ title:"Domain 1 practice questions",sub:"5 exam-style scenarios — pick an answer before reading the explanation",
+ html:QS.map((q,i)=>`
+<div class="qb" id="qb${i}">
+<div class="qh">Q${i+1}. ${q.q}</div>
+<div class="qo">${q.o.map((o,j)=>`<button class="qopt" id="qo${i}_${j}" onclick="ans(${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}</div>
+<div class="qex" id="qe${i}"></div>
+</div>`).join('')},
+
+{id:"tips",label:"Exam Tips & Traps",
+ title:"Domain 1 exam tips and common traps",sub:"The distinctions that trip people up most often",
+ html:`
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="warn"><strong>Trap 1 — Monitoring intervals:</strong> EC2 standard monitoring = every 5 minutes. For 1-minute data you must explicitly enable Detailed Monitoring. Custom metrics can go to 1-second with high-resolution. "Need sub-5-minute data" → Detailed Monitoring or high-resolution custom metrics.</div>
+<div class="warn"><strong>Trap 2 — Logs Insights vs metric filters:</strong> Logs Insights = ad-hoc interactive querying (like SQL on your logs). Metric filters = convert log patterns into ongoing CloudWatch metrics + alarms. "Notify when errors exceed X per minute" → metric filter. "Investigate last night's errors" → Logs Insights.</div>
+<div class="warn"><strong>Trap 3 — CloudTrail 90-day limit:</strong> Event History only retains 90 days. For compliance or audit older than 90 days, you must create a Trail that delivers to S3. "Audit API calls from 6 months ago" always requires a Trail → S3.</div>
+<div class="warn"><strong>Trap 4 — VPC Flow Logs do NOT capture everything:</strong> They miss DNS queries to Route 53 Resolver, DHCP traffic, instance metadata (169.254.169.254), and AWS Time Sync traffic. "Why are DNS queries failing?" → Route 53 Resolver query logging, not VPC Flow Logs.</div>
+<div class="warn"><strong>Trap 5 — Config vs CloudTrail:</strong> Config = "what did this resource look like over time, is it compliant?" CloudTrail = "who made this API call?" "Who changed this security group?" → CloudTrail. "Was this security group ever non-compliant?" → Config.</div>
+<div class="warn"><strong>Trap 6 — Log export latency:</strong> CreateExportTask (CloudWatch Logs → S3) can take up to 12 hours. NOT real-time. For near-real-time streaming to S3 or Splunk, use Subscription Filter → Kinesis Data Firehose → S3.</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:16px 0 8px">Quick-fire cheat sheet</div>
+<table class="tbl">
+<tr><th>Question trigger</th><th>Answer</th></tr>
+<tr><td>"Who made this API call / deleted this resource?"</td><td>CloudTrail</td></tr>
+<tr><td>"Why is traffic being rejected at network level?"</td><td>VPC Flow Logs</td></tr>
+<tr><td>"Which Lambda / service is causing latency?"</td><td>AWS X-Ray</td></tr>
+<tr><td>"Which IPs / users cause most traffic or errors?"</td><td>Contributor Insights</td></tr>
+<tr><td>"Alert me when logs contain ERROR"</td><td>Metric filter → CloudWatch Alarm</td></tr>
+<tr><td>"Query logs for specific patterns"</td><td>CloudWatch Logs Insights</td></tr>
+<tr><td>"Auto-fix a misconfigured resource"</td><td>Config rule + SSM auto-remediation</td></tr>
+<tr><td>"Is my EC2 instance right-sized?"</td><td>Compute Optimizer</td></tr>
+<tr><td>"Reduce alarm noise from many alarms"</td><td>Composite Alarm</td></tr>
+<tr><td>"Stream logs to S3 in near-real-time"</td><td>Subscription filter → Kinesis Firehose → S3</td></tr>
+</table>
+<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 1 of SOA-C03')">More practice questions ↗</button>
+<button class="nb" onclick="sendPrompt('Teach me Domain 2 of SOA-C03 (Reliability and Business Continuity) in depth with examples and exam tips')">Next: Domain 2 ↗</button>
+</div>`}
+];
+
+function tog(h){const b=h.nextElementSibling;b.classList.toggle('on')}
+function ans(qi,oi){
+  const q=QS[qi];
+  document.querySelectorAll('#qb'+qi+' .qopt').forEach((o,j)=>{
+    o.disabled=true;
+    if(j===q.c)o.classList.add('ok2');
+    else if(j===oi&&j!==q.c)o.classList.add('bad');
+  });
+  const ex=document.getElementById('qe'+qi);
+  ex.innerHTML='<strong>'+(oi===q.c?'Correct!':'Incorrect.')+'</strong> '+q.e;
+  ex.classList.add('on');
+}
+window.tog=tog;window.ans=ans;
+
+let cur=0;
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.pill').forEach((p,j)=>p.classList.toggle('on',j===i));
+}
+window.go=go;
+
+const pEl=document.getElementById('pills');
+const cEl=document.getElementById('content');
+PAGES.forEach((p,i)=>{
+  const btn=document.createElement('button');
+  btn.className='pill'+(i===0?' on':'');
+  btn.textContent=p.label;
+  btn.onclick=()=>go(i);
+  pEl.appendChild(btn);
+  const pg=document.createElement('div');
+  pg.className='pg'+(i===0?' on':'');
+  pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
+<div class="nr">
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+</div>`;
+  cEl.appendChild(pg);
+});
+</script>

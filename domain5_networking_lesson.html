@@ -1,0 +1,517 @@
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --font-sans:Inter,Segoe UI,Arial,sans-serif;
+  --color-background-primary:#111827;
+  --color-background-secondary:#1F2937;
+  --color-text-primary:#F9FAFB;
+  --color-text-secondary:#D1D5DB;
+  --color-text-tertiary:#9CA3AF;
+  --color-border-secondary:#4B5563;
+  --color-border-tertiary:#374151;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+body{font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);font-size:17px;line-height:1.65}
+.pill{padding:5px 12px;border-radius:99px;border:0.5px solid var(--color-border-secondary);font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);margin:0 4px 6px 0;display:inline-block}
+.pill.on{background:#E6F1FB;color:#0C447C;border-color:#85B7EB;font-weight:500}
+.pill:hover:not(.on){background:var(--color-background-secondary)}
+.pg{display:none;padding:1rem 0}
+.pg.on{display:block}
+.pt{font-size:17px;font-weight:500;margin-bottom:3px}
+.ps{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.2rem}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.ch{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-primary)}
+.ch:hover{background:var(--color-background-secondary)}
+.cht{font-size:13px;font-weight:500}
+.cb{display:none;padding:12px 14px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.cb.on{display:block}
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500}
+.tip{border-left:3px solid #185FA5;padding:10px 14px;background:#E6F1FB;margin:10px 0;font-size:13px;color:#0C447C;line-height:1.5;border-radius:0}
+.warn{border-left:3px solid #854F0B;padding:10px 14px;background:#FAEEDA;margin:10px 0;font-size:13px;color:#633806;line-height:1.5;border-radius:0}
+.ok{border-left:3px solid #3B6D11;padding:10px 14px;background:#EAF3DE;margin:10px 0;font-size:13px;color:#27500A;line-height:1.5;border-radius:0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+.tbl th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tbl td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-secondary)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--color-text-primary);font-weight:500}
+.qb{border:0.5px solid var(--color-border-tertiary);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.qh{padding:12px 14px;font-size:13px;font-weight:500;background:var(--color-background-primary);line-height:1.5}
+.qo{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.qopt{padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:8px;font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);text-align:left;line-height:1.4}
+.qopt:hover:not([disabled]){background:var(--color-background-secondary)}
+.qopt.ok2{background:#EAF3DE;color:#27500A;border-color:#3B6D11}
+.qopt.bad{background:#FCEBEB;color:#791F1F;border-color:#A32D2D}
+.qex{margin:0 14px 12px;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.5;display:none;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.qex.on{display:block}
+.frow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.fb{padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;text-align:center;line-height:1.4;min-width:80px}
+.fa{color:var(--color-text-tertiary);font-size:14px;flex-shrink:0}
+.nr{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;margin-top:.5rem;border-top:0.5px solid var(--color-border-tertiary)}
+.nb{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:8px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
+.nb:hover{background:var(--color-background-secondary)}
+.nb:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:5px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer}
+.dot.on{background:#185FA5}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}
+.sc{border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:10px 12px;background:var(--color-background-primary)}
+.sn{font-size:13px;font-weight:500;margin-bottom:3px}
+.sd{font-size:12px;color:var(--color-text-secondary);line-height:1.4}
+.vpc-layer{border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:8px 12px;background:var(--color-background-primary);display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.vpc-icon{font-size:16px;color:var(--color-text-tertiary);flex-shrink:0;margin-top:1px}
+.vpc-body{flex:1}
+.vpc-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.vpc-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.4}
+[style*="font-size:11px"]{font-size:13px!important}
+[style*="font-size:12px"],.pill,.badge,.fb,.sd,.vpc-desc{font-size:14px!important}
+[style*="font-size:13px"],.cht,.cb,.tbl,.qh,.qopt,.qex,.nb,.sn,.vpc-title{font-size:16px!important}
+[style*="font-size:14px"],.fa{font-size:17px!important}
+.pt{font-size:22px}
+.ps{font-size:16px}
+.ch,.cb,.qopt,.qex,.nb,.sc,.vpc-layer{background:var(--color-background-primary)}
+.card,.qb,.qopt,.qex,.sc,.vpc-layer{border-color:var(--color-border-tertiary)}
+.pill.on,[style*="background:#E6F1FB"]{background:#17365F!important;color:#DBEAFE!important;border-color:#3B82F6!important}
+[style*="background:#E1F5EE"]{background:#123A31!important;color:#D1FAE5!important;border-color:#34D399!important}
+[style*="background:#EEEDFE"]{background:#2E2A5F!important;color:#EDE9FE!important;border-color:#8B5CF6!important}
+[style*="background:#FAEEDA"],.warn{background:#3B2A12!important;color:#FDE68A!important;border-color:#F59E0B!important}
+[style*="background:#EAF3DE"],.qopt.ok2,.ok{background:#1F3A1D!important;color:#DCFCE7!important;border-color:#22C55E!important}
+[style*="background:#FAECE7"]{background:#442016!important;color:#FED7AA!important;border-color:#F97316!important}
+.qopt.bad{background:#4A1515!important;color:#FECACA!important;border-color:#EF4444!important}
+body[data-theme="light"]{
+  --color-background-primary:#F8FAFC;
+  --color-background-secondary:#EEF2F7;
+  --color-text-primary:#111827;
+  --color-text-secondary:#374151;
+  --color-text-tertiary:#6B7280;
+  --color-border-secondary:#CBD5E1;
+  --color-border-tertiary:#E2E8F0;
+}
+body[data-theme="light"] .pill.on,body[data-theme="light"] [style*="background:#E6F1FB"]{background:#E6F1FB!important;color:#0C447C!important;border-color:#85B7EB!important}
+body[data-theme="light"] [style*="background:#E1F5EE"]{background:#E1F5EE!important;color:#085041!important;border-color:#5DCAA5!important}
+body[data-theme="light"] [style*="background:#EEEDFE"]{background:#EEEDFE!important;color:#3C3489!important;border-color:#AFA9EC!important}
+body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] .warn{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
+body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok2,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
+body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
+body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle:hover{border-color:#60A5FA}
+body:not([data-theme="light"]) .theme-sun{display:none}
+body[data-theme="light"] .theme-moon{display:none}
+body{width:min(100%,1100px);margin:0 auto;padding:1.25rem clamp(12px,3vw,28px)}
+button{max-width:100%;white-space:normal}
+.pg,.card,.qb,.qopt,.qex,.sc,.vpc-layer{min-width:0}
+.ch{gap:10px}
+.cht,.vpc-desc{overflow-wrap:anywhere}
+.tbl{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+code{white-space:normal;overflow-wrap:anywhere}
+@media (max-width:700px){
+  body{font-size:16px;padding:1rem 12px}
+  #pills{display:grid;grid-template-columns:1fr;gap:8px}
+  .pill{width:100%;margin:0;text-align:left;padding:9px 12px}
+  .pt{font-size:20px;line-height:1.3}
+  .ps{font-size:15px}
+  .ch{align-items:flex-start;padding:11px 12px}
+  .cb{padding:12px}
+  .cgrid,.sgrid{grid-template-columns:1fr}
+  .vpc-layer{gap:8px;padding:10px}
+  .frow{align-items:stretch;gap:8px}
+  .fb{flex:1 1 140px}
+  .nr{display:grid;grid-template-columns:1fr;gap:10px}
+  .dots{justify-content:center;order:-1}
+  .nb{width:100%}
+}
+@media (max-width:420px){
+  .frow{display:grid;grid-template-columns:1fr}
+  .fa{display:none}
+}
+</style>
+
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<h2 class="sr-only">Domain 5 SOA-C03 lesson: Networking and Content Delivery — VPC, DNS, CloudFront, connectivity, and troubleshooting</h2>
+<div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
+<div id="content"></div>
+
+<script>
+(() => {
+  const savedTheme = localStorage.getItem('soaTheme') || 'dark';
+  document.body.dataset.theme = savedTheme;
+  window.toggleTheme = () => {
+    const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+    document.body.dataset.theme = nextTheme;
+    localStorage.setItem('soaTheme', nextTheme);
+  };
+})();
+const QS=[
+{q:"An application running in a private subnet needs to download software packages from the internet. The VPC has an internet gateway attached. What additional component is required?",
+ o:["Add a route to the internet gateway directly in the private subnet's route table","Deploy a NAT Gateway in a public subnet and add a route in the private subnet's route table pointing 0.0.0.0/0 to the NAT Gateway","Attach an Elastic IP directly to the EC2 instance in the private subnet","Create a VPC endpoint for the software repository"],
+ c:1,
+ e:"Private subnets do not have a route to the internet gateway — that would make them public. To allow outbound internet access from a private subnet without exposing the instance to inbound connections, you deploy a NAT Gateway in a public subnet (which does have an IGW route). Then add a route in the private subnet's route table: 0.0.0.0/0 → NAT Gateway ID. The NAT Gateway translates the source IP and handles the return traffic. Assigning an EIP directly to an instance in a private subnet does nothing without an IGW route — and would make it a public subnet. A VPC endpoint only reaches AWS services, not arbitrary internet destinations."},
+{q:"A company has two VPCs — VPC-A (10.0.0.0/16) and VPC-B (10.1.0.0/16). They set up VPC peering between them. EC2 instances in VPC-A cannot reach instances in VPC-B. VPC peering is shown as Active. What is the most likely cause?",
+ o:["The VPC CIDR ranges overlap and peering cannot be established","Route tables in one or both VPCs have not been updated to route traffic for the peer VPC's CIDR through the peering connection","Security groups are stateless and require both inbound and outbound rules","The peering connection must be in the same AWS account to function"],
+ c:1,
+ e:"VPC peering being 'Active' only means the connection is established — it does NOT automatically update route tables. You must manually add a route in each VPC's route table: in VPC-A's route table, add a route for 10.1.0.0/16 → pcx-xxxx (peering connection ID); in VPC-B's route table, add a route for 10.0.0.0/16 → pcx-xxxx. Without these routes, traffic doesn't know to flow through the peering connection. CIDR ranges don't overlap here (10.0.x vs 10.1.x), so that's not the issue. Security groups are stateful (not stateless — NACLs are stateless). Peering works cross-account."},
+{q:"Users in the US are reporting slow load times for a web application hosted on EC2 in ap-south-1 (Mumbai). The content is mostly static (images, CSS, JavaScript). What is the most cost-effective solution to improve performance for US users?",
+ o:["Move the EC2 instances to us-east-1 to be closer to US users","Set up a second EC2 deployment in us-east-1 with Route 53 latency routing","Create a CloudFront distribution with the EC2 origin and configure cache behaviours to cache static content at edge locations near US users","Increase the EC2 instance type to improve response times"],
+ c:2,
+ e:"CloudFront is the correct solution. It caches static content (images, CSS, JS) at edge locations globally — including in the US — so US users receive content from a nearby edge location instead of making a round trip to Mumbai. This reduces latency dramatically and also reduces load on the origin. Moving instances to us-east-1 would help US users but break performance for users in Asia. A second deployment is much more expensive and operationally complex. Increasing instance type doesn't address network latency between regions."},
+{q:"A company needs to connect their on-premises data centre to their AWS VPC with consistent, low-latency, high-bandwidth connectivity. They process large volumes of data and need predictable network performance that the public internet cannot guarantee. What is the correct solution?",
+ o:["Set up a Site-to-Site VPN connection between on-premises and the VPC","Use AWS Direct Connect to establish a dedicated private network connection between the data centre and AWS","Configure VPC peering between the on-premises network and the VPC","Deploy an AWS Transit Gateway and connect the on-premises network to it via the internet"],
+ c:1,
+ e:"AWS Direct Connect provides a dedicated physical network connection from the on-premises data centre to AWS, bypassing the public internet entirely. This delivers consistent bandwidth, predictable latency, and reduced data transfer costs for high-volume workloads. Site-to-Site VPN runs over the public internet and is subject to variable latency and bandwidth — suitable for lower-throughput or backup connectivity but not for 'consistent, predictable' performance. VPC peering is only for VPC-to-VPC connectivity within AWS. Transit Gateway connects VPCs and VPN/DX connections — it's not itself a connectivity method to on-premises."},
+{q:"A Route 53 health check is failing for a primary endpoint even though the endpoint is responding normally to requests. The endpoint is an internal application load balancer with a private IP. What is the most likely cause?",
+ o:["Route 53 health checkers use public IP addresses and cannot reach resources inside a private VPC without additional configuration","The health check interval is set too low, causing false failures","The ALB's security group is blocking all traffic — add an inbound rule for port 443","Route 53 health checks do not support Application Load Balancers"],
+ c:0,
+ e:"Route 53 health checkers originate from public IP ranges managed by AWS and cannot directly reach resources inside a private VPC (private IPs). For private endpoints, you have two options: (1) use a CloudWatch metric-based health check — create a CloudWatch alarm on the ALB's HealthyHostCount metric and associate the Route 53 health check with that alarm; or (2) use Route 53 Resolver with a calculated health check. The health check interval doesn't cause false failures on a normally responding endpoint. Security groups block traffic but the root cause here is that health checkers can't reach private IPs at all. Route 53 fully supports ALBs as health check targets when they are public-facing."}
+];
+
+const PAGES=[
+{id:"overview",label:"Overview",title:"Domain 5: Networking and Content Delivery",sub:"18% of exam — ~9 questions out of 50",html:`
+<div class="cgrid">
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #185FA5">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">What this domain tests</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Your ability to configure, secure, and troubleshoot AWS networking — from VPC fundamentals through hybrid connectivity, DNS routing, CDN delivery, and network security. The exam heavily tests <em>troubleshooting</em> scenarios where you must identify misconfigured components from symptoms.</div>
+</div>
+<div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #0F6E56">
+<div style="font-size:13px;font-weight:500;margin-bottom:6px">Core mental model</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Think in layers: traffic must clear <em>route tables</em> (does a path exist?), then <em>NACLs</em> (stateless allow/deny at subnet boundary), then <em>security groups</em> (stateful allow at ENI level). Connectivity problems are almost always in one of these three places.</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin-bottom:8px">Three task areas</div>
+<div class="frow">
+<div class="fb" style="background:#E6F1FB;color:#0C447C">Task 5.1<br><span style="font-size:11px;font-weight:400">Configure infrastructure</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#E1F5EE;color:#085041">Task 5.2<br><span style="font-size:11px;font-weight:400">DNS, CDN &amp; load balancing</span></div>
+<div class="fa">→</div>
+<div class="fb" style="background:#EEEDFE;color:#3C3489">Task 5.3<br><span style="font-size:11px;font-weight:400">Troubleshoot connectivity</span></div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
+<div class="sgrid">
+<div class="sc"><div class="sn">VPC</div><div class="sd">Subnets, route tables, IGW, NAT GW, NACLs, SGs</div></div>
+<div class="sc"><div class="sn">Transit Gateway</div><div class="sd">Hub-and-spoke multi-VPC and hybrid connectivity</div></div>
+<div class="sc"><div class="sn">PrivateLink</div><div class="sd">Private access to AWS services and 3rd-party SaaS</div></div>
+<div class="sc"><div class="sn">Direct Connect</div><div class="sd">Dedicated private connection to AWS</div></div>
+<div class="sc"><div class="sn">Site-to-Site VPN</div><div class="sd">Encrypted tunnel over public internet</div></div>
+<div class="sc"><div class="sn">Route 53</div><div class="sd">DNS, health checks, routing policies</div></div>
+<div class="sc"><div class="sn">CloudFront</div><div class="sd">Global CDN, edge caching, OAC for S3</div></div>
+<div class="sc"><div class="sn">Global Accelerator</div><div class="sd">Anycast static IPs, TCP/UDP acceleration</div></div>
+<div class="sc"><div class="sn">WAF / Shield</div><div class="sd">Web application firewall, DDoS protection</div></div>
+<div class="sc"><div class="sn">Network Firewall</div><div class="sd">Stateful deep packet inspection at VPC level</div></div>
+<div class="sc"><div class="sn">VPC Reachability Analyzer</div><div class="sd">Logical path analysis between two endpoints</div></div>
+<div class="sc"><div class="sn">VPC Flow Logs</div><div class="sd">Network traffic metadata for troubleshooting</div></div>
+</div>
+<div class="tip"><strong>Exam tip:</strong> About half of Domain 5 questions are troubleshooting scenarios. The symptom tells you where to look: "cannot reach the internet" → route table or NAT Gateway. "Traffic rejected" → NACL or security group. "Latency from another continent" → CloudFront or Global Accelerator. "Cannot resolve DNS name" → Route 53 or Resolver configuration.</div>`},
+
+{id:"task51",label:"Task 5.1 – VPC & Connectivity",title:"Task 5.1: Configure and maintain network infrastructure",sub:"VPC components, connectivity options, and network security services",html:`
+<div style="font-size:13px;font-weight:500;margin-bottom:10px">VPC component hierarchy</div>
+<div style="margin-bottom:14px">
+<div class="vpc-layer"><i class="ti ti-world vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Internet Gateway (IGW)</div><div class="vpc-desc">Attached to the VPC. Enables two-way communication between the VPC and the internet. Required for public subnets. One IGW per VPC.</div></div></div>
+<div class="vpc-layer"><i class="ti ti-route vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Route tables</div><div class="vpc-desc">Public subnet: has a route 0.0.0.0/0 → IGW. Private subnet: has a route 0.0.0.0/0 → NAT Gateway (for outbound internet only). Each subnet is associated with exactly one route table.</div></div></div>
+<div class="vpc-layer"><i class="ti ti-arrows-exchange vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">NAT Gateway</div><div class="vpc-desc">Deployed in a public subnet with an Elastic IP. Allows instances in private subnets to initiate outbound internet connections without being reachable from the internet. Managed by AWS — highly available within an AZ. Deploy one per AZ for HA.</div></div></div>
+<div class="vpc-layer"><i class="ti ti-shield vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Network ACLs (NACLs)</div><div class="vpc-desc">Stateless firewall at the subnet boundary. Rules evaluated in number order (lowest first). Must have both inbound AND outbound rules for traffic to flow. Default NACL allows all traffic. Custom NACLs deny all by default.</div></div></div>
+<div class="vpc-layer"><i class="ti ti-lock vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Security Groups</div><div class="vpc-desc">Stateful firewall at the ENI (instance) level. Return traffic is automatically allowed. Only Allow rules — no explicit Deny. Multiple SGs can be attached to one instance. Default SG allows all traffic within the same SG.</div></div></div>
+<div class="vpc-layer"><i class="ti ti-git-fork vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Egress-only Internet Gateway</div><div class="vpc-desc">For IPv6 only. Allows IPv6 instances in private subnets to initiate outbound internet traffic but blocks inbound connections. IPv6 equivalent of a NAT Gateway (but NAT GW itself does not support IPv6 natively).</div></div></div>
+</div>
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">VPC connectivity options</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>VPC Peering:</strong> direct one-to-one connection between two VPCs (same or different accounts/regions). Not transitive — if A peers with B and B peers with C, A cannot reach C through B. No CIDR overlap allowed. Route tables must be updated manually in both VPCs.<br><br>
+<strong>Transit Gateway (TGW):</strong> hub-and-spoke router connecting multiple VPCs, VPNs, and Direct Connect connections. Supports transitive routing — A can reach C through TGW even without a direct peering. Best choice when connecting 3+ VPCs or mixing VPC + on-premises connectivity. Attachments = VPCs, VPNs, Direct Connect gateways, peering.<br><br>
+<strong>PrivateLink (VPC Endpoint Services):</strong> expose a service (ALB or NLB) in your VPC privately to other VPCs or accounts without VPC peering, VPN, or internet. Consumer creates an interface VPC endpoint — an ENI with a private IP in their VPC. Traffic never leaves the AWS network.<br><br>
+<strong>VPC Gateway Endpoints:</strong> free, route-table-based endpoints for S3 and DynamoDB only. Add a destination prefix list to the route table pointing to the endpoint — no ENI required.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Hybrid connectivity: VPN vs Direct Connect</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>Site-to-Site VPN:</strong><br>
+• Encrypted IPsec tunnel over the public internet<br>
+• Quick to set up (minutes to hours)<br>
+• Bandwidth limited by internet link (typically up to ~1.25 Gbps)<br>
+• Variable latency (shares public internet)<br>
+• Two tunnels per connection for redundancy (active/passive by default)<br>
+• Attaches to a Virtual Private Gateway (VGW) or Transit Gateway<br><br>
+<strong>AWS Direct Connect (DX):</strong><br>
+• Dedicated private physical connection from data centre to AWS<br>
+• Consistent bandwidth (1 Gbps, 10 Gbps, 100 Gbps, or sub-1G hosted connections)<br>
+• Predictable low latency — bypasses public internet entirely<br>
+• Takes weeks to provision<br>
+• Best for: high-volume data transfer, compliance requirements, latency-sensitive workloads<br><br>
+<strong>DX + VPN backup:</strong> a common pattern — use DX as primary, VPN as failover.<br><br>
+<strong>Exam tip:</strong> "Consistent bandwidth and low latency" → Direct Connect. "Quick setup, encrypted" → VPN.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Network security services</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
+<div class="cb">
+<strong>AWS WAF (Web Application Firewall):</strong> Layer 7 filtering for HTTP/HTTPS traffic. Attaches to ALB, CloudFront, API Gateway, or AppSync. Rules can block based on IP, geo, rate limiting, SQL injection patterns, XSS patterns, and custom regex. Use AWS Managed Rules for quick coverage of common threats.<br><br>
+<strong>AWS Shield:</strong><br>
+• Standard: free, always-on DDoS protection for all AWS customers (Layer 3/4)<br>
+• Advanced: paid, enhanced protection for EC2, ELB, CloudFront, Route 53, Global Accelerator. Includes 24/7 DDoS Response Team (DRT) access, cost protection, near-real-time visibility<br><br>
+<strong>AWS Network Firewall:</strong> managed stateful deep-packet inspection firewall deployed within a VPC. Supports domain-based filtering, Suricata-compatible IDS/IPS rules, stateful protocol inspection. Use for fine-grained east-west (VPC-to-VPC) or north-south (internet) traffic control beyond what NACLs and SGs offer.<br><br>
+<strong>Route 53 Resolver DNS Firewall:</strong> filters DNS queries from VPC resources — blocks domains (malware, data exfiltration) before the connection is established.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Security group vs NACL — the key differences</span><span class="badge" style="background:#FAEEDA;color:#633806">Common trap</span></div>
+<div class="cb">
+<table style="width:100%;font-size:12px;border-collapse:collapse">
+<tr><td style="padding:4px 6px;font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary)"></td><td style="padding:4px 6px;font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);color:#185FA5">Security Group</td><td style="padding:4px 6px;font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);color:#854F0B">NACL</td></tr>
+<tr><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Level</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">ENI (instance)</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Subnet boundary</td></tr>
+<tr><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Stateful?</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Yes — return traffic auto-allowed</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">No — must allow both directions</td></tr>
+<tr><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Deny rules?</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">No — only Allow</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Yes — Allow and Deny</td></tr>
+<tr><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Rule order</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">All rules evaluated together</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Lowest number wins (stops at first match)</td></tr>
+<tr><td style="padding:4px 6px">Default</td><td style="padding:4px 6px">Deny all inbound, allow all outbound</td><td style="padding:4px 6px">Default NACL: allow all. Custom NACL: deny all</td></tr>
+</table><br>
+<strong>Exam tip:</strong> "Block a specific IP address from accessing the VPC" → NACL (SGs cannot explicitly Deny). "Allow inbound without worrying about outbound rules" → Security Group (stateful). "Deny a CIDR block at the subnet level" → NACL.
+</div>
+</div>
+</div>
+<div class="tip"><strong>Public vs private subnet rule:</strong> A subnet is "public" if and only if its route table has a route pointing 0.0.0.0/0 (or ::/0) to an Internet Gateway. That's it — it's about the route table, not the subnet name or the presence of an EIP on the instance.</div>`},
+
+{id:"task52",label:"Task 5.2 – DNS, CDN & Load Balancing",title:"Task 5.2: DNS, content delivery, and load balancing",sub:"Route 53 routing policies, CloudFront, Global Accelerator — know when to use each",html:`
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Route 53 routing policies</span><span class="badge" style="background:#E1F5EE;color:#085041">Core — heavily tested</span></div>
+<div class="cb">
+<strong>Simple:</strong> returns one or more values (up to 8 IPs for multivalue). No health checks on multi-value. Use for a single resource with no special routing needed.<br><br>
+<strong>Weighted:</strong> send X% to record A, Y% to record B. Use for blue/green deployments (gradually shift traffic) or A/B testing. Weight 0 = no traffic. All weights 0 = all records returned equally.<br><br>
+<strong>Latency:</strong> routes to the AWS region with the lowest latency for the user. Requires creating records in multiple regions. Does not use geographic location — it uses measured latency.<br><br>
+<strong>Failover:</strong> active-passive. Routes to PRIMARY while its health check passes; switches to SECONDARY when PRIMARY fails. Requires health checks on the primary record.<br><br>
+<strong>Geolocation:</strong> routes based on the user's geographic location (country, continent, or US state). Use for regulatory compliance or localised content. Must have a default record for users who don't match any location.<br><br>
+<strong>Geoproximity (Traffic Flow only):</strong> routes based on geographic proximity, with an adjustable bias to expand/shrink routing coverage for a region.<br><br>
+<strong>Multivalue answer:</strong> returns up to 8 healthy records randomly. Client-side load balancing. Not a substitute for a load balancer but useful for simple round-robin with health check filtering.<br><br>
+<strong>IP-based:</strong> routes based on the client's IP address CIDR block (e.g. your corporate IP range → internal endpoint).
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Route 53 Resolver and hybrid DNS</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Important</span></div>
+<div class="cb">
+Route 53 Resolver handles DNS for your VPC and enables hybrid DNS resolution between on-premises networks and AWS.<br><br>
+<strong>Default VPC DNS:</strong> Route 53 Resolver is available at the VPC base IP + 2 (e.g. 10.0.0.2 in a 10.0.0.0/16 VPC). It resolves both private hosted zone records and public DNS.<br><br>
+<strong>Inbound endpoints:</strong> allow on-premises DNS servers to forward queries for AWS-hosted domains (e.g. internal.company.com hosted in a private hosted zone) to Route 53 Resolver.<br><br>
+<strong>Outbound endpoints:</strong> allow VPC resources to forward DNS queries for on-premises domains (e.g. corp.internal) to on-premises DNS servers. Configured via forwarding rules.<br><br>
+<strong>DNS Firewall:</strong> filters DNS queries from VPC resources. Block malicious domains or data exfiltration via DNS tunnelling. Attached at the VPC level.<br><br>
+<strong>Exam tip:</strong> "EC2 instances cannot resolve on-premises hostnames" → Route 53 Resolver outbound endpoint + forwarding rule. "On-premises servers cannot resolve Route 53 private hosted zone records" → Route 53 Resolver inbound endpoint.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">CloudFront deep dive</span><span class="badge" style="background:#E1F5EE;color:#085041">Core</span></div>
+<div class="cb">
+CloudFront is AWS's global CDN — caches content at 400+ edge locations and regional edge caches worldwide.<br><br>
+<strong>Origins:</strong> S3 bucket, ALB, EC2, any HTTP server, API Gateway, Lambda Function URL.<br><br>
+<strong>Cache behaviours:</strong> define caching rules per URL path pattern. Default behaviour (*) applies to everything not matched by a more specific path. Control which headers/cookies/query strings are forwarded to the origin vs cached.<br><br>
+<strong>Origin Access Control (OAC):</strong> restricts S3 bucket access so only CloudFront can read it (replaces the older OAI). Bucket policy denies direct access; only CloudFront's service principal is allowed. This prevents users from bypassing CloudFront to hit S3 directly.<br><br>
+<strong>TTL and cache invalidation:</strong> objects are cached for the TTL duration. To force CloudFront to fetch fresh content before TTL expires, create an invalidation (/* or a specific path). Invalidations have a cost (first 1000/month free).<br><br>
+<strong>HTTPS:</strong> attach an ACM certificate to enforce HTTPS between viewers and CloudFront. Use a separate ACM cert in us-east-1 specifically for CloudFront (this is the most common exam trap for CloudFront + ACM).<br><br>
+<strong>Lambda@Edge and CloudFront Functions:</strong> run code at edge locations. Lambda@Edge supports full Node.js/Python, runs at regional edge caches. CloudFront Functions are faster, cheaper, JS only, run at all edge locations — use for lightweight request/response manipulation.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Global Accelerator vs CloudFront</span><span class="badge" style="background:#FAEEDA;color:#633806">Common trap</span></div>
+<div class="cb">
+Both improve global performance but solve different problems:<br><br>
+<strong>CloudFront:</strong><br>
+• Caches content at edge locations (HTTP/HTTPS only)<br>
+• Best for: static/dynamic web content, media streaming, API acceleration<br>
+• Returns different content to different users (caching)<br>
+• Uses DNS-based routing<br><br>
+<strong>Global Accelerator:</strong><br>
+• Does NOT cache — routes all traffic through the AWS global backbone<br>
+• Supports TCP, UDP, and HTTP<br>
+• Provides two static Anycast IP addresses that don't change (unlike CloudFront which uses DNS)<br>
+• Best for: non-HTTP protocols (gaming, IoT, VoIP), applications requiring static IPs, consistent low-latency routing for all traffic types<br>
+• Instant failover (IP-level) vs CloudFront (DNS TTL-based)<br><br>
+<strong>Exam rule:</strong> "Cache content globally" → CloudFront. "Static IPs + non-HTTP + consistent routing" → Global Accelerator. "Fast failover without DNS TTL" → Global Accelerator.
+</div>
+</div>
+</div>
+<div class="tip"><strong>CloudFront + ACM region trap:</strong> ACM certificates for CloudFront distributions MUST be created in the us-east-1 region, regardless of where your origin or users are. Certificates in other regions cannot be attached to CloudFront. This catches many candidates — if a question mentions CloudFront HTTPS and certificate region, the answer is always us-east-1.</div>
+<table class="tbl">
+<tr><th>Scenario</th><th>Route 53 policy</th></tr>
+<tr><td>Route 90% to v1, 10% to v2 for canary testing</td><td>Weighted routing</td></tr>
+<tr><td>Automatic DNS failover when primary endpoint fails</td><td>Failover routing + health check</td></tr>
+<tr><td>Users in Germany must go to EU endpoint (GDPR)</td><td>Geolocation routing</td></tr>
+<tr><td>Route to whichever AWS region is fastest for the user</td><td>Latency routing</td></tr>
+<tr><td>Return up to 8 healthy IPs for client-side load balancing</td><td>Multivalue answer</td></tr>
+<tr><td>Corporate users (known IP range) → internal app</td><td>IP-based routing</td></tr>
+</table>`},
+
+{id:"task53",label:"Task 5.3 – Troubleshooting",title:"Task 5.3: Troubleshoot network connectivity issues",sub:"Systematic diagnosis — the most-tested skill in this domain",html:`
+<div style="font-size:13px;font-weight:500;margin-bottom:10px">Troubleshooting toolkit</div>
+<div class="cgrid">
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">VPC Reachability Analyzer</span><span class="badge" style="background:#EEEDFE;color:#3C3489">Core tool</span></div>
+<div class="cb">
+A network diagnostic tool that performs logical analysis of the path between two endpoints in your VPC — without sending actual traffic.<br><br>
+<strong>How it works:</strong> you specify a source (ENI, instance, IGW, VGW, TGW) and a destination, and it analyses the route tables, security groups, NACLs, peering connections, and TGW route tables to determine if a path exists.<br><br>
+<strong>Output:</strong> either "reachable" with the path it found, or "not reachable" with the specific component that is blocking traffic (e.g. "Security Group sg-xxx is missing an inbound rule for port 443").<br><br>
+<strong>What it doesn't test:</strong> OS-level firewall rules, application-level issues, DNS resolution. It only analyses the AWS network configuration layer.<br><br>
+<strong>Exam tip:</strong> "Identify which network component is blocking traffic between two EC2 instances" → VPC Reachability Analyzer. Faster and more precise than manually checking every security group and route table.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">VPC Flow Logs for troubleshooting</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core tool</span></div>
+<div class="cb">
+Flow logs capture metadata about network traffic at the ENI, subnet, or VPC level and publish to CloudWatch Logs or S3.<br><br>
+<strong>Key fields:</strong> srcaddr, dstaddr, srcport, dstport, protocol, packets, bytes, action (ACCEPT/REJECT), log-status.<br><br>
+<strong>ACCEPT vs REJECT:</strong><br>
+• ACCEPT = traffic was allowed by security groups and NACLs<br>
+• REJECT = traffic was blocked by a security group or NACL<br><br>
+<strong>Troubleshooting patterns:</strong><br>
+• See REJECT on inbound → security group missing allow rule OR NACL deny rule<br>
+• See ACCEPT inbound but no response → check outbound security group or NACL (NACLs are stateless — return traffic needs an outbound allow)<br>
+• No flow log entries at all for a port → traffic not reaching the ENI (route table or upstream issue)<br><br>
+<strong>Does NOT capture:</strong> DNS queries to Route 53 Resolver, DHCP, metadata service (169.254.169.254), Windows licence activation traffic.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Network Access Analyzer</span><span class="badge" style="background:#FAEEDA;color:#633806">Know it</span></div>
+<div class="cb">
+Analyses your network configuration to identify unintended network access to AWS resources — helping you find and remove excessive exposure.<br><br>
+<strong>Difference from Reachability Analyzer:</strong><br>
+• Reachability Analyzer: "Can point A reach point B?" (specific path analysis)<br>
+• Network Access Analyzer: "What can reach my EC2 instances from the internet?" (broad exposure audit)<br><br>
+<strong>Use cases:</strong><br>
+• Find all EC2 instances that are reachable from the internet on port 22 or 3389<br>
+• Verify no path exists from the internet to a database subnet<br>
+• Audit all resources accessible from outside a specific trust boundary<br><br>
+<strong>Exam tip:</strong> "Audit which resources are accessible from outside our VPC" → Network Access Analyzer. "Debug why a specific connection is failing" → Reachability Analyzer.
+</div>
+</div>
+<div class="card">
+<div class="ch" onclick="tog(this)"><span class="cht">Troubleshooting hybrid connectivity</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Important</span></div>
+<div class="cb">
+<strong>VPN connection drops / intermittent:</strong><br>
+• Check CloudWatch metrics for the VPN tunnel: TunnelState (1=up, 0=down), TunnelDataIn/Out<br>
+• VPN has two tunnels — if one drops, traffic should fail over to the second automatically<br>
+• Check BGP session status for dynamic routing issues<br>
+• Verify the on-premises firewall is not blocking UDP 500 (IKE) or UDP 4500 (NAT-T)<br><br>
+<strong>Direct Connect issues:</strong><br>
+• Check the DX connection status in the console and CloudWatch<br>
+• BGP session down → check BGP configuration, ASN, and authentication<br>
+• Check Virtual Interface (VIF) status: public VIF for AWS public services, private VIF for VPC access, transit VIF for TGW<br><br>
+<strong>On-premises cannot reach VPC resources:</strong><br>
+• Check that the VGW or TGW has route propagation enabled in the VPC route tables<br>
+• Confirm security groups allow traffic from the on-premises CIDR range<br>
+• Check NACLs for the target subnet allow the on-premises CIDR
+</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin:14px 0 8px">Symptom-to-cause diagnostic map</div>
+<table class="tbl">
+<tr><th>Symptom</th><th>Where to look first</th><th>Likely cause</th></tr>
+<tr><td>EC2 cannot reach internet (private subnet)</td><td>Route table</td><td>Missing 0.0.0.0/0 → NAT Gateway route, or NAT GW not in public subnet</td></tr>
+<tr><td>EC2 cannot reach internet (public subnet)</td><td>Route table + SG</td><td>Missing 0.0.0.0/0 → IGW route, or SG blocks outbound</td></tr>
+<tr><td>Inbound traffic rejected (flow log shows REJECT)</td><td>Security group / NACL</td><td>SG missing inbound allow rule, OR NACL has an explicit deny before the allow rule</td></tr>
+<tr><td>Traffic accepted inbound but no response received</td><td>NACL outbound rules</td><td>NACL missing outbound allow for return traffic (NACLs are stateless)</td></tr>
+<tr><td>Two VPCs peered but cannot communicate</td><td>Route tables (both VPCs)</td><td>Route tables not updated to route peer CIDR through peering connection</td></tr>
+<tr><td>Cannot resolve internal hostname in VPC</td><td>DNS settings</td><td>EnableDnsHostnames or EnableDnsSupport disabled on the VPC</td></tr>
+<tr><td>Route 53 health check failing for private ALB</td><td>Health check config</td><td>Health checkers use public IPs — cannot reach private resources; use CW alarm-based health check</td></tr>
+<tr><td>CloudFront returning stale content</td><td>TTL / invalidation</td><td>Object TTL not expired; create a cache invalidation for the path</td></tr>
+<tr><td>Cannot attach ACM cert to CloudFront</td><td>Certificate region</td><td>Certificate was created in wrong region — must be us-east-1 for CloudFront</td></tr>
+<tr><td>On-premises cannot reach VPC after VPN setup</td><td>Route propagation</td><td>Route propagation not enabled in VPC route table for the VGW</td></tr>
+</table>
+<div class="tip"><strong>VPC DNS settings:</strong> Two VPC attributes must both be enabled for Route 53 private hosted zone resolution to work: <code>enableDnsHostnames</code> (assigns DNS names to instances) AND <code>enableDnsSupport</code> (enables the Route 53 Resolver at VPC+2). Both are enabled by default in a new VPC. If you see DNS resolution failures inside a VPC, check these attributes first.</div>`},
+
+{id:"exam",label:"Practice Questions",title:"Domain 5 practice questions",sub:"5 exam-style scenarios — pick an answer, then read the explanation",
+html:QS.map((q,i)=>`
+<div class="qb" id="qb${i}">
+<div class="qh">Q${i+1}. ${q.q}</div>
+<div class="qo">${q.o.map((o,j)=>`<button class="qopt" id="qo${i}_${j}" onclick="ans(${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}</div>
+<div class="qex" id="qe${i}"></div>
+</div>`).join('')},
+
+{id:"tips",label:"Exam Tips & Final Review",title:"Domain 5 exam tips, traps, and full-course wrap-up",sub:"Domain 5 traps + complete SOA-C03 cheat sheet across all 5 domains",html:`
+<div style="font-size:13px;font-weight:500;margin-bottom:10px">Domain 5 common traps</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+<div class="warn"><strong>Trap 1 — VPC peering is not automatic:</strong> Creating a peering connection and accepting it only establishes the logical link. You must manually add routes in both VPCs' route tables. Without routes, traffic has nowhere to go. "Peering is Active but instances can't communicate" → missing route table entries.</div>
+<div class="warn"><strong>Trap 2 — NACLs are stateless:</strong> Unlike security groups, NACLs require explicit rules for both inbound AND outbound traffic. If you allow inbound TCP 443 but forget the ephemeral port range (1024–65535) for return traffic on the outbound side, the connection will fail. This is the most common NACL mistake.</div>
+<div class="warn"><strong>Trap 3 — ACM certs for CloudFront must be in us-east-1:</strong> No matter where your origin is or where your users are, the ACM TLS certificate attached to a CloudFront distribution must be in us-east-1. Certificates in other regions cannot be used with CloudFront. This is tested consistently.</div>
+<div class="warn"><strong>Trap 4 — Route 53 health checks cannot reach private endpoints:</strong> Route 53 health checkers use public IP addresses. They cannot directly reach private ALBs, EC2 instances with only private IPs, or anything behind a NAT. For private endpoints, use a CloudWatch alarm (e.g. ALB HealthyHostCount) and configure the Route 53 health check to monitor that alarm.</div>
+<div class="warn"><strong>Trap 5 — CloudFront vs Global Accelerator:</strong> CloudFront caches content at edge locations (HTTP only). Global Accelerator does NOT cache — it routes all traffic via the AWS backbone to your origin, supports TCP/UDP, and provides static Anycast IPs. If the question mentions "static IPs", "non-HTTP protocol", or "instant failover without DNS", the answer is Global Accelerator.</div>
+<div class="warn"><strong>Trap 6 — Latency vs Geolocation routing:</strong> Latency routing routes users to the AWS region with the lowest measured network latency — it doesn't know or care where users are geographically. Geolocation routing routes based on the user's geographic location (country/continent) regardless of latency. A user in India might be routed to us-east-1 by latency routing if that has lower latency than ap-south-1 at that moment.</div>
+</div>
+<div style="font-size:13px;font-weight:500;margin-bottom:10px">Complete SOA-C03 quick-reference: all 5 domains</div>
+<div class="card" style="margin-bottom:8px">
+<div class="ch" onclick="tog(this)"><span class="cht">Domain 1 — Monitoring, Logging &amp; Remediation (22%)</span><span class="badge" style="background:#E6F1FB;color:#0C447C">22%</span></div>
+<div class="cb">
+"Who made the API call?" → CloudTrail | "Why is traffic rejected?" → VPC Flow Logs | "Latency across microservices?" → X-Ray | "Which IPs cause most errors?" → Contributor Insights | "Alert on log pattern?" → Metric filter → alarm | "Query logs?" → Logs Insights | "Auto-fix non-compliant resource?" → Config + SSM remediation | "Right-size EC2?" → Compute Optimizer | "Reduce alarm noise?" → Composite alarm | "Stream logs to S3 in real-time?" → Subscription filter → Kinesis Firehose
+</div>
+</div>
+<div class="card" style="margin-bottom:8px">
+<div class="ch" onclick="tog(this)"><span class="cht">Domain 2 — Reliability &amp; Business Continuity (22%)</span><span class="badge" style="background:#E1F5EE;color:#085041">22%</span></div>
+<div class="cb">
+"Automatic DB failover across AZs?" → RDS Multi-AZ (synchronous) | "Read scaling for RDS?" → Read Replica (async, manual promotion) | "RTO near-zero?" → Multi-site active-active | "RTO minutes, complete stack running?" → Warm standby | "RTO hours, only DB pre-provisioned?" → Pilot light | "RTO hours/days, lowest cost?" → Backup &amp; restore | "S3 cross-region within 15 min?" → CRR + RTC | "DynamoDB to any past second?" → PITR | "Centralise backups?" → AWS Backup + Organizations | "Responsive scaling?" → Target tracking on ALBRequestCountPerTarget
+</div>
+</div>
+<div class="card" style="margin-bottom:8px">
+<div class="ch" onclick="tog(this)"><span class="cht">Domain 3 — Deployment, Provisioning &amp; Automation (22%)</span><span class="badge" style="background:#EEEDFE;color:#3C3489">22%</span></div>
+<div class="cb">
+"Script on fleet without SSH?" → SSM Run Command | "Patch on schedule + compliance?" → Patch Manager + Maintenance Window | "Enforce config continuously?" → State Manager | "Multi-step AWS API runbook?" → SSM Automation | "Deploy CFN to all org accounts?" → StackSets service-managed | "Preview CFN changes?" → Change set | "Hardened AMIs on schedule?" → EC2 Image Builder | "Auto-rotate DB creds?" → Secrets Manager | "Store config cheaply?" → Parameter Store | "Container AccessDenied on S3?" → Fix ECS task role | "Zero-downtime Lambda deploy?" → Lambda alias + CodeDeploy canary + CW alarm | "Safest Beanstalk deploy?" → Immutable
+</div>
+</div>
+<div class="card" style="margin-bottom:8px">
+<div class="ch" onclick="tog(this)"><span class="cht">Domain 4 — Security &amp; Compliance (16%)</span><span class="badge" style="background:#FAECE7;color:#712B13">16%</span></div>
+<div class="cb">
+"Prevent action across all accounts?" → SCP Deny at root OU | "Detect compromised creds / unusual API?" → GuardDuty | "Find PII in S3?" → Macie | "Scan EC2/Lambda/containers for CVEs?" → Inspector | "All findings in one place?" → Security Hub | "Resource shared externally?" → IAM Access Analyzer | "Continuous compliance + auto-fix?" → Config + SSM | "Cap identity's max permissions?" → Permission boundary | "Multi-account SSO?" → IAM Identity Center | "Landing zone + guardrails?" → Control Tower | "Encrypt existing RDS/EBS?" → Snapshot → copy with encryption → restore | "TLS for ALB, auto-renew?" → ACM
+</div>
+</div>
+<div class="card" style="margin-bottom:8px">
+<div class="ch" onclick="tog(this)"><span class="cht">Domain 5 — Networking &amp; Content Delivery (18%)</span><span class="badge" style="background:#E6F1FB;color:#0C447C">18%</span></div>
+<div class="cb">
+"Private subnet needs internet?" → NAT Gateway in public subnet | "Block specific IP at subnet?" → NACL deny rule | "VPCs peered but no traffic?" → Update route tables in both VPCs | "Multi-VPC hub and spoke?" → Transit Gateway | "Private access to S3/DynamoDB?" → VPC Gateway Endpoint | "Private access to other AWS services?" → Interface VPC Endpoint (PrivateLink) | "Dedicated line, consistent bandwidth?" → Direct Connect | "Encrypted tunnel, quick setup?" → Site-to-Site VPN | "Cache content globally?" → CloudFront | "Static IPs + non-HTTP + instant failover?" → Global Accelerator | "CloudFront cert region?" → us-east-1 | "Health check for private ALB?" → CloudWatch alarm-based health check | "Debug VPC path?" → Reachability Analyzer | "Audit internet-exposed resources?" → Network Access Analyzer
+</div>
+</div>
+<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 5 of SOA-C03')">More Domain 5 questions ↗</button>
+<button class="nb" onclick="sendPrompt('Give me a 50-question full SOA-C03 mock exam covering all 5 domains')">Full mock exam ↗</button>
+<button class="nb" onclick="sendPrompt('What are the hardest topics across all 5 SOA-C03 domains and how do I master them?')">Hardest topics review ↗</button>
+</div>`}
+];
+
+function tog(h){h.nextElementSibling.classList.toggle('on')}
+function ans(qi,oi){
+  const q=QS[qi];
+  document.querySelectorAll('#qb'+qi+' .qopt').forEach((o,j)=>{
+    o.disabled=true;
+    if(j===q.c)o.classList.add('ok2');
+    else if(j===oi&&j!==q.c)o.classList.add('bad');
+  });
+  const ex=document.getElementById('qe'+qi);
+  ex.innerHTML='<strong>'+(oi===q.c?'Correct!':'Incorrect.')+'</strong> '+q.e;
+  ex.classList.add('on');
+}
+window.tog=tog; window.ans=ans;
+
+let cur=0;
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.pill').forEach((p,j)=>p.classList.toggle('on',j===i));
+}
+window.go=go;
+
+const pEl=document.getElementById('pills');
+const cEl=document.getElementById('content');
+PAGES.forEach((p,i)=>{
+  const btn=document.createElement('button');
+  btn.className='pill'+(i===0?' on':'');
+  btn.textContent=p.label;
+  btn.onclick=()=>go(i);
+  pEl.appendChild(btn);
+  const pg=document.createElement('div');
+  pg.className='pg'+(i===0?' on':'');
+  pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
+<div class="nr">
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+</div>`;
+  cEl.appendChild(pg);
+});
+</script>
