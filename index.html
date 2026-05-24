@@ -1,5 +1,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS SOA-C03 Blueprint</title>
 <style>
 :root{
   --font-sans:Inter,Segoe UI,Arial,sans-serif;
@@ -18,6 +19,24 @@
 h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);font-size:17px;line-height:1.65}
+.react-bit-hero{width:min(100%,1100px);margin:0 auto;padding:4.25rem clamp(14px,3vw,28px) 1.25rem}
+.blueprint-shell{position:relative;overflow:hidden;border:1px solid var(--color-border-tertiary);border-radius:18px;background:linear-gradient(135deg,rgba(24,95,165,.18),rgba(15,110,86,.14),rgba(83,74,183,.18));padding:1px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.blueprint-shell:before{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 20% 20%,rgba(147,197,253,.28),transparent 28%),radial-gradient(circle at 80% 10%,rgba(52,211,153,.22),transparent 26%),radial-gradient(circle at 50% 90%,rgba(167,139,250,.22),transparent 30%);animation:heroGlow 12s ease-in-out infinite alternate;pointer-events:none}
+.blueprint-card{position:relative;border-radius:17px;background:rgba(17,24,39,.82);padding:clamp(24px,5vw,52px);text-align:center;backdrop-filter:blur(18px)}
+body[data-theme="light"] .blueprint-card{background:rgba(248,250,252,.86)}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:5px 11px;border:1px solid var(--color-border-secondary);border-radius:999px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.hero-orb{width:8px;height:8px;border-radius:999px;background:#60A5FA;box-shadow:0 0 18px #60A5FA}
+.hero-title{margin:0;font-size:clamp(2.15rem,7vw,5.2rem);line-height:.98;font-weight:800;letter-spacing:0;background:linear-gradient(90deg,#F8FAFC,#93C5FD,#A7F3D0,#DDD6FE);-webkit-background-clip:text;background-clip:text;color:transparent}
+body[data-theme="light"] .hero-title{background:linear-gradient(90deg,#111827,#185FA5,#0F6E56,#534AB7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-byline{margin-top:12px;color:var(--color-text-secondary);font-size:15px;font-weight:500}
+.hero-byline span{color:var(--color-text-info);font-weight:700}
+.hero-subtitle{width:min(720px,100%);margin:18px auto 0;color:var(--color-text-secondary);font-size:18px;line-height:1.65}
+.hero-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--color-border-tertiary);border-radius:999px;background:var(--color-background-primary);color:var(--color-text-secondary);font-size:14px}
+.hero-chip strong{color:var(--color-text-primary)}
+.hero-primary{margin-top:24px;border:0;border-radius:999px;padding:11px 18px;background:#2563EB;color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(37,99,235,.34)}
+.hero-primary:hover{background:#1D4ED8}
+@keyframes heroGlow{from{transform:translate3d(-2%,0,0) rotate(0deg)}to{transform:translate3d(2%,2%,0) rotate(8deg)}}
 .wrap{width:min(100%,1100px);margin:0 auto;padding:1.5rem clamp(14px,3vw,28px)}
 .domain-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
 .dtab{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:6px 12px;font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .15s}
@@ -92,6 +111,12 @@ button,a{max-width:100%;white-space:normal}
 .task-title{overflow-wrap:anywhere}
 @media (max-width:700px){
   body{font-size:16px}
+  .react-bit-hero{padding:4rem 12px 1rem}
+  .blueprint-card{padding:28px 18px}
+  .hero-subtitle{font-size:16px}
+  .hero-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .hero-chip{justify-content:center}
+  .hero-primary{width:100%}
   .wrap{padding:1rem 12px}
   .domain-tabs{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:1rem}
   .dtab{width:100%;text-align:left;padding:10px 12px}
@@ -114,12 +139,15 @@ button,a{max-width:100%;white-space:normal}
 </style>
 
 <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<div id="react-bit-hero" class="react-bit-hero"></div>
 <h2 class="sr-only">SOA-C03 interactive domain-by-domain course covering all 5 exam domains</h2>
 <div class="wrap">
   <div class="domain-tabs" id="tabs"></div>
   <div id="domain-content"></div>
 </div>
 
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script>
 (() => {
   const savedTheme = localStorage.getItem('soaTheme') || 'dark';
@@ -129,6 +157,27 @@ button,a{max-width:100%;white-space:normal}
     document.body.dataset.theme = nextTheme;
     localStorage.setItem('soaTheme', nextTheme);
   };
+})();
+(() => {
+  if (!window.React || !window.ReactDOM) return;
+  const e = React.createElement;
+  function BlueprintHero(){
+    return e('section',{className:'blueprint-shell'},
+      e('div',{className:'blueprint-card'},
+        e('div',{className:'hero-kicker'},e('span',{className:'hero-orb'}),'AWS SysOps Administrator Associate'),
+        e('h1',{className:'hero-title'},'AWS SOA-C03 Blueprint'),
+        e('div',{className:'hero-byline'},'by ',e('span',null,'jackson')),
+        e('p',{className:'hero-subtitle'},'A focused, domain-by-domain study map with deep lessons, practice questions, service patterns, and exam-ready decision points.'),
+        e('div',{className:'hero-actions'},
+          e('div',{className:'hero-chip'},e('strong',null,'5'),'domains'),
+          e('div',{className:'hero-chip'},e('strong',null,'100%'),'exam blueprint'),
+          e('div',{className:'hero-chip'},e('strong',null,'Dark / Light'),'theme')
+        ),
+        e('button',{className:'hero-primary',onClick:() => document.getElementById('tabs')?.scrollIntoView({behavior:'smooth',block:'start'})},'Start learning')
+      )
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('react-bit-hero')).render(e(BlueprintHero));
 })();
 const domains = [
   {
