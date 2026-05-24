@@ -136,6 +136,33 @@ button,a{max-width:100%;white-space:normal}
   .task-title{flex-basis:calc(100% - 44px);font-size:16px}
   .svc-pill{font-size:13px}
 }
+.wrap,.domain-tabs,.progress-bar,.domain-header,.task-card,.nav-row{animation:riseIn .55s cubic-bezier(.2,.8,.2,1) both}
+.domain-tabs{animation-delay:.08s}
+.progress-bar{animation-delay:.14s}
+.domain-header{animation-delay:.2s}
+.task-card{transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease}
+.task-card:hover{transform:translateY(-3px);border-color:var(--color-text-info);box-shadow:0 16px 36px rgba(0,0,0,.2)}
+.task-card:nth-child(1){animation-delay:.24s}
+.task-card:nth-child(2){animation-delay:.3s}
+.task-card:nth-child(3){animation-delay:.36s}
+.task-card:nth-child(4){animation-delay:.42s}
+.dtab,.nav-btn,.ask-btn,.theme-toggle,.hero-primary{transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+.dtab:hover,.nav-btn:hover,.ask-btn:hover,.theme-toggle:hover,.hero-primary:hover{transform:translateY(-2px)}
+.dtab.active{box-shadow:0 10px 24px rgba(59,130,246,.18)}
+.progress-fill{background-size:200% 100%;animation:barFlow 2.4s linear infinite}
+.skill-item,.svc-pill,.hero-chip{transition:transform .18s ease,box-shadow .18s ease}
+.skill-item:hover,.svc-pill:hover,.hero-chip:hover{transform:translateX(3px)}
+.task-body.open{animation:softReveal .24s ease both}
+.theme-toggle{animation:floatButton 3.4s ease-in-out infinite}
+.hero-primary{animation:softPulse 2.8s ease-in-out infinite}
+@keyframes riseIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes softReveal{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barFlow{from{filter:saturate(1)}50%{filter:saturate(1.35) brightness(1.12)}to{filter:saturate(1)}}
+@keyframes floatButton{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes softPulse{0%,100%{box-shadow:0 12px 30px rgba(37,99,235,.28)}50%{box-shadow:0 18px 42px rgba(37,99,235,.45)}}
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 
 <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>

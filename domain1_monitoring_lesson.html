@@ -124,6 +124,22 @@ code{white-space:normal;overflow-wrap:anywhere}
   .frow{display:grid;grid-template-columns:1fr}
   .fa{display:none}
 }
+.pill,.pg.on,.card,.qb,.tip,.warn,.ok,.sc,.nr{animation:riseIn .48s cubic-bezier(.2,.8,.2,1) both}
+.card,.qb,.sc,.qopt,.fb,.nb,.pill,.theme-toggle,.home-link{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}
+.card:hover,.qb:hover,.sc:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(0,0,0,.18);border-color:#60A5FA}
+.pill:hover,.nb:hover,.qopt:hover,.fb:hover,.home-link:hover,.theme-toggle:hover{transform:translateY(-2px)}
+.pill.on{box-shadow:0 10px 24px rgba(59,130,246,.18)}
+.cb.on,.qex.on{animation:softReveal .24s ease both}
+.dot{transition:transform .18s ease,background .18s ease}
+.dot:hover,.dot.on{transform:scale(1.3)}
+.theme-toggle{animation:floatButton 3.4s ease-in-out infinite}
+.home-link{animation:riseIn .5s ease both}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes softReveal{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatButton{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 
 <a class="home-link" href="index.html" aria-label="Back to main page">← Main page</a>
