@@ -1,5 +1,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Domain 5 Networking and Content Delivery | AWS SOA-C03 Blueprint</title>
+<meta name="description" content="Domain 5 SOA-C03 lesson for AWS Cloud Ops: VPC, Route 53, CloudFront, load balancing, hybrid networking, troubleshooting, and practice questions.">
+<meta property="og:title" content="AWS SOA-C03 Domain 5: Networking and Content Delivery">
+<meta property="og:description" content="Free interactive SOA-C03 Domain 5 lesson covering VPC, DNS, CDN, load balancing, hybrid connectivity, and troubleshooting.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://dummyimage.com/1200x630/111827/60a5fa&text=SOA-C03+Domain+5">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 :root{
   --font-sans:Inter,Segoe UI,Arial,sans-serif;
@@ -102,6 +109,8 @@ body:not([data-theme="light"]) .theme-sun{display:none}
 body[data-theme="light"] .theme-moon{display:none}
 .home-link{position:fixed;top:14px;left:14px;z-index:50;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:15px;font-weight:500;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .home-link:hover{border-color:#60A5FA;color:var(--color-text-primary)}
+.share-link{position:fixed;top:14px;right:64px;z-index:50;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.share-link:hover{border-color:#60A5FA;color:var(--color-text-primary)}
 body{width:min(100%,1100px);margin:0 auto;padding:1.25rem clamp(12px,3vw,28px)}
 button{max-width:100%;white-space:normal}
 .pg,.card,.qb,.qopt,.qex,.sc,.vpc-layer{min-width:0}
@@ -130,9 +139,9 @@ code{white-space:normal;overflow-wrap:anywhere}
   .fa{display:none}
 }
 .pill,.pg.on,.card,.qb,.tip,.warn,.ok,.sc,.vpc-layer,.nr{animation:riseIn .48s cubic-bezier(.2,.8,.2,1) both}
-.card,.qb,.sc,.vpc-layer,.qopt,.fb,.nb,.pill,.theme-toggle,.home-link{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}
+.card,.qb,.sc,.vpc-layer,.qopt,.fb,.nb,.pill,.theme-toggle,.home-link,.share-link{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}
 .card:hover,.qb:hover,.sc:hover,.vpc-layer:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(0,0,0,.18);border-color:#60A5FA}
-.pill:hover,.nb:hover,.qopt:hover,.fb:hover,.home-link:hover,.theme-toggle:hover{transform:translateY(-2px)}
+.pill:hover,.nb:hover,.qopt:hover,.fb:hover,.home-link:hover,.share-link:hover,.theme-toggle:hover{transform:translateY(-2px)}
 .pill.on{box-shadow:0 10px 24px rgba(96,165,250,.18)}
 .cb.on,.qex.on{animation:softReveal .24s ease both}
 .vpc-icon{transition:transform .2s ease,color .2s ease}
@@ -150,6 +159,7 @@ code{white-space:normal;overflow-wrap:anywhere}
 </style>
 
 <a class="home-link" href="index.html" aria-label="Back to main page">← Main page</a>
+<button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 5 lesson">Share</button>
 <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
 <h2 class="sr-only">Domain 5 SOA-C03 lesson: Networking and Content Delivery — VPC, DNS, CloudFront, connectivity, and troubleshooting</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
@@ -165,6 +175,23 @@ code{white-space:normal;overflow-wrap:anywhere}
     localStorage.setItem('soaTheme', nextTheme);
   };
 })();
+async function shareLesson(){
+  const payload = {
+    title: 'AWS SOA-C03 Domain 5: Networking and Content Delivery',
+    text: 'Free SOA-C03 Domain 5 Cloud Ops lesson covering VPC, DNS, CDN, load balancing, and troubleshooting.',
+    url: window.location.href
+  };
+  try{
+    if(navigator.share){
+      await navigator.share(payload);
+    }else{
+      await navigator.clipboard.writeText(window.location.href);
+      alert('Domain lesson link copied to clipboard.');
+    }
+  }catch(err){
+    if(err.name !== 'AbortError') alert('Could not share this lesson right now.');
+  }
+}
 const QS=[
 {q:"An application running in a private subnet needs to download software packages from the internet. The VPC has an internet gateway attached. What additional component is required?",
  o:["Add a route to the internet gateway directly in the private subnet's route table","Deploy a NAT Gateway in a public subnet and add a route in the private subnet's route table pointing 0.0.0.0/0 to the NAT Gateway","Attach an Elastic IP directly to the EC2 instance in the private subnet","Create a VPC endpoint for the software repository"],
@@ -508,10 +535,12 @@ function ans(qi,oi){
 }
 window.tog=tog; window.ans=ans;
 
-let cur=0;
+let cur=Number(localStorage.getItem('soaDomain5Page') || 0);
+if(!Number.isInteger(cur) || cur < 0 || cur >= PAGES.length) cur = 0;
 function go(i){
   if(i<0||i>=PAGES.length)return;
   cur=i;
+  localStorage.setItem('soaDomain5Page', String(cur));
   document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
   document.querySelectorAll('.pill').forEach((p,j)=>p.classList.toggle('on',j===i));
 }
@@ -535,4 +564,5 @@ PAGES.forEach((p,i)=>{
 </div>`;
   cEl.appendChild(pg);
 });
+go(cur);
 </script>

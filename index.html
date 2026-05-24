@@ -1,6 +1,17 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AWS SOA-C03 Blueprint</title>
+<meta name="description" content="Free AWS SOA-C03 Cloud Ops blueprint with interactive domain-by-domain lessons, exam tips, practice questions, and service decision patterns.">
+<meta property="og:title" content="AWS SOA-C03 Blueprint">
+<meta property="og:description" content="A free interactive AWS SOA-C03 Cloud Ops study map with deep lessons, practice questions, and exam-ready decision points.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="/">
+<meta property="og:site_name" content="AWS SOA-C03 Blueprint">
+<meta property="og:image" content="https://dummyimage.com/1200x630/111827/93c5fd&text=AWS+SOA-C03+Blueprint">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AWS SOA-C03 Blueprint">
+<meta name="twitter:description" content="Free AWS SOA-C03 Cloud Ops lessons, practice questions, and domain-by-domain exam guidance.">
+<meta name="twitter:image" content="https://dummyimage.com/1200x630/111827/93c5fd&text=AWS+SOA-C03+Blueprint">
 <style>
 :root{
   --font-sans:Inter,Segoe UI,Arial,sans-serif;
@@ -70,7 +81,9 @@ body[data-theme="light"] .hero-title{background:linear-gradient(90deg,#111827,#1
 .nav-btn:disabled{opacity:.35;cursor:default}
 .ask-btn{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-info);text-decoration:none}
 .ask-btn:hover{background:var(--color-background-info)}
-.dtab,.nav-btn,.ask-btn,.skill-item{font-size:16px}
+.share-btn{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
+.share-btn:hover{background:var(--color-background-secondary)}
+.dtab,.nav-btn,.ask-btn,.share-btn,.skill-item{font-size:16px}
 .domain-badge{min-width:54px;height:54px;font-size:21px}
 .domain-title{font-size:22px}
 .domain-weight{font-size:16px}
@@ -130,7 +143,7 @@ button,a{max-width:100%;white-space:normal}
   .task-body{padding:12px}
   .services-row{gap:7px}
   .nav-row{display:grid;grid-template-columns:1fr;gap:10px}
-  .nav-btn,.ask-btn{width:100%;text-align:center}
+  .nav-btn,.ask-btn,.share-btn{width:100%;text-align:center}
 }
 @media (max-width:420px){
   .task-title{flex-basis:calc(100% - 44px);font-size:16px}
@@ -146,8 +159,8 @@ button,a{max-width:100%;white-space:normal}
 .task-card:nth-child(2){animation-delay:.3s}
 .task-card:nth-child(3){animation-delay:.36s}
 .task-card:nth-child(4){animation-delay:.42s}
-.dtab,.nav-btn,.ask-btn,.theme-toggle,.hero-primary{transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
-.dtab:hover,.nav-btn:hover,.ask-btn:hover,.theme-toggle:hover,.hero-primary:hover{transform:translateY(-2px)}
+.dtab,.nav-btn,.ask-btn,.share-btn,.theme-toggle,.hero-primary{transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+.dtab:hover,.nav-btn:hover,.ask-btn:hover,.share-btn:hover,.theme-toggle:hover,.hero-primary:hover{transform:translateY(-2px)}
 .dtab.active{box-shadow:0 10px 24px rgba(59,130,246,.18)}
 .progress-fill{background-size:200% 100%;animation:barFlow 2.4s linear infinite}
 .skill-item,.svc-pill,.hero-chip{transition:transform .18s ease,box-shadow .18s ease}
@@ -206,6 +219,26 @@ button,a{max-width:100%;white-space:normal}
   }
   ReactDOM.createRoot(document.getElementById('react-bit-hero')).render(e(BlueprintHero));
 })();
+async function shareDomain(){
+  const d = domains[current];
+  const url = d.lesson ? new URL(d.lesson, window.location.href).href : window.location.href;
+  const payload = {
+    title: `AWS SOA-C03 Blueprint - ${d.label}`,
+    text: `${d.label}: ${d.short} from the free AWS SOA-C03 Cloud Ops Blueprint.`,
+    url
+  };
+  try{
+    if(navigator.share){
+      await navigator.share(payload);
+    }else{
+      await navigator.clipboard.writeText(url);
+      alert('Domain link copied to clipboard.');
+    }
+  }catch(err){
+    if(err.name !== 'AbortError') alert('Could not share this domain right now.');
+  }
+}
+window.shareDomain = shareDomain;
 const domains = [
   {
     id:1, label:"Domain 1", short:"Monitoring & Logging", weight:"22%",
@@ -436,7 +469,8 @@ const domains = [
   }
 ];
 
-let current = 0;
+let current = Number(localStorage.getItem('soaLastDomain') || 0);
+if(!Number.isInteger(current) || current < 0 || current >= domains.length) current = 0;
 
 function renderTabs(){
   const el = document.getElementById('tabs');
@@ -493,6 +527,7 @@ function renderDomain(){
     <div class="nav-row">
       <button class="nav-btn" onclick="go(${current-1})" ${current===0?'disabled':''}>← Previous domain</button>
       ${deepControl}
+      <button class="share-btn" onclick="shareDomain()">Share this domain</button>
       <button class="nav-btn" onclick="go(${current+1})" ${current===domains.length-1?'disabled':''}>Next domain →</button>
     </div>
   `;
@@ -510,6 +545,7 @@ function toggle(ti){
 function go(i){
   if(i<0||i>=domains.length) return;
   current=i;
+  localStorage.setItem('soaLastDomain', String(current));
   renderTabs();
   renderDomain();
 }
