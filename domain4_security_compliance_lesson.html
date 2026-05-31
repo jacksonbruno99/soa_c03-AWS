@@ -103,7 +103,7 @@ body[data-theme="light"] [style*="background:#EEEDFE"]{background:#EEEDFE!import
 body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] .warn{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
 body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok2,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
 body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
-.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;min-width:74px;height:42px;border-radius:999px;padding:0 14px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .theme-toggle:hover{border-color:#F97316}
 body:not([data-theme="light"]) .theme-sun{display:none}
 body[data-theme="light"] .theme-moon{display:none}
@@ -162,11 +162,12 @@ code{white-space:normal;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+a.nb{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 </style>
 
-<a class="home-link" href="index.html" aria-label="Back to main page">← Main page</a>
+<a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
 <button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 4 lesson">Share</button>
-<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">Light</span><span class="theme-moon">Dark</span></button>
 <h2 class="sr-only">Domain 4 SOA-C03 lesson: Security and Compliance — IAM, detective controls, encryption, and multi-account governance</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
 <div class="full-dive-callout"><strong>High-yield notes here, full reference next.</strong><p>This lesson keeps the focused exam path. Open the full deep dive for IAM edge cases, KMS policy details, and harder security scenarios.</p><a href="domain4_deep_dive.html">Open full deep dive</a></div>
@@ -237,9 +238,9 @@ const PAGES=[
 <div style="font-size:13px;font-weight:500;margin-bottom:8px">Three task areas</div>
 <div class="frow">
 <div class="fb" style="background:#FAECE7;color:#712B13">Task 4.1<br><span style="font-size:11px;font-weight:400">Security &amp; compliance tools</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#FAEEDA;color:#633806">Task 4.2<br><span style="font-size:11px;font-weight:400">Data &amp; infra protection</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#FCEBEB;color:#791F1F">Task 4.3<br><span style="font-size:11px;font-weight:400">Identity &amp; access</span></div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
@@ -292,7 +293,7 @@ Intelligent threat detection service that analyses multiple data sources using M
 • <code>CryptoCurrency</code> — EC2 instances mining crypto<br>
 • <code>CredentialAccess</code> — anomalous credential usage patterns<br><br>
 <strong>Multi-account:</strong> designate a GuardDuty administrator account via Organizations. Findings from all member accounts aggregate to the administrator.<br><br>
-<strong>Exam tip:</strong> "Detect compromised credentials / unusual API activity / crypto mining" → GuardDuty. It requires minimal setup — just enable it.
+<strong>Exam tip:</strong> "Detect compromised credentials / unusual API activity / crypto mining" GuardDuty. It requires minimal setup — just enable it.
 </div>
 </div>
 <div class="card">
@@ -302,7 +303,7 @@ Continuously records resource configuration changes and evaluates compliance aga
 <strong>Conformance packs:</strong> pre-built collections of Config rules and remediation actions mapped to a compliance standard. Available for CIS AWS Benchmark, NIST 800-53, PCI DSS, HIPAA, and others. Deploy a single conformance pack to get dozens of relevant rules at once.<br><br>
 <strong>Aggregator:</strong> collect Config data from all accounts and regions into a single aggregator account for centralised compliance visibility.<br><br>
 <strong>Config timeline:</strong> see exactly when a resource changed and what it looked like at each point in time. Useful for incident investigation: "what did this security group look like on Tuesday?"<br><br>
-<strong>Exam tip:</strong> "Continuously check that all resources comply with a security standard and auto-remediate deviations" → Config rules + auto-remediation + (optionally) conformance packs.
+<strong>Exam tip:</strong> "Continuously check that all resources comply with a security standard and auto-remediate deviations" Config rules + auto-remediation + (optionally) conformance packs.
 </div>
 </div>
 <div class="card">
@@ -312,8 +313,8 @@ Security Hub aggregates, normalises, and prioritises findings from multiple AWS 
 <strong>Integrates with:</strong> GuardDuty, Inspector, Macie, IAM Access Analyzer, Firewall Manager, Config, and 3rd-party tools (CrowdStrike, Splunk, etc.).<br><br>
 <strong>Security standards:</strong> Security Hub evaluates your environment against standards like CIS AWS Foundations Benchmark and AWS Foundational Security Best Practices — similar to conformance packs in Config but focused on findings aggregation.<br><br>
 <strong>Insights:</strong> pre-built correlation queries that surface patterns across findings, e.g. "instances with the most findings", "most common finding types".<br><br>
-<strong>Automated response:</strong> Security Hub findings can trigger EventBridge rules → Lambda for automated remediation.<br><br>
-<strong>Exam tip:</strong> "Single pane of glass for security findings across all services and accounts" → Security Hub. Not GuardDuty alone (that's just one detector).
+<strong>Automated response:</strong> Security Hub findings can trigger EventBridge rules Lambda for automated remediation.<br><br>
+<strong>Exam tip:</strong> "Single pane of glass for security findings across all services and accounts" Security Hub. Not GuardDuty alone (that's just one detector).
 </div>
 </div>
 <div class="card">
@@ -326,7 +327,7 @@ Automated vulnerability management service for EC2 instances, Lambda functions, 
 • ECR container images: packages and dependencies for CVEs (scanned on push)<br><br>
 <strong>Integration:</strong> Inspector findings appear in the Inspector console and are also sent to Security Hub.<br><br>
 <strong>Difference from GuardDuty:</strong> Inspector finds vulnerabilities (CVEs, misconfigurations) in your resources. GuardDuty detects active threats and anomalous behaviour. Inspector is proactive (find before exploit). GuardDuty is reactive (detect during/after attack).<br><br>
-<strong>Exam tip:</strong> "Scan EC2 instances for software vulnerabilities" → Inspector. "Detect an EC2 instance communicating with a C&C server" → GuardDuty.
+<strong>Exam tip:</strong> "Scan EC2 instances for software vulnerabilities" Inspector. "Detect an EC2 instance communicating with a C&C server" GuardDuty.
 </div>
 </div>
 <div class="card">
@@ -336,7 +337,7 @@ Uses ML to automatically discover, classify, and protect sensitive data stored i
 <strong>What it detects:</strong> PII (names, emails, SSNs, passport numbers, credit card numbers), financial data, credentials, health data, and custom data identifiers you define.<br><br>
 <strong>How it works:</strong> Macie creates automated discovery jobs on S3 buckets. Findings include which buckets contain sensitive data, the type of data, and whether the bucket is publicly accessible or shared externally.<br><br>
 <strong>Integration:</strong> Macie findings publish to Security Hub and can trigger EventBridge rules for automated response.<br><br>
-<strong>Exam tip:</strong> "Discover if any S3 buckets contain PII / credit card data" → Macie. Not GuardDuty (which detects threats, not sensitive data). Not Config (which checks configurations, not data content).
+<strong>Exam tip:</strong> "Discover if any S3 buckets contain PII / credit card data" Macie. Not GuardDuty (which detects threats, not sensitive data). Not Config (which checks configurations, not data content).
 </div>
 </div>
 <div class="card">
@@ -348,11 +349,11 @@ Analyses resource-based policies (S3 bucket policies, KMS key policies, IAM role
 • External access: resource accessible from outside the zone of trust<br>
 • Unused access (separate analyser): IAM roles/users with permissions never used<br><br>
 <strong>Policy validation:</strong> IAM Access Analyzer can validate IAM policies against best practices before you attach them.<br><br>
-<strong>Exam tip:</strong> "Find all S3 buckets accessible from outside our account" or "detect unintended external access" → IAM Access Analyzer. Not GuardDuty (active threats). Not Macie (sensitive data content).
+<strong>Exam tip:</strong> "Find all S3 buckets accessible from outside our account" or "detect unintended external access" IAM Access Analyzer. Not GuardDuty (active threats). Not Macie (sensitive data content).
 </div>
 </div>
 </div>
-<div class="tip"><strong>Detective service decision tree:</strong> Unusual runtime behaviour / compromised credentials → GuardDuty. Resource configuration non-compliant → Config. All security findings in one place → Security Hub. Software CVEs on EC2 / Lambda / containers → Inspector. PII or sensitive data in S3 → Macie. Resource shared externally unintentionally → IAM Access Analyzer.</div>`},
+<div class="tip"><strong>Detective service decision tree:</strong> Unusual runtime behaviour / compromised credentials GuardDuty. Resource configuration non-compliant Config. All security findings in one place Security Hub. Software CVEs on EC2 / Lambda / containers Inspector. PII or sensitive data in S3 Macie. Resource shared externally unintentionally IAM Access Analyzer.</div>`},
 
 {id:"task42",label:"Task 4.2 – Data Protection",title:"Task 4.2: Data and infrastructure protection",sub:"KMS, ACM, Secrets Manager, S3 encryption — encryption at every layer",html:`
 <div class="cgrid">
@@ -365,8 +366,8 @@ Analyses resource-based policies (S3 bucket policies, KMS key policies, IAM role
 • <strong>AWS owned keys:</strong> used internally by AWS services, not visible to you.<br><br>
 <strong>Key policy:</strong> the primary access control for a KMS key — a resource-based policy attached to the key. IAM policies alone are not sufficient to use a CMK; the key policy must also grant access.<br><br>
 <strong>Automatic key rotation:</strong> enable on CMKs to rotate the key material every year. Old key material is retained to decrypt data encrypted with it. Cannot be enabled on asymmetric keys or keys with imported key material.<br><br>
-<strong>Envelope encryption:</strong> KMS generates a data key → your service uses the data key to encrypt data → KMS encrypts the data key itself. The encrypted data key is stored alongside the data. This is how S3, EBS, and RDS use KMS under the hood.<br><br>
-<strong>Exam tip:</strong> "Who can use this KMS key?" → check both the key policy AND the IAM policy. Both must allow the action.
+<strong>Envelope encryption:</strong> KMS generates a data key your service uses the data key to encrypt data KMS encrypts the data key itself. The encrypted data key is stored alongside the data. This is how S3, EBS, and RDS use KMS under the hood.<br><br>
+<strong>Exam tip:</strong> "Who can use this KMS key?" check both the key policy AND the IAM policy. Both must allow the action.
 </div>
 </div>
 <div class="card">
@@ -378,17 +379,17 @@ Analyses resource-based policies (S3 bucket policies, KMS key policies, IAM role
 • <strong>SSE-C:</strong> you provide the encryption key with each request. AWS encrypts/decrypts but never stores your key. Only accessible via HTTPS.<br><br>
 <strong>Client-side encryption:</strong> you encrypt data before uploading. AWS stores only ciphertext.<br><br>
 <strong>Bucket default encryption:</strong> set at the bucket level — all new objects inherit this encryption. Does not retroactively encrypt existing objects.<br><br>
-<strong>Exam tip:</strong> "Audit who decrypted which S3 objects" → SSE-KMS with a CMK (key usage logged in CloudTrail). "Simplest encryption with no key management" → SSE-S3.
+<strong>Exam tip:</strong> "Audit who decrypted which S3 objects" SSE-KMS with a CMK (key usage logged in CloudTrail). "Simplest encryption with no key management" SSE-S3.
 </div>
 </div>
 <div class="card">
 <div class="ch" onclick="tog(this)"><span class="cht">Encryption at rest — service by service</span><span class="badge" style="background:#FAEEDA;color:#633806">Know it</span></div>
 <div class="cb">
-<strong>EBS:</strong> enable encryption on the volume at creation. Can set account-level default so all new volumes are encrypted. Snapshots of encrypted volumes are automatically encrypted. Cannot encrypt an existing unencrypted volume in-place — must snapshot → copy with encryption → create new volume from encrypted snapshot.<br><br>
-<strong>RDS:</strong> encryption must be enabled at instance creation (cannot be added later). Encrypted RDS instance → all automated backups, snapshots, and read replicas are also encrypted. To encrypt an existing unencrypted RDS instance: take a snapshot → copy snapshot with encryption enabled → restore from encrypted snapshot.<br><br>
+<strong>EBS:</strong> enable encryption on the volume at creation. Can set account-level default so all new volumes are encrypted. Snapshots of encrypted volumes are automatically encrypted. Cannot encrypt an existing unencrypted volume in-place — must snapshot copy with encryption create new volume from encrypted snapshot.<br><br>
+<strong>RDS:</strong> encryption must be enabled at instance creation (cannot be added later). Encrypted RDS instance all automated backups, snapshots, and read replicas are also encrypted. To encrypt an existing unencrypted RDS instance: take a snapshot copy snapshot with encryption enabled restore from encrypted snapshot.<br><br>
 <strong>DynamoDB:</strong> encrypted at rest by default using AWS owned keys. Can switch to CMK for compliance requirements.<br><br>
 <strong>Lambda:</strong> environment variables are encrypted at rest using a Lambda-managed key by default. Use a CMK for additional security and audit of environment variable decryption.<br><br>
-<strong>Exam trap:</strong> RDS and EBS cannot be encrypted in-place after creation. The answer always involves snapshot → copy with encryption → restore/new volume.
+<strong>Exam trap:</strong> RDS and EBS cannot be encrypted in-place after creation. The answer always involves snapshot copy with encryption restore/new volume.
 </div>
 </div>
 <div class="card">
@@ -404,7 +405,7 @@ Manages TLS/SSL certificates for use with AWS services.<br><br>
 • Private certificates: issued from ACM Private CA — for internal services, mTLS. Paid.<br>
 • Imported certificates: bring your own certificate from an external CA.<br><br>
 <strong>Important constraint:</strong> ACM certificates cannot be exported (the private key never leaves AWS). They can only be used with integrated AWS services. For EC2 instances, you must install your own certificate or use an external CA.<br><br>
-<strong>Exam tip:</strong> "Automatically renew TLS certificate for ALB" → ACM. "Install a certificate on an EC2 instance" → ACM cannot help; use your own certificate.
+<strong>Exam tip:</strong> "Automatically renew TLS certificate for ALB" ACM. "Install a certificate on an EC2 instance" ACM cannot help; use your own certificate.
 </div>
 </div>
 <div class="card">
@@ -418,11 +419,11 @@ Secrets Manager securely stores, rotates, and manages access to secrets (databas
 • During rotation, Secrets Manager creates a new secret version (AWSPENDING), tests it, then marks it AWSCURRENT. The old version becomes AWSPREVIOUS.<br><br>
 <strong>Secret versioning:</strong> multiple versions coexist with staging labels (AWSCURRENT, AWSPREVIOUS, AWSPENDING). Applications that cache secrets can still decrypt using AWSPREVIOUS during a rotation event.<br><br>
 <strong>Cross-account access:</strong> resource-based policies on a secret can grant access to principals in other accounts.<br><br>
-<strong>Exam tip:</strong> "Database password must rotate every 30 days automatically" → Secrets Manager with built-in RDS rotation. Not SSM Parameter Store (no auto-rotation).
+<strong>Exam tip:</strong> "Database password must rotate every 30 days automatically" Secrets Manager with built-in RDS rotation. Not SSM Parameter Store (no auto-rotation).
 </div>
 </div>
 </div>
-<div class="warn"><strong>Encryption-in-place trap:</strong> Neither RDS nor EBS can be encrypted after creation. For RDS: take a snapshot → copy the snapshot with encryption enabled (specify a KMS key) → restore a new RDS instance from the encrypted snapshot → update your connection string. For EBS: snapshot the volume → copy the snapshot with encryption → create a new encrypted volume from the snapshot → detach the old volume and attach the new one.</div>`},
+<div class="warn"><strong>Encryption-in-place trap:</strong> Neither RDS nor EBS can be encrypted after creation. For RDS: take a snapshot copy the snapshot with encryption enabled (specify a KMS key) restore a new RDS instance from the encrypted snapshot update your connection string. For EBS: snapshot the volume copy the snapshot with encryption create a new encrypted volume from the snapshot detach the old volume and attach the new one.</div>`},
 
 {id:"task43",label:"Task 4.3 – Identity & Access",title:"Task 4.3: Identity management and access controls",sub:"IAM depth, permission boundaries, Organizations, Control Tower, SSO",html:`
 <div class="cgrid">
@@ -464,7 +465,7 @@ SCPs are org-level policies attached to the root, OUs, or individual accounts. T
 <strong>Deny list vs allow list strategy:</strong><br>
 • <strong>Deny list (default):</strong> attach FullAWSAccess SCP + specific Deny SCPs. Simpler to manage — only deny what's prohibited.<br>
 • <strong>Allow list:</strong> remove FullAWSAccess + create explicit Allow SCPs. More restrictive but requires listing every permitted service.<br><br>
-<strong>Exam tip:</strong> "Prevent any account in the org from disabling GuardDuty / CloudTrail / leaving the org" → SCP with an explicit Deny.
+<strong>Exam tip:</strong> "Prevent any account in the org from disabling GuardDuty / CloudTrail / leaving the org" SCP with an explicit Deny.
 </div>
 </div>
 <div class="card">
@@ -477,7 +478,7 @@ IAM Identity Center (formerly AWS Single Sign-On) provides centralised access ma
 • External IdP: Okta, Azure AD, Ping — via SAML 2.0<br><br>
 <strong>Permission sets:</strong> define what access a user gets in an account. Similar to IAM roles — they become actual IAM roles when provisioned to an account.<br><br>
 <strong>Multi-account access:</strong> users log in once to the AWS access portal and can switch between accounts they have permission sets for — no separate IAM users needed in each account.<br><br>
-<strong>Exam tip:</strong> "Employees should access multiple AWS accounts without separate IAM users in each account" → IAM Identity Center. "Federate with corporate Active Directory" → IAM Identity Center with AD integration.
+<strong>Exam tip:</strong> "Employees should access multiple AWS accounts without separate IAM users in each account" IAM Identity Center. "Federate with corporate Active Directory" IAM Identity Center with AD integration.
 </div>
 </div>
 <div class="card">
@@ -494,7 +495,7 @@ Control Tower automates the setup and governance of a multi-account AWS environm
 • <strong>Detective:</strong> implemented as Config rules — detect policy violations<br>
 • <strong>Proactive:</strong> implemented as CloudFormation hooks — check before provisioning<br><br>
 <strong>Account Factory:</strong> self-service portal or API for provisioning new accounts that automatically get the right OUs, guardrails, and baseline config.<br><br>
-<strong>Exam tip:</strong> "Set up a new multi-account environment following best practices automatically" → Control Tower. "Apply consistent guardrails across all accounts" → Control Tower guardrails (SCPs + Config).
+<strong>Exam tip:</strong> "Set up a new multi-account environment following best practices automatically" Control Tower. "Apply consistent guardrails across all accounts" Control Tower guardrails (SCPs + Config).
 </div>
 </div>
 <div class="card">
@@ -507,7 +508,7 @@ Allows a principal in one AWS account to temporarily assume a role in another ac
 3. STS returns temporary credentials (access key, secret key, session token) for that role<br>
 4. The principal uses those credentials to make API calls in Account B<br><br>
 <strong>External ID:</strong> an optional condition in the trust policy that prevents the "confused deputy" problem — a third party must know the external ID to assume the role. Used for cross-account access by service providers.<br><br>
-<strong>Exam pattern:</strong> "Allow an audit tool in Account A to read resources in Account B" → create a role in Account B with a trust policy allowing Account A, with a permissions policy for the required read access. No user credentials needed.
+<strong>Exam pattern:</strong> "Allow an audit tool in Account A to read resources in Account B" create a role in Account B with a trust policy allowing Account A, with a permissions policy for the required read access. No user credentials needed.
 </div>
 </div>
 </div>
@@ -535,8 +536,8 @@ html:QS.map((q,i)=>`
 <div class="warn"><strong>Trap 1 — Preventive vs detective controls:</strong> SCPs, IAM permission boundaries, and KMS key policies are preventive — they stop actions before they happen. GuardDuty, Config, Macie, Security Hub, and CloudTrail are detective — they find problems after the fact. Questions asking "prevent" need preventive tools. Questions asking "detect" or "alert" need detective tools. Mixing these up is the #1 Domain 4 mistake.</div>
 <div class="warn"><strong>Trap 2 — SCPs don't apply to the management account:</strong> SCPs attached to the root OU or any OU apply to all member accounts, but NOT to the AWS Organizations management account itself. If you need a guardrail on the management account, you must use IAM policies directly in that account.</div>
 <div class="warn"><strong>Trap 3 — Permission boundaries don't grant permissions:</strong> A permission boundary set to allow s3:* and ec2:* does NOT grant those permissions — it only caps the maximum. The IAM identity policy must also explicitly grant the actions. Effective permissions = IAM policy AND boundary. Both must allow for the action to succeed.</div>
-<div class="warn"><strong>Trap 4 — KMS key policy must allow access:</strong> For a CMK, even if an IAM policy grants kms:Decrypt, the key policy must also allow the principal. Unlike most AWS services where IAM is sufficient, KMS requires the key policy to be permissive too. "Access denied" on KMS → check both the IAM policy AND the key policy.</div>
-<div class="warn"><strong>Trap 5 — Encrypting existing RDS/EBS in-place is impossible:</strong> You cannot add encryption to an existing unencrypted RDS instance or EBS volume directly. The only path is snapshot → copy with encryption → restore. Exam questions often offer "enable encryption on the existing instance" as a wrong answer — always look for the snapshot-based process.</div>
+<div class="warn"><strong>Trap 4 — KMS key policy must allow access:</strong> For a CMK, even if an IAM policy grants kms:Decrypt, the key policy must also allow the principal. Unlike most AWS services where IAM is sufficient, KMS requires the key policy to be permissive too. "Access denied" on KMS check both the IAM policy AND the key policy.</div>
+<div class="warn"><strong>Trap 5 — Encrypting existing RDS/EBS in-place is impossible:</strong> You cannot add encryption to an existing unencrypted RDS instance or EBS volume directly. The only path is snapshot copy with encryption restore. Exam questions often offer "enable encryption on the existing instance" as a wrong answer — always look for the snapshot-based process.</div>
 <div class="warn"><strong>Trap 6 — GuardDuty vs Inspector vs Macie vs Access Analyzer:</strong> These four are frequently confused. GuardDuty = runtime threat detection (compromised creds, malware, recon). Inspector = vulnerability scanning (CVEs in software packages). Macie = sensitive data discovery in S3 (PII, credit cards). Access Analyzer = unintended external resource access (who can access your S3 bucket from outside your account). Each has a distinct job — never substitute one for another.</div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:16px 0 8px">Quick-fire cheat sheet</div>
@@ -554,13 +555,13 @@ html:QS.map((q,i)=>`
 <tr><td>Set up multi-account landing zone with guardrails</td><td>AWS Control Tower</td></tr>
 <tr><td>Rotate database credentials automatically</td><td>AWS Secrets Manager</td></tr>
 <tr><td>Audit who decrypted an S3 object</td><td>SSE-KMS with CMK (logged in CloudTrail)</td></tr>
-<tr><td>Encrypt existing unencrypted RDS instance</td><td>Snapshot → copy with encryption → restore</td></tr>
+<tr><td>Encrypt existing unencrypted RDS instance</td><td>Snapshot copy with encryption restore</td></tr>
 <tr><td>TLS cert for ALB, auto-renew</td><td>AWS Certificate Manager (ACM)</td></tr>
 <tr><td>Cross-account access without sharing credentials</td><td>IAM role with trust policy + sts:AssumeRole</td></tr>
 </table>
 <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 4 of SOA-C03')">More practice questions ↗</button>
-<button class="nb" onclick="sendPrompt('Teach me Domain 5 of SOA-C03 (Networking and Content Delivery) in depth with examples and exam tips')">Next: Domain 5 ↗</button>
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 4 of SOA-C03')">More practice questions</button>
+<a class="nb" href="domain5_networking_lesson.html">Next: Domain 5</a>
 </div>`}
 ];
 
@@ -601,9 +602,9 @@ PAGES.forEach((p,i)=>{
   pg.className='pg'+(i===0?' on':'');
   pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
 <div class="nr">
-<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>Back</button>
 <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
-<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next</button>
 </div>`;
   cEl.appendChild(pg);
 });

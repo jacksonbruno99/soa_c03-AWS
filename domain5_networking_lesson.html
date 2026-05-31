@@ -104,7 +104,7 @@ body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] 
 body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok2,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
 body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
 body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
-.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;min-width:74px;height:42px;border-radius:999px;padding:0 14px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .theme-toggle:hover{border-color:#60A5FA}
 body:not([data-theme="light"]) .theme-sun{display:none}
 body[data-theme="light"] .theme-moon{display:none}
@@ -161,11 +161,12 @@ code{white-space:normal;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+a.nb{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 </style>
 
-<a class="home-link" href="index.html" aria-label="Back to main page">← Main page</a>
+<a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
 <button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 5 lesson">Share</button>
-<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">Light</span><span class="theme-moon">Dark</span></button>
 <h2 class="sr-only">Domain 5 SOA-C03 lesson: Networking and Content Delivery — VPC, DNS, CloudFront, connectivity, and troubleshooting</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
 <div class="full-dive-callout"><strong>High-yield notes here, full reference next.</strong><p>This lesson keeps the focused exam path. Open the full deep dive for VPC, DNS, CDN, hybrid connectivity, and harder troubleshooting scenarios.</p><a href="domain5_deep_dive.html">Open full deep dive</a></div>
@@ -202,11 +203,11 @@ const QS=[
 {q:"An application running in a private subnet needs to download software packages from the internet. The VPC has an internet gateway attached. What additional component is required?",
  o:["Add a route to the internet gateway directly in the private subnet's route table","Deploy a NAT Gateway in a public subnet and add a route in the private subnet's route table pointing 0.0.0.0/0 to the NAT Gateway","Attach an Elastic IP directly to the EC2 instance in the private subnet","Create a VPC endpoint for the software repository"],
  c:1,
- e:"Private subnets do not have a route to the internet gateway — that would make them public. To allow outbound internet access from a private subnet without exposing the instance to inbound connections, you deploy a NAT Gateway in a public subnet (which does have an IGW route). Then add a route in the private subnet's route table: 0.0.0.0/0 → NAT Gateway ID. The NAT Gateway translates the source IP and handles the return traffic. Assigning an EIP directly to an instance in a private subnet does nothing without an IGW route — and would make it a public subnet. A VPC endpoint only reaches AWS services, not arbitrary internet destinations."},
+ e:"Private subnets do not have a route to the internet gateway — that would make them public. To allow outbound internet access from a private subnet without exposing the instance to inbound connections, you deploy a NAT Gateway in a public subnet (which does have an IGW route). Then add a route in the private subnet's route table: 0.0.0.0/0 NAT Gateway ID. The NAT Gateway translates the source IP and handles the return traffic. Assigning an EIP directly to an instance in a private subnet does nothing without an IGW route — and would make it a public subnet. A VPC endpoint only reaches AWS services, not arbitrary internet destinations."},
 {q:"A company has two VPCs — VPC-A (10.0.0.0/16) and VPC-B (10.1.0.0/16). They set up VPC peering between them. EC2 instances in VPC-A cannot reach instances in VPC-B. VPC peering is shown as Active. What is the most likely cause?",
  o:["The VPC CIDR ranges overlap and peering cannot be established","Route tables in one or both VPCs have not been updated to route traffic for the peer VPC's CIDR through the peering connection","Security groups are stateless and require both inbound and outbound rules","The peering connection must be in the same AWS account to function"],
  c:1,
- e:"VPC peering being 'Active' only means the connection is established — it does NOT automatically update route tables. You must manually add a route in each VPC's route table: in VPC-A's route table, add a route for 10.1.0.0/16 → pcx-xxxx (peering connection ID); in VPC-B's route table, add a route for 10.0.0.0/16 → pcx-xxxx. Without these routes, traffic doesn't know to flow through the peering connection. CIDR ranges don't overlap here (10.0.x vs 10.1.x), so that's not the issue. Security groups are stateful (not stateless — NACLs are stateless). Peering works cross-account."},
+ e:"VPC peering being 'Active' only means the connection is established — it does NOT automatically update route tables. You must manually add a route in each VPC's route table: in VPC-A's route table, add a route for 10.1.0.0/16 pcx-xxxx (peering connection ID); in VPC-B's route table, add a route for 10.0.0.0/16 pcx-xxxx. Without these routes, traffic doesn't know to flow through the peering connection. CIDR ranges don't overlap here (10.0.x vs 10.1.x), so that's not the issue. Security groups are stateful (not stateless — NACLs are stateless). Peering works cross-account."},
 {q:"Users in the US are reporting slow load times for a web application hosted on EC2 in ap-south-1 (Mumbai). The content is mostly static (images, CSS, JavaScript). What is the most cost-effective solution to improve performance for US users?",
  o:["Move the EC2 instances to us-east-1 to be closer to US users","Set up a second EC2 deployment in us-east-1 with Route 53 latency routing","Create a CloudFront distribution with the EC2 origin and configure cache behaviours to cache static content at edge locations near US users","Increase the EC2 instance type to improve response times"],
  c:2,
@@ -236,9 +237,9 @@ const PAGES=[
 <div style="font-size:13px;font-weight:500;margin-bottom:8px">Three task areas</div>
 <div class="frow">
 <div class="fb" style="background:#E6F1FB;color:#0C447C">Task 5.1<br><span style="font-size:11px;font-weight:400">Configure infrastructure</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#E1F5EE;color:#085041">Task 5.2<br><span style="font-size:11px;font-weight:400">DNS, CDN &amp; load balancing</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#EEEDFE;color:#3C3489">Task 5.3<br><span style="font-size:11px;font-weight:400">Troubleshoot connectivity</span></div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
@@ -256,13 +257,13 @@ const PAGES=[
 <div class="sc"><div class="sn">VPC Reachability Analyzer</div><div class="sd">Logical path analysis between two endpoints</div></div>
 <div class="sc"><div class="sn">VPC Flow Logs</div><div class="sd">Network traffic metadata for troubleshooting</div></div>
 </div>
-<div class="tip"><strong>Exam tip:</strong> About half of Domain 5 questions are troubleshooting scenarios. The symptom tells you where to look: "cannot reach the internet" → route table or NAT Gateway. "Traffic rejected" → NACL or security group. "Latency from another continent" → CloudFront or Global Accelerator. "Cannot resolve DNS name" → Route 53 or Resolver configuration.</div>`},
+<div class="tip"><strong>Exam tip:</strong> About half of Domain 5 questions are troubleshooting scenarios. The symptom tells you where to look: "cannot reach the internet" route table or NAT Gateway. "Traffic rejected" NACL or security group. "Latency from another continent" CloudFront or Global Accelerator. "Cannot resolve DNS name" Route 53 or Resolver configuration.</div>`},
 
 {id:"task51",label:"Task 5.1 – VPC & Connectivity",title:"Task 5.1: Configure and maintain network infrastructure",sub:"VPC components, connectivity options, and network security services",html:`
 <div style="font-size:13px;font-weight:500;margin-bottom:10px">VPC component hierarchy</div>
 <div style="margin-bottom:14px">
 <div class="vpc-layer"><i class="ti ti-world vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Internet Gateway (IGW)</div><div class="vpc-desc">Attached to the VPC. Enables two-way communication between the VPC and the internet. Required for public subnets. One IGW per VPC.</div></div></div>
-<div class="vpc-layer"><i class="ti ti-route vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Route tables</div><div class="vpc-desc">Public subnet: has a route 0.0.0.0/0 → IGW. Private subnet: has a route 0.0.0.0/0 → NAT Gateway (for outbound internet only). Each subnet is associated with exactly one route table.</div></div></div>
+<div class="vpc-layer"><i class="ti ti-route vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Route tables</div><div class="vpc-desc">Public subnet: has a route 0.0.0.0/0 IGW. Private subnet: has a route 0.0.0.0/0 NAT Gateway (for outbound internet only). Each subnet is associated with exactly one route table.</div></div></div>
 <div class="vpc-layer"><i class="ti ti-arrows-exchange vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">NAT Gateway</div><div class="vpc-desc">Deployed in a public subnet with an Elastic IP. Allows instances in private subnets to initiate outbound internet connections without being reachable from the internet. Managed by AWS — highly available within an AZ. Deploy one per AZ for HA.</div></div></div>
 <div class="vpc-layer"><i class="ti ti-shield vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Network ACLs (NACLs)</div><div class="vpc-desc">Stateless firewall at the subnet boundary. Rules evaluated in number order (lowest first). Must have both inbound AND outbound rules for traffic to flow. Default NACL allows all traffic. Custom NACLs deny all by default.</div></div></div>
 <div class="vpc-layer"><i class="ti ti-lock vpc-icon" aria-hidden="true"></i><div class="vpc-body"><div class="vpc-title">Security Groups</div><div class="vpc-desc">Stateful firewall at the ENI (instance) level. Return traffic is automatically allowed. Only Allow rules — no explicit Deny. Multiple SGs can be attached to one instance. Default SG allows all traffic within the same SG.</div></div></div>
@@ -295,7 +296,7 @@ const PAGES=[
 • Takes weeks to provision<br>
 • Best for: high-volume data transfer, compliance requirements, latency-sensitive workloads<br><br>
 <strong>DX + VPN backup:</strong> a common pattern — use DX as primary, VPN as failover.<br><br>
-<strong>Exam tip:</strong> "Consistent bandwidth and low latency" → Direct Connect. "Quick setup, encrypted" → VPN.
+<strong>Exam tip:</strong> "Consistent bandwidth and low latency" Direct Connect. "Quick setup, encrypted" VPN.
 </div>
 </div>
 <div class="card">
@@ -320,7 +321,7 @@ const PAGES=[
 <tr><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Rule order</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">All rules evaluated together</td><td style="padding:4px 6px;border-bottom:0.5px solid var(--color-border-tertiary)">Lowest number wins (stops at first match)</td></tr>
 <tr><td style="padding:4px 6px">Default</td><td style="padding:4px 6px">Deny all inbound, allow all outbound</td><td style="padding:4px 6px">Default NACL: allow all. Custom NACL: deny all</td></tr>
 </table><br>
-<strong>Exam tip:</strong> "Block a specific IP address from accessing the VPC" → NACL (SGs cannot explicitly Deny). "Allow inbound without worrying about outbound rules" → Security Group (stateful). "Deny a CIDR block at the subnet level" → NACL.
+<strong>Exam tip:</strong> "Block a specific IP address from accessing the VPC" NACL (SGs cannot explicitly Deny). "Allow inbound without worrying about outbound rules" Security Group (stateful). "Deny a CIDR block at the subnet level" NACL.
 </div>
 </div>
 </div>
@@ -338,7 +339,7 @@ const PAGES=[
 <strong>Geolocation:</strong> routes based on the user's geographic location (country, continent, or US state). Use for regulatory compliance or localised content. Must have a default record for users who don't match any location.<br><br>
 <strong>Geoproximity (Traffic Flow only):</strong> routes based on geographic proximity, with an adjustable bias to expand/shrink routing coverage for a region.<br><br>
 <strong>Multivalue answer:</strong> returns up to 8 healthy records randomly. Client-side load balancing. Not a substitute for a load balancer but useful for simple round-robin with health check filtering.<br><br>
-<strong>IP-based:</strong> routes based on the client's IP address CIDR block (e.g. your corporate IP range → internal endpoint).
+<strong>IP-based:</strong> routes based on the client's IP address CIDR block (e.g. your corporate IP range internal endpoint).
 </div>
 </div>
 <div class="card">
@@ -349,7 +350,7 @@ Route 53 Resolver handles DNS for your VPC and enables hybrid DNS resolution bet
 <strong>Inbound endpoints:</strong> allow on-premises DNS servers to forward queries for AWS-hosted domains (e.g. internal.company.com hosted in a private hosted zone) to Route 53 Resolver.<br><br>
 <strong>Outbound endpoints:</strong> allow VPC resources to forward DNS queries for on-premises domains (e.g. corp.internal) to on-premises DNS servers. Configured via forwarding rules.<br><br>
 <strong>DNS Firewall:</strong> filters DNS queries from VPC resources. Block malicious domains or data exfiltration via DNS tunnelling. Attached at the VPC level.<br><br>
-<strong>Exam tip:</strong> "EC2 instances cannot resolve on-premises hostnames" → Route 53 Resolver outbound endpoint + forwarding rule. "On-premises servers cannot resolve Route 53 private hosted zone records" → Route 53 Resolver inbound endpoint.
+<strong>Exam tip:</strong> "EC2 instances cannot resolve on-premises hostnames" Route 53 Resolver outbound endpoint + forwarding rule. "On-premises servers cannot resolve Route 53 private hosted zone records" Route 53 Resolver inbound endpoint.
 </div>
 </div>
 <div class="card">
@@ -379,7 +380,7 @@ Both improve global performance but solve different problems:<br><br>
 • Provides two static Anycast IP addresses that don't change (unlike CloudFront which uses DNS)<br>
 • Best for: non-HTTP protocols (gaming, IoT, VoIP), applications requiring static IPs, consistent low-latency routing for all traffic types<br>
 • Instant failover (IP-level) vs CloudFront (DNS TTL-based)<br><br>
-<strong>Exam rule:</strong> "Cache content globally" → CloudFront. "Static IPs + non-HTTP + consistent routing" → Global Accelerator. "Fast failover without DNS TTL" → Global Accelerator.
+<strong>Exam rule:</strong> "Cache content globally" CloudFront. "Static IPs + non-HTTP + consistent routing" Global Accelerator. "Fast failover without DNS TTL" Global Accelerator.
 </div>
 </div>
 </div>
@@ -391,7 +392,7 @@ Both improve global performance but solve different problems:<br><br>
 <tr><td>Users in Germany must go to EU endpoint (GDPR)</td><td>Geolocation routing</td></tr>
 <tr><td>Route to whichever AWS region is fastest for the user</td><td>Latency routing</td></tr>
 <tr><td>Return up to 8 healthy IPs for client-side load balancing</td><td>Multivalue answer</td></tr>
-<tr><td>Corporate users (known IP range) → internal app</td><td>IP-based routing</td></tr>
+<tr><td>Corporate users (known IP range) internal app</td><td>IP-based routing</td></tr>
 </table>`},
 
 {id:"task53",label:"Task 5.3 – Troubleshooting",title:"Task 5.3: Troubleshoot network connectivity issues",sub:"Systematic diagnosis — the most-tested skill in this domain",html:`
@@ -404,7 +405,7 @@ A network diagnostic tool that performs logical analysis of the path between two
 <strong>How it works:</strong> you specify a source (ENI, instance, IGW, VGW, TGW) and a destination, and it analyses the route tables, security groups, NACLs, peering connections, and TGW route tables to determine if a path exists.<br><br>
 <strong>Output:</strong> either "reachable" with the path it found, or "not reachable" with the specific component that is blocking traffic (e.g. "Security Group sg-xxx is missing an inbound rule for port 443").<br><br>
 <strong>What it doesn't test:</strong> OS-level firewall rules, application-level issues, DNS resolution. It only analyses the AWS network configuration layer.<br><br>
-<strong>Exam tip:</strong> "Identify which network component is blocking traffic between two EC2 instances" → VPC Reachability Analyzer. Faster and more precise than manually checking every security group and route table.
+<strong>Exam tip:</strong> "Identify which network component is blocking traffic between two EC2 instances" VPC Reachability Analyzer. Faster and more precise than manually checking every security group and route table.
 </div>
 </div>
 <div class="card">
@@ -416,9 +417,9 @@ Flow logs capture metadata about network traffic at the ENI, subnet, or VPC leve
 • ACCEPT = traffic was allowed by security groups and NACLs<br>
 • REJECT = traffic was blocked by a security group or NACL<br><br>
 <strong>Troubleshooting patterns:</strong><br>
-• See REJECT on inbound → security group missing allow rule OR NACL deny rule<br>
-• See ACCEPT inbound but no response → check outbound security group or NACL (NACLs are stateless — return traffic needs an outbound allow)<br>
-• No flow log entries at all for a port → traffic not reaching the ENI (route table or upstream issue)<br><br>
+• See REJECT on inbound security group missing allow rule OR NACL deny rule<br>
+• See ACCEPT inbound but no response check outbound security group or NACL (NACLs are stateless — return traffic needs an outbound allow)<br>
+• No flow log entries at all for a port traffic not reaching the ENI (route table or upstream issue)<br><br>
 <strong>Does NOT capture:</strong> DNS queries to Route 53 Resolver, DHCP, metadata service (169.254.169.254), Windows licence activation traffic.
 </div>
 </div>
@@ -433,7 +434,7 @@ Analyses your network configuration to identify unintended network access to AWS
 • Find all EC2 instances that are reachable from the internet on port 22 or 3389<br>
 • Verify no path exists from the internet to a database subnet<br>
 • Audit all resources accessible from outside a specific trust boundary<br><br>
-<strong>Exam tip:</strong> "Audit which resources are accessible from outside our VPC" → Network Access Analyzer. "Debug why a specific connection is failing" → Reachability Analyzer.
+<strong>Exam tip:</strong> "Audit which resources are accessible from outside our VPC" Network Access Analyzer. "Debug why a specific connection is failing" Reachability Analyzer.
 </div>
 </div>
 <div class="card">
@@ -446,7 +447,7 @@ Analyses your network configuration to identify unintended network access to AWS
 • Verify the on-premises firewall is not blocking UDP 500 (IKE) or UDP 4500 (NAT-T)<br><br>
 <strong>Direct Connect issues:</strong><br>
 • Check the DX connection status in the console and CloudWatch<br>
-• BGP session down → check BGP configuration, ASN, and authentication<br>
+• BGP session down check BGP configuration, ASN, and authentication<br>
 • Check Virtual Interface (VIF) status: public VIF for AWS public services, private VIF for VPC access, transit VIF for TGW<br><br>
 <strong>On-premises cannot reach VPC resources:</strong><br>
 • Check that the VGW or TGW has route propagation enabled in the VPC route tables<br>
@@ -458,8 +459,8 @@ Analyses your network configuration to identify unintended network access to AWS
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">Symptom-to-cause diagnostic map</div>
 <table class="tbl">
 <tr><th>Symptom</th><th>Where to look first</th><th>Likely cause</th></tr>
-<tr><td>EC2 cannot reach internet (private subnet)</td><td>Route table</td><td>Missing 0.0.0.0/0 → NAT Gateway route, or NAT GW not in public subnet</td></tr>
-<tr><td>EC2 cannot reach internet (public subnet)</td><td>Route table + SG</td><td>Missing 0.0.0.0/0 → IGW route, or SG blocks outbound</td></tr>
+<tr><td>EC2 cannot reach internet (private subnet)</td><td>Route table</td><td>Missing 0.0.0.0/0 NAT Gateway route, or NAT GW not in public subnet</td></tr>
+<tr><td>EC2 cannot reach internet (public subnet)</td><td>Route table + SG</td><td>Missing 0.0.0.0/0 IGW route, or SG blocks outbound</td></tr>
 <tr><td>Inbound traffic rejected (flow log shows REJECT)</td><td>Security group / NACL</td><td>SG missing inbound allow rule, OR NACL has an explicit deny before the allow rule</td></tr>
 <tr><td>Traffic accepted inbound but no response received</td><td>NACL outbound rules</td><td>NACL missing outbound allow for return traffic (NACLs are stateless)</td></tr>
 <tr><td>Two VPCs peered but cannot communicate</td><td>Route tables (both VPCs)</td><td>Route tables not updated to route peer CIDR through peering connection</td></tr>
@@ -482,7 +483,7 @@ html:QS.map((q,i)=>`
 {id:"tips",label:"Exam Tips & Final Review",title:"Domain 5 exam tips, traps, and full-course wrap-up",sub:"Domain 5 traps + complete SOA-C03 cheat sheet across all 5 domains",html:`
 <div style="font-size:13px;font-weight:500;margin-bottom:10px">Domain 5 common traps</div>
 <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-<div class="warn"><strong>Trap 1 — VPC peering is not automatic:</strong> Creating a peering connection and accepting it only establishes the logical link. You must manually add routes in both VPCs' route tables. Without routes, traffic has nowhere to go. "Peering is Active but instances can't communicate" → missing route table entries.</div>
+<div class="warn"><strong>Trap 1 — VPC peering is not automatic:</strong> Creating a peering connection and accepting it only establishes the logical link. You must manually add routes in both VPCs' route tables. Without routes, traffic has nowhere to go. "Peering is Active but instances can't communicate" missing route table entries.</div>
 <div class="warn"><strong>Trap 2 — NACLs are stateless:</strong> Unlike security groups, NACLs require explicit rules for both inbound AND outbound traffic. If you allow inbound TCP 443 but forget the ephemeral port range (1024–65535) for return traffic on the outbound side, the connection will fail. This is the most common NACL mistake.</div>
 <div class="warn"><strong>Trap 3 — ACM certs for CloudFront must be in us-east-1:</strong> No matter where your origin is or where your users are, the ACM TLS certificate attached to a CloudFront distribution must be in us-east-1. Certificates in other regions cannot be used with CloudFront. This is tested consistently.</div>
 <div class="warn"><strong>Trap 4 — Route 53 health checks cannot reach private endpoints:</strong> Route 53 health checkers use public IP addresses. They cannot directly reach private ALBs, EC2 instances with only private IPs, or anything behind a NAT. For private endpoints, use a CloudWatch alarm (e.g. ALB HealthyHostCount) and configure the Route 53 health check to monitor that alarm.</div>
@@ -493,37 +494,37 @@ html:QS.map((q,i)=>`
 <div class="card" style="margin-bottom:8px">
 <div class="ch" onclick="tog(this)"><span class="cht">Domain 1 — Monitoring, Logging &amp; Remediation (22%)</span><span class="badge" style="background:#E6F1FB;color:#0C447C">22%</span></div>
 <div class="cb">
-"Who made the API call?" → CloudTrail | "Why is traffic rejected?" → VPC Flow Logs | "Latency across microservices?" → X-Ray | "Which IPs cause most errors?" → Contributor Insights | "Alert on log pattern?" → Metric filter → alarm | "Query logs?" → Logs Insights | "Auto-fix non-compliant resource?" → Config + SSM remediation | "Right-size EC2?" → Compute Optimizer | "Reduce alarm noise?" → Composite alarm | "Stream logs to S3 in real-time?" → Subscription filter → Kinesis Firehose
+"Who made the API call?" CloudTrail | "Why is traffic rejected?" VPC Flow Logs | "Latency across microservices?" X-Ray | "Which IPs cause most errors?" Contributor Insights | "Alert on log pattern?" Metric filter alarm | "Query logs?" Logs Insights | "Auto-fix non-compliant resource?" Config + SSM remediation | "Right-size EC2?" Compute Optimizer | "Reduce alarm noise?" Composite alarm | "Stream logs to S3 in real-time?" Subscription filter Kinesis Firehose
 </div>
 </div>
 <div class="card" style="margin-bottom:8px">
 <div class="ch" onclick="tog(this)"><span class="cht">Domain 2 — Reliability &amp; Business Continuity (22%)</span><span class="badge" style="background:#E1F5EE;color:#085041">22%</span></div>
 <div class="cb">
-"Automatic DB failover across AZs?" → RDS Multi-AZ (synchronous) | "Read scaling for RDS?" → Read Replica (async, manual promotion) | "RTO near-zero?" → Multi-site active-active | "RTO minutes, complete stack running?" → Warm standby | "RTO hours, only DB pre-provisioned?" → Pilot light | "RTO hours/days, lowest cost?" → Backup &amp; restore | "S3 cross-region within 15 min?" → CRR + RTC | "DynamoDB to any past second?" → PITR | "Centralise backups?" → AWS Backup + Organizations | "Responsive scaling?" → Target tracking on ALBRequestCountPerTarget
+"Automatic DB failover across AZs?" RDS Multi-AZ (synchronous) | "Read scaling for RDS?" Read Replica (async, manual promotion) | "RTO near-zero?" Multi-site active-active | "RTO minutes, complete stack running?" Warm standby | "RTO hours, only DB pre-provisioned?" Pilot light | "RTO hours/days, lowest cost?" Backup &amp; restore | "S3 cross-region within 15 min?" CRR + RTC | "DynamoDB to any past second?" PITR | "Centralise backups?" AWS Backup + Organizations | "Responsive scaling?" Target tracking on ALBRequestCountPerTarget
 </div>
 </div>
 <div class="card" style="margin-bottom:8px">
 <div class="ch" onclick="tog(this)"><span class="cht">Domain 3 — Deployment, Provisioning &amp; Automation (22%)</span><span class="badge" style="background:#EEEDFE;color:#3C3489">22%</span></div>
 <div class="cb">
-"Script on fleet without SSH?" → SSM Run Command | "Patch on schedule + compliance?" → Patch Manager + Maintenance Window | "Enforce config continuously?" → State Manager | "Multi-step AWS API runbook?" → SSM Automation | "Deploy CFN to all org accounts?" → StackSets service-managed | "Preview CFN changes?" → Change set | "Hardened AMIs on schedule?" → EC2 Image Builder | "Auto-rotate DB creds?" → Secrets Manager | "Store config cheaply?" → Parameter Store | "Container AccessDenied on S3?" → Fix ECS task role | "Zero-downtime Lambda deploy?" → Lambda alias + CodeDeploy canary + CW alarm | "Safest Beanstalk deploy?" → Immutable
+"Script on fleet without SSH?" SSM Run Command | "Patch on schedule + compliance?" Patch Manager + Maintenance Window | "Enforce config continuously?" State Manager | "Multi-step AWS API runbook?" SSM Automation | "Deploy CFN to all org accounts?" StackSets service-managed | "Preview CFN changes?" Change set | "Hardened AMIs on schedule?" EC2 Image Builder | "Auto-rotate DB creds?" Secrets Manager | "Store config cheaply?" Parameter Store | "Container AccessDenied on S3?" Fix ECS task role | "Zero-downtime Lambda deploy?" Lambda alias + CodeDeploy canary + CW alarm | "Safest Beanstalk deploy?" Immutable
 </div>
 </div>
 <div class="card" style="margin-bottom:8px">
 <div class="ch" onclick="tog(this)"><span class="cht">Domain 4 — Security &amp; Compliance (16%)</span><span class="badge" style="background:#FAECE7;color:#712B13">16%</span></div>
 <div class="cb">
-"Prevent action across all accounts?" → SCP Deny at root OU | "Detect compromised creds / unusual API?" → GuardDuty | "Find PII in S3?" → Macie | "Scan EC2/Lambda/containers for CVEs?" → Inspector | "All findings in one place?" → Security Hub | "Resource shared externally?" → IAM Access Analyzer | "Continuous compliance + auto-fix?" → Config + SSM | "Cap identity's max permissions?" → Permission boundary | "Multi-account SSO?" → IAM Identity Center | "Landing zone + guardrails?" → Control Tower | "Encrypt existing RDS/EBS?" → Snapshot → copy with encryption → restore | "TLS for ALB, auto-renew?" → ACM
+"Prevent action across all accounts?" SCP Deny at root OU | "Detect compromised creds / unusual API?" GuardDuty | "Find PII in S3?" Macie | "Scan EC2/Lambda/containers for CVEs?" Inspector | "All findings in one place?" Security Hub | "Resource shared externally?" IAM Access Analyzer | "Continuous compliance + auto-fix?" Config + SSM | "Cap identity's max permissions?" Permission boundary | "Multi-account SSO?" IAM Identity Center | "Landing zone + guardrails?" Control Tower | "Encrypt existing RDS/EBS?" Snapshot copy with encryption restore | "TLS for ALB, auto-renew?" ACM
 </div>
 </div>
 <div class="card" style="margin-bottom:8px">
 <div class="ch" onclick="tog(this)"><span class="cht">Domain 5 — Networking &amp; Content Delivery (18%)</span><span class="badge" style="background:#E6F1FB;color:#0C447C">18%</span></div>
 <div class="cb">
-"Private subnet needs internet?" → NAT Gateway in public subnet | "Block specific IP at subnet?" → NACL deny rule | "VPCs peered but no traffic?" → Update route tables in both VPCs | "Multi-VPC hub and spoke?" → Transit Gateway | "Private access to S3/DynamoDB?" → VPC Gateway Endpoint | "Private access to other AWS services?" → Interface VPC Endpoint (PrivateLink) | "Dedicated line, consistent bandwidth?" → Direct Connect | "Encrypted tunnel, quick setup?" → Site-to-Site VPN | "Cache content globally?" → CloudFront | "Static IPs + non-HTTP + instant failover?" → Global Accelerator | "CloudFront cert region?" → us-east-1 | "Health check for private ALB?" → CloudWatch alarm-based health check | "Debug VPC path?" → Reachability Analyzer | "Audit internet-exposed resources?" → Network Access Analyzer
+"Private subnet needs internet?" NAT Gateway in public subnet | "Block specific IP at subnet?" NACL deny rule | "VPCs peered but no traffic?" Update route tables in both VPCs | "Multi-VPC hub and spoke?" Transit Gateway | "Private access to S3/DynamoDB?" VPC Gateway Endpoint | "Private access to other AWS services?" Interface VPC Endpoint (PrivateLink) | "Dedicated line, consistent bandwidth?" Direct Connect | "Encrypted tunnel, quick setup?" Site-to-Site VPN | "Cache content globally?" CloudFront | "Static IPs + non-HTTP + instant failover?" Global Accelerator | "CloudFront cert region?" us-east-1 | "Health check for private ALB?" CloudWatch alarm-based health check | "Debug VPC path?" Reachability Analyzer | "Audit internet-exposed resources?" Network Access Analyzer
 </div>
 </div>
 <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 5 of SOA-C03')">More Domain 5 questions ↗</button>
-<button class="nb" onclick="sendPrompt('Give me a 50-question full SOA-C03 mock exam covering all 5 domains')">Full mock exam ↗</button>
-<button class="nb" onclick="sendPrompt('What are the hardest topics across all 5 SOA-C03 domains and how do I master them?')">Hardest topics review ↗</button>
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 5 of SOA-C03')">More Domain 5 questions</button>
+<a class="nb" href="quiz_mode.html">Full timed quiz mode</a>
+<button class="nb" onclick="sendPrompt('What are the hardest topics across all 5 SOA-C03 domains and how do I master them?')">Hardest topics review</button>
 </div>`}
 ];
 
@@ -564,9 +565,9 @@ PAGES.forEach((p,i)=>{
   pg.className='pg'+(i===0?' on':'');
   pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
 <div class="nr">
-<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>Back</button>
 <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
-<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next</button>
 </div>`;
   cEl.appendChild(pg);
 });

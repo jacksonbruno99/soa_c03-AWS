@@ -108,7 +108,7 @@ body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] 
 body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok2,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
 body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
 body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
-.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;min-width:74px;height:42px;border-radius:999px;padding:0 14px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .theme-toggle:hover{border-color:#A78BFA}
 body:not([data-theme="light"]) .theme-sun{display:none}
 body[data-theme="light"] .theme-moon{display:none}
@@ -167,11 +167,12 @@ code{white-space:normal;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+a.nb{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 </style>
 
-<a class="home-link" href="index.html" aria-label="Back to main page">← Main page</a>
+<a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
 <button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 3 lesson">Share</button>
-<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">Light</span><span class="theme-moon">Dark</span></button>
 <h2 class="sr-only">Domain 3 SOA-C03 lesson: Deployment, Provisioning and Automation — CloudFormation, SSM, containers, and CI/CD deployment strategies</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
 <div class="full-dive-callout"><strong>High-yield notes here, full reference next.</strong><p>This lesson keeps the focused exam path. Open the full deep dive for CloudFormation, SSM, containers, and deployment edge cases.</p><a href="domain3_deep_dive.html">Open full deep dive</a></div>
@@ -237,11 +238,11 @@ const PAGES=[
 <div style="font-size:13px;font-weight:500;margin-bottom:8px">Four task areas</div>
 <div class="frow">
 <div class="fb" style="background:#EEEDFE;color:#3C3489">Task 3.1<br><span style="font-size:11px;font-weight:400">Provision resources</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#E6F1FB;color:#0C447C">Task 3.2<br><span style="font-size:11px;font-weight:400">Automate management</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#E1F5EE;color:#085041">Task 3.3<br><span style="font-size:11px;font-weight:400">Container workloads</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#FAEEDA;color:#633806">Task 3.4<br><span style="font-size:11px;font-weight:400">Deployment strategies</span></div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
@@ -283,7 +284,7 @@ StackSets extend CloudFormation to deploy one template across multiple accounts 
 • Parallel deployment — deploy to all accounts simultaneously<br>
 • Sequential — deploy region by region with a failure threshold<br>
 • Max concurrent accounts — limit simultaneous deployments<br><br>
-<strong>Exam tip:</strong> "Deploy a CloudFormation template to all accounts in an Organization" → StackSets with service-managed permissions. Always.
+<strong>Exam tip:</strong> "Deploy a CloudFormation template to all accounts in an Organization" StackSets with service-managed permissions. Always.
 </div>
 </div>
 <div class="card">
@@ -297,7 +298,7 @@ Automates the creation, testing, distribution, and lifecycle management of AMIs 
 4. <strong>Distribution settings:</strong> which regions and accounts receive the final AMI<br>
 5. <strong>Pipeline schedule:</strong> run on a cron or on new base image release<br><br>
 <strong>Integration:</strong> works with SSM Parameter Store to store the latest approved AMI ID, which Auto Scaling groups can reference dynamically.<br><br>
-<strong>Exam tip:</strong> "Ensure all EC2 instances use a patched, approved AMI automatically" → Image Builder pipeline + ASG Instance Refresh.
+<strong>Exam tip:</strong> "Ensure all EC2 instances use a patched, approved AMI automatically" Image Builder pipeline + ASG Instance Refresh.
 </div>
 </div>
 <div class="card">
@@ -331,9 +332,9 @@ The AWS CDK (Cloud Development Kit) lets you define infrastructure using familia
 <div class="ch" onclick="tog(this)"><span class="cht">SSM Run Command</span><span class="badge" style="background:#EEEDFE;color:#3C3489">Core</span></div>
 <div class="cb">
 Run scripts or commands on EC2 instances (or on-premises servers with SSM Agent) without opening SSH or RDP.<br><br>
-<strong>How it works:</strong> Target instances by instance ID, tag, or resource group → select an SSM document (e.g. AWS-RunShellScript, AWS-RunPowerShellScript) → provide commands → results appear in console, S3, or CloudWatch Logs.<br><br>
+<strong>How it works:</strong> Target instances by instance ID, tag, or resource group select an SSM document (e.g. AWS-RunShellScript, AWS-RunPowerShellScript) provide commands results appear in console, S3, or CloudWatch Logs.<br><br>
 <strong>Rate control:</strong> set concurrency (how many instances run at once) and error threshold (stop if X% fail) — critical for large fleets.<br><br>
-<strong>Exam tip:</strong> any question about "run a script on multiple EC2 instances without SSH" → SSM Run Command.
+<strong>Exam tip:</strong> any question about "run a script on multiple EC2 instances without SSH" SSM Run Command.
 </div>
 </div>
 <div class="card">
@@ -344,7 +345,7 @@ Automates the patching of EC2 and on-premises instances across operating systems
 <strong>Patch group:</strong> tag-based grouping (tag key = <code>Patch Group</code>) — associates instances with a specific patch baseline.<br><br>
 <strong>Maintenance Window:</strong> defines a schedule (e.g. every Sunday 02:00–04:00) during which patching (and other SSM tasks) run. Limits the blast radius of patching to a controlled window.<br><br>
 <strong>Patch compliance:</strong> reports which instances are compliant/non-compliant. Visible in SSM Compliance dashboard and exportable to S3 for audit.<br><br>
-<strong>Exam tip:</strong> "Patch all EC2 instances on a schedule, report compliance" → Patch Manager + Maintenance Window.
+<strong>Exam tip:</strong> "Patch all EC2 instances on a schedule, report compliance" Patch Manager + Maintenance Window.
 </div>
 </div>
 <div class="card">
@@ -372,7 +373,7 @@ Enforces a desired configuration state on EC2 instances by repeatedly applying a
 • Ensure certain services are always enabled<br><br>
 <strong>Association:</strong> links a document, a schedule, and a set of target instances.<br><br>
 <strong>Difference from Run Command:</strong> Run Command is one-time. State Manager is continuous — it re-applies the document on schedule to drift-correct.<br><br>
-<strong>Exam tip:</strong> "Ensure X is always configured on all instances" (ongoing, not one-time) → State Manager association.
+<strong>Exam tip:</strong> "Ensure X is always configured on all instances" (ongoing, not one-time) State Manager association.
 </div>
 </div>
 <div class="card">
@@ -388,7 +389,7 @@ Enforces a desired configuration state on EC2 instances by repeatedly applying a
 • Built-in automatic rotation for RDS, Redshift, DocumentDB, and custom Lambda rotation<br>
 • Versioning of secrets, cross-account access<br>
 • Best for: database credentials, API keys that need automatic rotation<br><br>
-<strong>Exam rule:</strong> if the question mentions "automatic rotation" → Secrets Manager. If it's just storing a value (even encrypted) → Parameter Store is sufficient and cheaper.
+<strong>Exam rule:</strong> if the question mentions "automatic rotation" Secrets Manager. If it's just storing a value (even encrypted) Parameter Store is sufficient and cheaper.
 </div>
 </div>
 <div class="card">
@@ -396,12 +397,12 @@ Enforces a desired configuration state on EC2 instances by repeatedly applying a
 <div class="cb">
 Event-driven automation triggers remediation based on real-time events rather than schedules.<br><br>
 <strong>Common patterns:</strong><br>
-• EC2 state change (stopped) → EventBridge → Lambda → SNS alert<br>
-• CloudTrail API call (CreateSecurityGroup) → EventBridge → SSM Automation to check/remediate<br>
-• CloudWatch Alarm (ALARM state) → EventBridge → SSM Automation (restart service)<br>
-• Config rule NON_COMPLIANT → SSM Automation (auto-remediation)<br><br>
+• EC2 state change (stopped) EventBridge Lambda SNS alert<br>
+• CloudTrail API call (CreateSecurityGroup) EventBridge SSM Automation to check/remediate<br>
+• CloudWatch Alarm (ALARM state) EventBridge SSM Automation (restart service)<br>
+• Config rule NON_COMPLIANT SSM Automation (auto-remediation)<br><br>
 <strong>Step Functions:</strong> for complex multi-step automation that needs conditional logic, parallel branches, retries, and error handling — more powerful than a single Lambda or SSM document.<br><br>
-<strong>Exam tip:</strong> "Auto-respond to an AWS event" → EventBridge rule → target (Lambda / SSM / Step Functions). The target depends on complexity of the remediation.
+<strong>Exam tip:</strong> "Auto-respond to an AWS event" EventBridge rule target (Lambda / SSM / Step Functions). The target depends on complexity of the remediation.
 </div>
 </div>
 </div>
@@ -414,7 +415,7 @@ Event-driven automation triggers remediation based on real-time events rather th
 <tr><td>Continuously enforce a desired config state</td><td>State Manager association</td></tr>
 <tr><td>Store app config and AMI IDs cheaply</td><td>Parameter Store (Standard)</td></tr>
 <tr><td>Auto-rotate database credentials</td><td>Secrets Manager</td></tr>
-<tr><td>Trigger remediation from a CloudWatch alarm</td><td>EventBridge → SSM Automation</td></tr>
+<tr><td>Trigger remediation from a CloudWatch alarm</td><td>EventBridge SSM Automation</td></tr>
 </table>`},
 
 {id:"task33",label:"Task 3.3 – Containers",title:"Task 3.3: Deploy and manage container workloads",sub:"ECS, EKS, ECR — new in SOA-C03, tested at operational depth",html:`
@@ -431,7 +432,7 @@ Event-driven automation triggers remediation based on real-time events rather th
 • Execution role (what ECS can do on your behalf — pull image, write logs)<br><br>
 <strong>EC2 launch type:</strong> you manage the underlying EC2 instances in the ECS cluster. More control, more ops overhead.<br><br>
 <strong>Fargate launch type:</strong> serverless — AWS manages the underlying infrastructure. You pay per task CPU/memory. No cluster node management. Preferred for SOA-C03 exam scenarios.<br><br>
-<strong>Key exam trap:</strong> the task role (what your app accesses) and the execution role (what ECS uses to run the task) are different IAM roles. AccessDenied inside the container → fix the task role.
+<strong>Key exam trap:</strong> the task role (what your app accesses) and the execution role (what ECS uses to run the task) are different IAM roles. AccessDenied inside the container fix the task role.
 </div>
 </div>
 <div class="card">
@@ -453,7 +454,7 @@ Fully managed container image registry, tightly integrated with ECS and EKS.<br>
 <strong>Image scanning:</strong> ECR can scan images for known CVEs on push (basic scanning) or continuously (enhanced scanning via Inspector). Findings appear in the ECR console and Inspector.<br><br>
 <strong>Lifecycle policies:</strong> automatically expire old images (e.g. delete untagged images older than 30 days, keep only the last 10 tagged images). Controls storage cost.<br><br>
 <strong>Cross-region and cross-account replication:</strong> replicate images to other regions or accounts for multi-region deployments.<br><br>
-<strong>Exam tip:</strong> "Scan container images for vulnerabilities" → ECR image scanning + Amazon Inspector.
+<strong>Exam tip:</strong> "Scan container images for vulnerabilities" ECR image scanning + Amazon Inspector.
 </div>
 </div>
 <div class="card">
@@ -464,7 +465,7 @@ Amazon EKS is managed Kubernetes. The exam tests operational knowledge, not deep
 <strong>kubeconfig:</strong> use <code>aws eks update-kubeconfig</code> to configure kubectl to connect to your EKS cluster.<br><br>
 <strong>IAM for EKS:</strong> pods use IAM Roles for Service Accounts (IRSA) — maps a Kubernetes service account to an IAM role so pods can access AWS services securely without node-level credentials.<br><br>
 <strong>Container Insights for EKS:</strong> deploy the CloudWatch agent as a DaemonSet to collect cluster, node, pod, and container metrics.<br><br>
-<strong>EKS vs ECS exam decision:</strong> ECS = simpler, AWS-native, tight integration. EKS = Kubernetes-compatible, portable, more complexity. Questions about "team already uses Kubernetes" → EKS.
+<strong>EKS vs ECS exam decision:</strong> ECS = simpler, AWS-native, tight integration. EKS = Kubernetes-compatible, portable, more complexity. Questions about "team already uses Kubernetes" EKS.
 </div>
 </div>
 </div>
@@ -554,18 +555,18 @@ Beanstalk is a PaaS layer on top of EC2, ALB, and Auto Scaling. Its deployment p
 • <strong>Rolling with additional batch:</strong> no capacity reduction, slightly higher cost<br>
 • <strong>Immutable:</strong> new ASG, safest, highest cost, easy rollback<br>
 • <strong>Traffic splitting:</strong> canary testing — Beanstalk's built-in canary equivalent<br><br>
-<strong>Exam tip:</strong> "Zero downtime and easy rollback on Beanstalk" → Immutable or Traffic splitting. "Zero downtime but cost-conscious" → Rolling with additional batch.
+<strong>Exam tip:</strong> "Zero downtime and easy rollback on Beanstalk" Immutable or Traffic splitting. "Zero downtime but cost-conscious" Rolling with additional batch.
 </div>
 </div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">CI/CD pipeline with CodePipeline</div>
 <div class="pipeline-row">
 <div class="pstep"><div class="pstep-title" style="color:#3C3489">Source</div><div class="pstep-sub">CodeCommit, GitHub, S3, ECR</div></div>
-<div class="fa" style="align-self:center">→</div>
+<div class="fa" style="align-self:center"></div>
 <div class="pstep"><div class="pstep-title" style="color:#3C3489">Build</div><div class="pstep-sub">CodeBuild compiles, tests, creates artifact</div></div>
-<div class="fa" style="align-self:center">→</div>
+<div class="fa" style="align-self:center"></div>
 <div class="pstep"><div class="pstep-title" style="color:#3C3489">Test</div><div class="pstep-sub">Integration or manual approval gate</div></div>
-<div class="fa" style="align-self:center">→</div>
+<div class="fa" style="align-self:center"></div>
 <div class="pstep"><div class="pstep-title" style="color:#3C3489">Deploy</div><div class="pstep-sub">CodeDeploy, Beanstalk, CloudFormation, ECS</div></div>
 </div>
 <div class="tip"><strong>Exam tip:</strong> CodePipeline orchestrates the pipeline — it does not build or deploy itself. CodeBuild builds. CodeDeploy deploys. CloudFormation can be a deploy action inside a pipeline. Manual approval actions in CodePipeline send an SNS notification and pause until a human approves or rejects.</div>`},
@@ -582,10 +583,10 @@ html:QS.map((q,i)=>`
 <div style="display:flex;flex-direction:column;gap:8px">
 <div class="warn"><strong>Trap 1 — ECS task role vs execution role:</strong> The execution role is used by ECS/Fargate to pull the image from ECR and write logs to CloudWatch. The task role is used by your application code to call AWS services (S3, DynamoDB, SQS). If your container gets AccessDenied when calling an AWS API, fix the task role. This distinction appears in multiple exam questions.</div>
 <div class="warn"><strong>Trap 2 — StackSets permission models:</strong> Self-managed StackSets require you to manually create IAM roles in every target account. Service-managed StackSets integrate with AWS Organizations and need no manual IAM setup — and can automatically deploy to newly created accounts. For large organizations, the answer is always service-managed.</div>
-<div class="warn"><strong>Trap 3 — SSM Run Command vs State Manager:</strong> Run Command is one-time execution. State Manager is continuous enforcement. "Run this script on all instances now" → Run Command. "Ensure this configuration is always applied on all instances" → State Manager association.</div>
+<div class="warn"><strong>Trap 3 — SSM Run Command vs State Manager:</strong> Run Command is one-time execution. State Manager is continuous enforcement. "Run this script on all instances now" Run Command. "Ensure this configuration is always applied on all instances" State Manager association.</div>
 <div class="warn"><strong>Trap 4 — Parameter Store vs Secrets Manager:</strong> Both can store encrypted secrets, but only Secrets Manager supports automatic rotation (via built-in integrations or custom Lambda). If the question mentions database credentials that need rotating automatically, Secrets Manager is the answer. If it just mentions storing a value (even encrypted), Parameter Store is sufficient and cheaper.</div>
 <div class="warn"><strong>Trap 5 — Immutable vs blue/green on Beanstalk:</strong> Immutable launches new instances within the same Beanstalk environment (new ASG). Blue/green in Beanstalk context means cloning the entire environment and using Route 53 (or CNAME swap) to cut over — it's done manually via "Swap Environment URLs". These are distinct, and questions sometimes conflate them.</div>
-<div class="warn"><strong>Trap 6 — CloudFormation change sets don't auto-apply:</strong> Creating a change set only previews changes — it does not execute them. You must explicitly execute the change set to apply the changes. Questions about "safely preview and then apply" always involve both steps: create change set → review → execute change set.</div>
+<div class="warn"><strong>Trap 6 — CloudFormation change sets don't auto-apply:</strong> Creating a change set only previews changes — it does not execute them. You must explicitly execute the change set to apply the changes. Questions about "safely preview and then apply" always involve both steps: create change set review execute change set.</div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:16px 0 8px">Quick-fire cheat sheet</div>
 <table class="tbl">
@@ -606,8 +607,8 @@ html:QS.map((q,i)=>`
 <tr><td>ECS blue/green with automatic rollback</td><td>CodeDeploy ECS deployment group + CW alarm</td></tr>
 </table>
 <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 3 of SOA-C03')">More practice questions ↗</button>
-<button class="nb" onclick="sendPrompt('Teach me Domain 4 of SOA-C03 (Security and Compliance) in depth with examples and exam tips')">Next: Domain 4 ↗</button>
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 3 of SOA-C03')">More practice questions</button>
+<a class="nb" href="domain4_security_compliance_lesson.html">Next: Domain 4</a>
 </div>`}
 ];
 
@@ -648,9 +649,9 @@ PAGES.forEach((p,i)=>{
   pg.className='pg'+(i===0?' on':'');
   pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
 <div class="nr">
-<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>Back</button>
 <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
-<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next</button>
 </div>`;
   cEl.appendChild(pg);
 });

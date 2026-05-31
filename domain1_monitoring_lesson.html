@@ -99,7 +99,7 @@ body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] 
 body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok2,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
 body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
 body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
-.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;min-width:74px;height:42px;border-radius:999px;padding:0 14px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .theme-toggle:hover{border-color:#60A5FA}
 body:not([data-theme="light"]) .theme-sun{display:none}
 body[data-theme="light"] .theme-moon{display:none}
@@ -154,11 +154,12 @@ code{white-space:normal;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+a.nb{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 </style>
 
-<a class="home-link" href="index.html" aria-label="Back to main page">← Main page</a>
+<a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
 <button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 1 lesson">Share</button>
-<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">Light</span><span class="theme-moon">Dark</span></button>
 <h2 class="sr-only">Domain 1 SOA-C03 full lesson: monitoring, logging, remediation with practice questions</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
 <div class="full-dive-callout"><strong>High-yield notes here, full reference next.</strong><p>This lesson keeps the focused exam path. Open the full deep dive for service internals, advanced traps, and harder scenarios.</p><a href="domain1_deep_dive.html">Open full deep dive</a></div>
@@ -216,7 +217,7 @@ const PAGES=[
 <div class="cgrid">
 <div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #185FA5">
 <div style="font-size:13px;font-weight:500;margin-bottom:6px">What this domain tests</div>
-<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Your ability to collect, analyse, and act on operational data. The exam frames this as a continuous loop: <em>observe → detect → remediate → optimise.</em></div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Your ability to collect, analyse, and act on operational data. The exam frames this as a continuous loop: <em>observe detect remediate optimise.</em></div>
 </div>
 <div style="border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;border-left:3px solid #3B6D11">
 <div style="font-size:13px;font-weight:500;margin-bottom:6px">Real-world job this maps to</div>
@@ -226,9 +227,9 @@ const PAGES=[
 <div style="font-size:13px;font-weight:500;margin-bottom:8px">Three task areas</div>
 <div class="frow">
 <div class="fb" style="background:#E6F1FB;color:#0C447C">Task 1.1<br><span style="font-weight:400;font-size:11px">Metrics &amp; alarms</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#E1F5EE;color:#085041">Task 1.2<br><span style="font-weight:400;font-size:11px">Logs &amp; tracing</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#EEEDFE;color:#3C3489">Task 1.3<br><span style="font-weight:400;font-size:11px">Remediate &amp; optimise</span></div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
@@ -238,11 +239,11 @@ const PAGES=[
 <div class="sc"><div class="sn">CloudTrail</div><div class="sd">API audit trail across accounts and regions</div></div>
 <div class="sc"><div class="sn">VPC Flow Logs</div><div class="sd">Network traffic accept/reject records per ENI</div></div>
 <div class="sc"><div class="sn">X-Ray</div><div class="sd">Distributed tracing, service maps, latency</div></div>
-<div class="sc"><div class="sn">EventBridge</div><div class="sd">Event rules → Lambda / SSM / SNS actions</div></div>
+<div class="sc"><div class="sn">EventBridge</div><div class="sd">Event rules Lambda / SSM / SNS actions</div></div>
 <div class="sc"><div class="sn">AWS Config</div><div class="sd">Config rules, compliance drift, auto-remediation</div></div>
 <div class="sc"><div class="sn">Compute Optimizer</div><div class="sd">Right-sizing for EC2, Lambda, EBS, ASG</div></div>
 </div>
-<div class="tip"><strong>Exam tip:</strong> About a third of Domain 1 questions are scenario-based. You'll be given a symptom and asked which combination of services solves it. Always think: <em>CloudWatch metric → alarm → action.</em></div>`},
+<div class="tip"><strong>Exam tip:</strong> About a third of Domain 1 questions are scenario-based. You'll be given a symptom and asked which combination of services solves it. Always think: <em>CloudWatch metric alarm action.</em></div>`},
 
 {id:"task11",label:"Task 1.1 – Metrics & Alarms",
  title:"Task 1.1: Metrics, alarms, and filters",sub:"The foundation of everything — know this cold",
@@ -265,7 +266,7 @@ const PAGES=[
 <strong>Evaluation period:</strong> how many data points are collected before evaluating the threshold.<br><br>
 <strong>Datapoints to alarm:</strong> how many of those must breach to trigger ALARM. e.g. "3 out of 5" = M out of N evaluation.<br><br>
 <strong>Actions you can trigger:</strong><br>
-• SNS notification (→ email, SMS, Lambda)<br>
+• SNS notification ( email, SMS, Lambda)<br>
 • Auto Scaling: scale out or in<br>
 • EC2 action: stop, terminate, reboot, recover<br>
 • Systems Manager OpsItem<br><br>
@@ -276,7 +277,7 @@ const PAGES=[
 <div class="ch" onclick="tog(this)"><span class="cht">Metric filters on log groups</span><span class="badge" style="background:#E1F5EE;color:#085041">Important</span></div>
 <div class="cb">
 Metric filters turn <em>log data</em> into <em>CloudWatch metrics</em>.<br><br>
-<strong>Workflow:</strong> log group → create filter with pattern → filter publishes a count to a custom metric → set alarm on that metric.<br><br>
+<strong>Workflow:</strong> log group create filter with pattern filter publishes a count to a custom metric set alarm on that metric.<br><br>
 <strong>Pattern examples:</strong><br>
 • <code>[ERROR]</code> matches lines containing ERROR<br>
 • <code>[status=5*]</code> matches 5xx HTTP status codes<br>
@@ -293,12 +294,12 @@ Analyses log data to find the <em>top contributors</em> to operational problems 
 </div>
 </div>
 </div>
-<div class="tip"><strong>Memorise this chain:</strong> EC2 CPUUtilization (Detailed Monitoring ON, 1-min data) → CloudWatch Alarm with 3/5 M-of-N breach → SNS topic → email + Lambda for auto-remediation.</div>
+<div class="tip"><strong>Memorise this chain:</strong> EC2 CPUUtilization (Detailed Monitoring ON, 1-min data) CloudWatch Alarm with 3/5 M-of-N breach SNS topic email + Lambda for auto-remediation.</div>
 <table class="tbl">
 <tr><th>Scenario</th><th>Right solution</th></tr>
 <tr><td>Alert when CPU stays above 80% for 10 min</td><td>Alarm on CPUUtilization, period=300s, threshold=80, datapoints=2/2</td></tr>
 <tr><td>Reduce noise from 20 alarms firing at once</td><td>Composite Alarm with AND/OR logic, single SNS action</td></tr>
-<tr><td>Alert on application-level error rate from logs</td><td>Metric filter → custom metric → CloudWatch Alarm</td></tr>
+<tr><td>Alert on application-level error rate from logs</td><td>Metric filter custom metric CloudWatch Alarm</td></tr>
 <tr><td>Find top 10 IPs causing 4xx errors</td><td>Contributor Insights rule on access log group</td></tr>
 <tr><td>Alert within seconds (sub-minute)</td><td>High-resolution custom metric (StorageResolution=1) + 10s alarm period</td></tr>
 </table>`},
@@ -308,7 +309,7 @@ Analyses log data to find the <em>top contributors</em> to operational problems 
  html:`
 <table class="tbl">
 <tr><th>Log source</th><th>What it captures</th><th>Key detail</th></tr>
-<tr><td>CloudTrail</td><td>AWS API calls (who, what, from where, when)</td><td>Event History = 90 days only. For longer retention, create a Trail → S3. Enable multi-region trail for org-wide coverage.</td></tr>
+<tr><td>CloudTrail</td><td>AWS API calls (who, what, from where, when)</td><td>Event History = 90 days only. For longer retention, create a Trail S3. Enable multi-region trail for org-wide coverage.</td></tr>
 <tr><td>VPC Flow Logs</td><td>Network traffic metadata per ENI/subnet/VPC</td><td>Records source/dest IP, port, protocol, bytes, ACCEPT/REJECT. Does NOT capture packet contents or DNS queries.</td></tr>
 <tr><td>CloudWatch Logs</td><td>App logs, OS logs, Lambda logs, custom logs</td><td>Use CloudWatch Unified Agent (newer, recommended over Logs Agent). Set retention policies — default is never-expire (costly).</td></tr>
 <tr><td>X-Ray</td><td>End-to-end traces for distributed applications</td><td>Requires SDK instrumentation or X-Ray daemon. Produces service maps and trace IDs. Sampling is on by default (5% + first req/sec).</td></tr>
@@ -334,7 +335,7 @@ Analyses log data to find the <em>top contributors</em> to operational problems 
 <strong>Default retention:</strong> Never expires — logs accumulate and incur ongoing cost.<br><br>
 <strong>Best practice:</strong> Set retention policy per log group (1 day to 10 years).<br><br>
 <strong>Export to S3:</strong> CreateExportTask = one-time batch export, takes <strong>up to 12 hours</strong>. NOT real-time.<br><br>
-<strong>For near-real-time streaming to S3:</strong> use a Subscription Filter → Kinesis Data Firehose → S3.<br><br>
+<strong>For near-real-time streaming to S3:</strong> use a Subscription Filter Kinesis Data Firehose S3.<br><br>
 <strong>Exam trap:</strong> if the question says "stream logs to S3 in near-real-time", the answer is always Firehose, never CreateExportTask.
 </div>
 </div>
@@ -360,7 +361,7 @@ Analyses log data to find the <em>top contributors</em> to operational problems 
 </div>
 </div>
 </div>
-<div class="warn"><strong>CloudTrail vs CloudWatch Logs:</strong> CloudTrail = AWS API/audit events (who called what AWS API). CloudWatch Logs = application and system logs. "Who deleted the S3 bucket?" → CloudTrail. "Why is the app returning 500 errors?" → CloudWatch Logs.</div>`},
+<div class="warn"><strong>CloudTrail vs CloudWatch Logs:</strong> CloudTrail = AWS API/audit events (who called what AWS API). CloudWatch Logs = application and system logs. "Who deleted the S3 bucket?" CloudTrail. "Why is the app returning 500 errors?" CloudWatch Logs.</div>`},
 
 {id:"task13",label:"Task 1.3 – Remediation",
  title:"Task 1.3: Remediate issues and optimise performance",sub:"Automate the response — this is what separates CloudOps from just monitoring",
@@ -376,7 +377,7 @@ EventBridge is the glue between AWS events and automated actions.<br><br>
 • Scheduled (cron) events<br>
 • Custom events from your own applications<br><br>
 <strong>Common targets:</strong> Lambda, SSM Automation, Step Functions, SNS, SQS, CodePipeline.<br><br>
-<strong>Exam pattern:</strong> "Alert fires → automatically restart EC2" → EventBridge rule on alarm state change → SSM Automation document <em>AWS-RestartEC2Instance</em> as target.
+<strong>Exam pattern:</strong> "Alert fires automatically restart EC2" EventBridge rule on alarm state change SSM Automation document <em>AWS-RestartEC2Instance</em> as target.
 </div>
 </div>
 <div class="card">
@@ -388,7 +389,7 @@ Config continuously records resource configuration changes and evaluates them ag
 • <code>s3-bucket-public-read-prohibited</code><br>
 • <code>encrypted-volumes</code> — all EBS volumes must be encrypted<br>
 • <code>required-tags</code><br><br>
-<strong>Auto-remediation:</strong> Config rule fires NON_COMPLIANT → triggers SSM Automation document automatically. e.g. S3 bucket goes public → Config → SSM sets it back to private.<br><br>
+<strong>Auto-remediation:</strong> Config rule fires NON_COMPLIANT triggers SSM Automation document automatically. e.g. S3 bucket goes public Config SSM sets it back to private.<br><br>
 <strong>Conformance packs:</strong> bundles of Config rules + remediation actions, e.g. CIS AWS Benchmark, NIST, PCI DSS.
 </div>
 </div>
@@ -407,26 +408,26 @@ Config continuously records resource configuration changes and evaluates them ag
 <strong>EFS performance modes:</strong><br>
 • General Purpose (default): low latency, good for web serving, CMS<br>
 • Max I/O: higher throughput, slightly higher latency — for massively parallel workloads<br><br>
-<strong>FSx for Windows:</strong> SMB protocol, Windows ACLs, Active Directory integration → lift-and-shift Windows file shares.<br><br>
-<strong>FSx for Lustre:</strong> high-performance, native S3 integration → ML training data, HPC, media processing.
+<strong>FSx for Windows:</strong> SMB protocol, Windows ACLs, Active Directory integration lift-and-shift Windows file shares.<br><br>
+<strong>FSx for Lustre:</strong> high-performance, native S3 integration ML training data, HPC, media processing.
 </div>
 </div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">Remediation flows</div>
 <div class="frow">
 <div class="fb" style="background:#E6F1FB;color:#0C447C">CloudWatch Alarm<br><span style="font-size:11px;font-weight:400">threshold breached</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#E1F5EE;color:#085041">EventBridge Rule<br><span style="font-size:11px;font-weight:400">alarm state change</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#EEEDFE;color:#3C3489">SSM Automation<br><span style="font-size:11px;font-weight:400">runbook executes</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#EAF3DE;color:#27500A">Resource fixed<br><span style="font-size:11px;font-weight:400">alarm returns OK</span></div>
 </div>
 <div class="frow">
 <div class="fb" style="background:#FAECE7;color:#712B13">Config rule<br><span style="font-size:11px;font-weight:400">NON_COMPLIANT</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#EEEDFE;color:#3C3489">SSM Automation<br><span style="font-size:11px;font-weight:400">auto-remediation</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#EAF3DE;color:#27500A">COMPLIANT<br><span style="font-size:11px;font-weight:400">config restored</span></div>
 </div>`},
 
@@ -443,12 +444,12 @@ Config continuously records resource configuration changes and evaluates them ag
  title:"Domain 1 exam tips and common traps",sub:"The distinctions that trip people up most often",
  html:`
 <div style="display:flex;flex-direction:column;gap:8px">
-<div class="warn"><strong>Trap 1 — Monitoring intervals:</strong> EC2 standard monitoring = every 5 minutes. For 1-minute data you must explicitly enable Detailed Monitoring. Custom metrics can go to 1-second with high-resolution. "Need sub-5-minute data" → Detailed Monitoring or high-resolution custom metrics.</div>
-<div class="warn"><strong>Trap 2 — Logs Insights vs metric filters:</strong> Logs Insights = ad-hoc interactive querying (like SQL on your logs). Metric filters = convert log patterns into ongoing CloudWatch metrics + alarms. "Notify when errors exceed X per minute" → metric filter. "Investigate last night's errors" → Logs Insights.</div>
-<div class="warn"><strong>Trap 3 — CloudTrail 90-day limit:</strong> Event History only retains 90 days. For compliance or audit older than 90 days, you must create a Trail that delivers to S3. "Audit API calls from 6 months ago" always requires a Trail → S3.</div>
-<div class="warn"><strong>Trap 4 — VPC Flow Logs do NOT capture everything:</strong> They miss DNS queries to Route 53 Resolver, DHCP traffic, instance metadata (169.254.169.254), and AWS Time Sync traffic. "Why are DNS queries failing?" → Route 53 Resolver query logging, not VPC Flow Logs.</div>
-<div class="warn"><strong>Trap 5 — Config vs CloudTrail:</strong> Config = "what did this resource look like over time, is it compliant?" CloudTrail = "who made this API call?" "Who changed this security group?" → CloudTrail. "Was this security group ever non-compliant?" → Config.</div>
-<div class="warn"><strong>Trap 6 — Log export latency:</strong> CreateExportTask (CloudWatch Logs → S3) can take up to 12 hours. NOT real-time. For near-real-time streaming to S3 or Splunk, use Subscription Filter → Kinesis Data Firehose → S3.</div>
+<div class="warn"><strong>Trap 1 — Monitoring intervals:</strong> EC2 standard monitoring = every 5 minutes. For 1-minute data you must explicitly enable Detailed Monitoring. Custom metrics can go to 1-second with high-resolution. "Need sub-5-minute data" Detailed Monitoring or high-resolution custom metrics.</div>
+<div class="warn"><strong>Trap 2 — Logs Insights vs metric filters:</strong> Logs Insights = ad-hoc interactive querying (like SQL on your logs). Metric filters = convert log patterns into ongoing CloudWatch metrics + alarms. "Notify when errors exceed X per minute" metric filter. "Investigate last night's errors" Logs Insights.</div>
+<div class="warn"><strong>Trap 3 — CloudTrail 90-day limit:</strong> Event History only retains 90 days. For compliance or audit older than 90 days, you must create a Trail that delivers to S3. "Audit API calls from 6 months ago" always requires a Trail S3.</div>
+<div class="warn"><strong>Trap 4 — VPC Flow Logs do NOT capture everything:</strong> They miss DNS queries to Route 53 Resolver, DHCP traffic, instance metadata (169.254.169.254), and AWS Time Sync traffic. "Why are DNS queries failing?" Route 53 Resolver query logging, not VPC Flow Logs.</div>
+<div class="warn"><strong>Trap 5 — Config vs CloudTrail:</strong> Config = "what did this resource look like over time, is it compliant?" CloudTrail = "who made this API call?" "Who changed this security group?" CloudTrail. "Was this security group ever non-compliant?" Config.</div>
+<div class="warn"><strong>Trap 6 — Log export latency:</strong> CreateExportTask (CloudWatch Logs S3) can take up to 12 hours. NOT real-time. For near-real-time streaming to S3 or Splunk, use Subscription Filter Kinesis Data Firehose S3.</div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:16px 0 8px">Quick-fire cheat sheet</div>
 <table class="tbl">
@@ -457,16 +458,16 @@ Config continuously records resource configuration changes and evaluates them ag
 <tr><td>"Why is traffic being rejected at network level?"</td><td>VPC Flow Logs</td></tr>
 <tr><td>"Which Lambda / service is causing latency?"</td><td>AWS X-Ray</td></tr>
 <tr><td>"Which IPs / users cause most traffic or errors?"</td><td>Contributor Insights</td></tr>
-<tr><td>"Alert me when logs contain ERROR"</td><td>Metric filter → CloudWatch Alarm</td></tr>
+<tr><td>"Alert me when logs contain ERROR"</td><td>Metric filter CloudWatch Alarm</td></tr>
 <tr><td>"Query logs for specific patterns"</td><td>CloudWatch Logs Insights</td></tr>
 <tr><td>"Auto-fix a misconfigured resource"</td><td>Config rule + SSM auto-remediation</td></tr>
 <tr><td>"Is my EC2 instance right-sized?"</td><td>Compute Optimizer</td></tr>
 <tr><td>"Reduce alarm noise from many alarms"</td><td>Composite Alarm</td></tr>
-<tr><td>"Stream logs to S3 in near-real-time"</td><td>Subscription filter → Kinesis Firehose → S3</td></tr>
+<tr><td>"Stream logs to S3 in near-real-time"</td><td>Subscription filter Kinesis Firehose S3</td></tr>
 </table>
 <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 1 of SOA-C03')">More practice questions ↗</button>
-<button class="nb" onclick="sendPrompt('Teach me Domain 2 of SOA-C03 (Reliability and Business Continuity) in depth with examples and exam tips')">Next: Domain 2 ↗</button>
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 1 of SOA-C03')">More practice questions</button>
+<a class="nb" href="domain2_reliability_lesson.html">Next: Domain 2</a>
 </div>`}
 ];
 
@@ -507,9 +508,9 @@ PAGES.forEach((p,i)=>{
   pg.className='pg'+(i===0?' on':'');
   pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
 <div class="nr">
-<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>Back</button>
 <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
-<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next</button>
 </div>`;
   cEl.appendChild(pg);
 });

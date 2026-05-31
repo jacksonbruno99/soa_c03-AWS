@@ -109,7 +109,7 @@ body[data-theme="light"] [style*="background:#FAEEDA"],body[data-theme="light"] 
 body[data-theme="light"] [style*="background:#EAF3DE"],body[data-theme="light"] .qopt.ok,body[data-theme="light"] .ok{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
 body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
 body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
-.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;min-width:74px;height:42px;border-radius:999px;padding:0 14px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .theme-toggle:hover{border-color:#34D399}
 body:not([data-theme="light"]) .theme-sun{display:none}
 body[data-theme="light"] .theme-moon{display:none}
@@ -167,11 +167,12 @@ code{white-space:normal;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+a.nb{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 </style>
 
-<a class="home-link" href="index.html" aria-label="Back to main page">← Main page</a>
+<a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
 <button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 2 lesson">Share</button>
-<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">Light</span><span class="theme-moon">Dark</span></button>
 <h2 class="sr-only">Domain 2 SOA-C03 lesson: Reliability and Business Continuity — scaling, HA, backup, and DR patterns</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
 <div class="full-dive-callout"><strong>High-yield notes here, full reference next.</strong><p>This lesson keeps the focused exam path. Open the full deep dive for RTO/RPO edge cases, scaling behavior, and harder scenarios.</p><a href="domain2_deep_dive.html">Open full deep dive</a></div>
@@ -237,11 +238,11 @@ const PAGES=[
 <div style="font-size:13px;font-weight:500;margin-bottom:8px">Four task areas</div>
 <div class="frow">
 <div class="fb" style="background:#E1F5EE;color:#085041">Task 2.1<br><span style="font-size:11px;font-weight:400">Scalability &amp; elasticity</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#E6F1FB;color:#0C447C">Task 2.2<br><span style="font-size:11px;font-weight:400">High availability</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#EEEDFE;color:#3C3489">Task 2.3<br><span style="font-size:11px;font-weight:400">Backup &amp; restore</span></div>
-<div class="fa">→</div>
+<div class="fa"></div>
 <div class="fb" style="background:#FAEEDA;color:#633806">Task 2.4<br><span style="font-size:11px;font-weight:400">Disaster recovery</span></div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:14px 0 8px">Key services</div>
@@ -277,9 +278,9 @@ Works like a thermostat: you name a metric and a target value, and Auto Scaling 
 <div class="cb">
 Triggered by CloudWatch alarms. You define "steps" — ranges of the metric that map to different adjustment sizes.<br><br>
 <strong>Example:</strong><br>
-• CPU 60–70% → add 1 instance<br>
-• CPU 70–85% → add 2 instances<br>
-• CPU 85%+ → add 4 instances<br><br>
+• CPU 60–70% add 1 instance<br>
+• CPU 70–85% add 2 instances<br>
+• CPU 85%+ add 4 instances<br><br>
 <strong>Use when:</strong> you need fine-grained control over how aggressively to scale at different severity levels.<br><br>
 <strong>vs Simple scaling:</strong> step scaling does NOT wait for the cooldown period to finish before evaluating additional alarms — it can add instances in multiple steps mid-event.
 </div>
@@ -357,13 +358,13 @@ Uses machine learning to forecast future traffic based on historical CloudWatch 
 <strong>Cluster:</strong> pack instances close together in one AZ for ultra-low latency (10 Gbps network). Used for HPC, tightly coupled workloads. Risk: single AZ failure takes all instances.<br><br>
 <strong>Spread:</strong> place each instance on distinct underlying hardware. Max 7 instances per AZ per group. Used for critical instances that must not fail together.<br><br>
 <strong>Partition:</strong> divide instances into partitions on separate racks. Each partition has its own power and network. Used for distributed systems (HDFS, Cassandra, Kafka).<br><br>
-<strong>Exam tip:</strong> "Instances must not share the same physical rack" → Spread or Partition. "Minimum latency between instances" → Cluster.
+<strong>Exam tip:</strong> "Instances must not share the same physical rack" Spread or Partition. "Minimum latency between instances" Cluster.
 </div>
 </div>
 <div class="card">
 <div class="ch" onclick="tog(this)"><span class="cht">Load balancer types — when to use each</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
 <div class="cb">
-<strong>ALB (Application Load Balancer):</strong> HTTP/HTTPS, Layer 7. Supports path-based routing (/api → target A), host-based routing, WebSockets, Lambda targets, authentication via Cognito/OIDC.<br><br>
+<strong>ALB (Application Load Balancer):</strong> HTTP/HTTPS, Layer 7. Supports path-based routing (/api target A), host-based routing, WebSockets, Lambda targets, authentication via Cognito/OIDC.<br><br>
 <strong>NLB (Network Load Balancer):</strong> TCP/UDP/TLS, Layer 4. Ultra-low latency, preserves source IP, static IP per AZ, supports PrivateLink. Use for non-HTTP protocols or when you need static IPs.<br><br>
 <strong>GWLB (Gateway Load Balancer):</strong> Routes traffic through third-party virtual appliances (firewalls, IDS/IPS) transparently at Layer 3. Use for inline security inspection.<br><br>
 <strong>CLB (Classic):</strong> Legacy — avoid. Not created for new workloads.<br><br>
@@ -371,7 +372,7 @@ Uses machine learning to forecast future traffic based on historical CloudWatch 
 </div>
 </div>
 </div>
-<div class="tip"><strong>Multi-AZ architecture pattern:</strong> ALB (spans all AZs) → EC2 Auto Scaling group (instances in 2+ AZs) → RDS Multi-AZ (primary in AZ-a, standby in AZ-b) → ElastiCache Multi-AZ → Route 53 health check on ALB DNS name. This pattern survives any single AZ failure automatically.</div>`},
+<div class="tip"><strong>Multi-AZ architecture pattern:</strong> ALB (spans all AZs) EC2 Auto Scaling group (instances in 2+ AZs) RDS Multi-AZ (primary in AZ-a, standby in AZ-b) ElastiCache Multi-AZ Route 53 health check on ALB DNS name. This pattern survives any single AZ failure automatically.</div>`},
 
 {id:"task23",label:"Task 2.3 – Backup & Restore",title:"Task 2.3: Backup and restore strategies",sub:"Know what AWS Backup covers, and the key feature of each service",html:`
 <div class="cgrid">
@@ -383,7 +384,7 @@ AWS Backup is a fully managed service that centralises and automates backups acr
 <strong>Backup plan:</strong> defines backup frequency (e.g. daily), retention period (e.g. 30 days), and lifecycle rules (move to cold storage after N days).<br><br>
 <strong>Backup vault:</strong> an encrypted container for backup recovery points. Can be locked with <em>vault lock</em> (WORM — write-once-read-many) to prevent deletion even by administrators.<br><br>
 <strong>Cross-region and cross-account copy:</strong> configure copy rules in a backup plan to automatically copy backups to another region or account for DR purposes.<br><br>
-<strong>Exam tip:</strong> "Centralise backup management across multiple accounts" → AWS Backup with AWS Organizations integration.
+<strong>Exam tip:</strong> "Centralise backup management across multiple accounts" AWS Backup with AWS Organizations integration.
 </div>
 </div>
 <div class="card">
@@ -399,7 +400,7 @@ AWS Backup is a fully managed service that centralises and automates backups acr
 <div class="card">
 <div class="ch" onclick="tog(this)"><span class="cht">RDS backup features</span><span class="badge" style="background:#E6F1FB;color:#0C447C">Core</span></div>
 <div class="cb">
-<strong>Automated backups:</strong> enabled by default. Daily full snapshot + transaction logs → enables point-in-time recovery to any second within the retention window (1–35 days).<br><br>
+<strong>Automated backups:</strong> enabled by default. Daily full snapshot + transaction logs enables point-in-time recovery to any second within the retention window (1–35 days).<br><br>
 <strong>Manual snapshots:</strong> user-initiated. Persist beyond the retention window and even after the DB instance is deleted. You control when they expire.<br><br>
 <strong>Restore:</strong> always creates a NEW RDS instance — you cannot restore in-place. Update your connection strings after restore.<br><br>
 <strong>Cross-region snapshot copy:</strong> manually copy a snapshot to another region for DR.<br><br>
@@ -488,7 +489,7 @@ Aurora Global Database spans multiple AWS regions with a single primary region (
 <strong>Replication lag:</strong> typically under 1 second.<br><br>
 <strong>Failover (managed):</strong> promote a secondary region to primary in under 1 minute (RTO ~60s, RPO &lt;1s).<br><br>
 <strong>Use for:</strong> globally distributed applications that need sub-second cross-region reads AND fast DR failover for relational data.<br><br>
-<strong>Exam tip:</strong> if the question mentions "global application" + "relational database" + "sub-second replication" → Aurora Global Database.
+<strong>Exam tip:</strong> if the question mentions "global application" + "relational database" + "sub-second replication" Aurora Global Database.
 </div>
 </div>
 </div>
@@ -509,7 +510,7 @@ html:QS.map((q,i)=>`
 <div class="warn"><strong>Trap 3 — Pilot light vs warm standby distinction:</strong> Pilot light = only the DB runs in DR; compute is spun up on failover using AMIs and IaC. Warm standby = a complete but scaled-down application stack runs continuously. RTO for pilot light is longer because you have to wait for compute to launch. Watch for the phrase "all components are already running" — that's warm standby.</div>
 <div class="warn"><strong>Trap 4 — RDS restore creates a new instance:</strong> Restoring an RDS snapshot or point-in-time recovery always creates a NEW DB instance with a NEW endpoint. Your application must update its connection string. You cannot restore in-place. If a question asks about minimising downtime during restore, the answer includes updating connection strings or using Route 53 CNAME to abstract the endpoint.</div>
 <div class="warn"><strong>Trap 5 — S3 CRR requires versioning enabled on BOTH buckets:</strong> Cross-Region Replication will not work if versioning is not enabled on both source and destination buckets. Also, CRR only replicates new objects after it's configured — existing objects are NOT copied automatically. Use S3 Batch Replication for existing objects.</div>
-<div class="warn"><strong>Trap 6 — Target tracking cooldown vs instance warm-up:</strong> The Auto Scaling cooldown period prevents any further scaling actions after a scale-out event. The instance warm-up period tells Auto Scaling not to count new instances in metrics until they are ready. Confusing the two leads to under- or over-scaling. Questions about "instances launching before they are ready affecting metrics" → set the instance warm-up period.</div>
+<div class="warn"><strong>Trap 6 — Target tracking cooldown vs instance warm-up:</strong> The Auto Scaling cooldown period prevents any further scaling actions after a scale-out event. The instance warm-up period tells Auto Scaling not to count new instances in metrics until they are ready. Confusing the two leads to under- or over-scaling. Questions about "instances launching before they are ready affecting metrics" set the instance warm-up period.</div>
 </div>
 <div style="font-size:13px;font-weight:500;margin:16px 0 8px">Quick-fire cheat sheet</div>
 <table class="tbl">
@@ -523,13 +524,13 @@ html:QS.map((q,i)=>`
 <tr><td>Replicate S3 cross-region with SLA</td><td>S3 CRR + Replication Time Control</td></tr>
 <tr><td>Restore DynamoDB to a past point in time</td><td>DynamoDB PITR</td></tr>
 <tr><td>Centralise backups across accounts</td><td>AWS Backup + Organizations</td></tr>
-<tr><td>On-premises → AWS with low RTO/RPO</td><td>AWS Elastic Disaster Recovery (DRS)</td></tr>
+<tr><td>On-premises AWS with low RTO/RPO</td><td>AWS Elastic Disaster Recovery (DRS)</td></tr>
 <tr><td>Global relational DB, sub-second replication</td><td>Aurora Global Database</td></tr>
 <tr><td>"Most responsive scaling" for web app</td><td>Target tracking on ALBRequestCountPerTarget</td></tr>
 </table>
 <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 2 of SOA-C03')">More practice questions ↗</button>
-<button class="nb" onclick="sendPrompt('Teach me Domain 3 of SOA-C03 (Deployment, Provisioning and Automation) in depth with examples and exam tips')">Next: Domain 3 ↗</button>
+<button class="nb" onclick="sendPrompt('Give me 5 more hard practice questions for Domain 2 of SOA-C03')">More practice questions</button>
+<a class="nb" href="domain3_deployment_provisioning_lesson.html">Next: Domain 3</a>
 </div>`}
 ];
 
@@ -570,9 +571,9 @@ PAGES.forEach((p,i)=>{
   pg.className='pg'+(i===0?' on':'');
   pg.innerHTML=`<div class="pt">${p.title}</div><div class="ps">${p.sub}</div>${p.html}
 <div class="nr">
-<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Back</button>
+<button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>Back</button>
 <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
-<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+<button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next</button>
 </div>`;
   cEl.appendChild(pg);
 });

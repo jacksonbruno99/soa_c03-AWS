@@ -46,8 +46,8 @@ body[data-theme="light"] .hero-title{background:linear-gradient(90deg,#111827,#1
 .hero-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}
 .hero-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--color-border-tertiary);border-radius:999px;background:var(--color-background-primary);color:var(--color-text-secondary);font-size:14px}
 .hero-chip strong{color:var(--color-text-primary)}
-.hero-primary{margin-top:24px;border:0;border-radius:999px;padding:11px 18px;background:#2563EB;color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(37,99,235,.34)}
-.hero-primary:hover{background:#1D4ED8}
+.hero-cta-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}.hero-primary{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:11px 18px;background:#2563EB;color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(37,99,235,.34)}
+.hero-primary:hover{background:#1D4ED8}.hero-quiz{background:#0F6E56}.hero-quiz:hover{background:#0B5C49}
 @keyframes heroGlow{from{transform:translate3d(-2%,0,0) rotate(0deg)}to{transform:translate3d(2%,2%,0) rotate(8deg)}}
 .wrap{width:min(100%,1100px);margin:0 auto;padding:1.5rem clamp(14px,3vw,28px)}
 .domain-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
@@ -117,7 +117,7 @@ body[data-theme="light"] [style*="background:#E1F5EE"]{background:#E1F5EE!import
 body[data-theme="light"] [style*="background:#EEEDFE"]{background:#EEEDFE!important;color:#3C3489!important;border-color:#AFA9EC!important}
 body[data-theme="light"] [style*="background:#FAECE7"]{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
 body[data-theme="light"] [style*="background:#FAEEDA"]{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
-.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:50;min-width:74px;height:42px;border-radius:999px;padding:0 14px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .theme-toggle:hover{border-color:var(--color-text-info)}
 body:not([data-theme="light"]) .theme-sun{display:none}
 body[data-theme="light"] .theme-moon{display:none}
@@ -181,7 +181,7 @@ button,a{max-width:100%;white-space:normal}
 }
 </style>
 
-<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">Light</span><span class="theme-moon">Dark</span></button>
 <div id="react-bit-hero" class="react-bit-hero"></div>
 <h2 class="sr-only">SOA-C03 interactive domain-by-domain course covering all 5 exam domains</h2>
 <div class="wrap">
@@ -214,9 +214,13 @@ button,a{max-width:100%;white-space:normal}
         e('div',{className:'hero-actions'},
           e('div',{className:'hero-chip'},e('strong',null,'5'),'domains'),
           e('div',{className:'hero-chip'},e('strong',null,'100%'),'exam blueprint'),
-          e('div',{className:'hero-chip'},e('strong',null,'Dark / Light'),'theme')
+          e('div',{className:'hero-chip'},e('strong',null,'Dark / Light'),'theme'),
+          e('div',{className:'hero-chip'},e('strong',null,'100+'),'quiz questions')
         ),
-        e('button',{className:'hero-primary',onClick:() => document.getElementById('tabs')?.scrollIntoView({behavior:'smooth',block:'start'})},'Start learning')
+        e('div',{className:'hero-cta-row'},
+          e('button',{className:'hero-primary',onClick:() => document.getElementById('tabs')?.scrollIntoView({behavior:'smooth',block:'start'})},'Start learning'),
+          e('a',{className:'hero-primary hero-quiz',href:'quiz_mode.html'},'Quiz mode')
+        )
       )
     );
   }
@@ -491,8 +495,8 @@ function renderDomain(){
   const d = domains[current];
   const pct = Math.round(((current+1)/domains.length)*100);
   const deepControl = d.lesson
-    ? `<a class="ask-btn" href="${d.lesson}">Study lesson ↗</a>`
-    : `<button class="ask-btn" onclick="sendPrompt('Teach me Domain ${d.id} of SOA-C03 (${d.short}) in depth with examples and exam tips')">Go deep on this domain ↗</button>`;
+    ? `<a class="ask-btn" href="${d.lesson}">Study lesson</a>`
+    : `<button class="ask-btn" onclick="sendPrompt('Teach me Domain ${d.id} of SOA-C03 (${d.short}) in depth with examples and exam tips')">Go deep on this domain</button>`;
   document.getElementById('domain-content').innerHTML = `
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${d.fillColor}"></div></div>
     <div class="domain-header">
@@ -533,11 +537,11 @@ function renderDomain(){
       `).join('')}
     </div>
     <div class="nav-row">
-      <button class="nav-btn" onclick="go(${current-1})" ${current===0?'disabled':''}>← Previous domain</button>
+      <button class="nav-btn" onclick="go(${current-1})" ${current===0?'disabled':''}>Previous domain</button>
       ${deepControl}
       <a class="deep-btn" href="${d.deepDive}">Full deep dive</a>
       <button class="share-btn" onclick="shareDomain()">Share this domain</button>
-      <button class="nav-btn" onclick="go(${current+1})" ${current===domains.length-1?'disabled':''}>Next domain →</button>
+      <button class="nav-btn" onclick="go(${current+1})" ${current===domains.length-1?'disabled':''}>Next domain</button>
     </div>
   `;
 }
