@@ -84,7 +84,9 @@ body[data-theme="light"] .hero-title{background:linear-gradient(90deg,#111827,#1
 .ask-btn:hover{background:var(--color-background-info)}
 .share-btn{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
 .share-btn:hover{background:var(--color-background-secondary)}
-.dtab,.nav-btn,.ask-btn,.share-btn,.skill-item{font-size:16px}
+.deep-btn{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-info);text-decoration:none}
+.deep-btn:hover{background:var(--color-background-info)}
+.dtab,.nav-btn,.ask-btn,.share-btn,.deep-btn,.skill-item{font-size:16px}
 .domain-badge{min-width:54px;height:54px;font-size:21px}
 .domain-title{font-size:22px}
 .domain-weight{font-size:16px}
@@ -144,7 +146,7 @@ button,a{max-width:100%;white-space:normal}
   .task-body{padding:12px}
   .services-row{gap:7px}
   .nav-row{display:grid;grid-template-columns:1fr;gap:10px}
-  .nav-btn,.ask-btn,.share-btn{width:100%;text-align:center}
+  .nav-btn,.ask-btn,.share-btn,.deep-btn{width:100%;text-align:center}
 }
 @media (max-width:420px){
   .task-title{flex-basis:calc(100% - 44px);font-size:16px}
@@ -160,8 +162,8 @@ button,a{max-width:100%;white-space:normal}
 .task-card:nth-child(2){animation-delay:.3s}
 .task-card:nth-child(3){animation-delay:.36s}
 .task-card:nth-child(4){animation-delay:.42s}
-.dtab,.nav-btn,.ask-btn,.share-btn,.theme-toggle,.hero-primary{transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
-.dtab:hover,.nav-btn:hover,.ask-btn:hover,.share-btn:hover,.theme-toggle:hover,.hero-primary:hover{transform:translateY(-2px)}
+.dtab,.nav-btn,.ask-btn,.share-btn,.deep-btn,.theme-toggle,.hero-primary{transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+.dtab:hover,.nav-btn:hover,.ask-btn:hover,.share-btn:hover,.deep-btn:hover,.theme-toggle:hover,.hero-primary:hover{transform:translateY(-2px)}
 .dtab.active{box-shadow:0 10px 24px rgba(59,130,246,.18)}
 .progress-fill{background-size:200% 100%;animation:barFlow 2.4s linear infinite}
 .skill-item,.svc-pill,.hero-chip{transition:transform .18s ease,box-shadow .18s ease}
@@ -244,6 +246,7 @@ const domains = [
   {
     id:1, label:"Domain 1", short:"Monitoring & Logging", weight:"22%",
     lesson:"domain1_monitoring_lesson.html",
+    deepDive:"domain1_deep_dive.html",
     color:"#E6F1FB", textColor:"#0C447C", fillColor:"#185FA5",
     desc:"Collect, analyze, and act on operational data. This domain tests your ability to set up CloudWatch, analyze logs, detect anomalies, and optimize performance.",
     tasks:[
@@ -285,6 +288,7 @@ const domains = [
   {
     id:2, label:"Domain 2", short:"Reliability & Business Continuity", weight:"22%",
     lesson:"domain2_reliability_lesson.html",
+    deepDive:"domain2_deep_dive.html",
     color:"#E1F5EE", textColor:"#085041", fillColor:"#0F6E56",
     desc:"Design and operate resilient workloads. You must understand HA architectures, scaling strategies, backup/restore, and disaster recovery patterns.",
     tasks:[
@@ -337,6 +341,7 @@ const domains = [
   {
     id:3, label:"Domain 3", short:"Deployment, Provisioning & Automation", weight:"22%",
     lesson:"domain3_deployment_provisioning_lesson.html",
+    deepDive:"domain3_deep_dive.html",
     color:"#EEEDFE", textColor:"#3C3489", fillColor:"#534AB7",
     desc:"Automate deployments and manage resources at scale. Key focus areas are IaC, Systems Manager, containers, and event-driven automation.",
     tasks:[
@@ -389,6 +394,7 @@ const domains = [
   {
     id:4, label:"Domain 4", short:"Security & Compliance", weight:"16%",
     lesson:"domain4_security_compliance_lesson.html",
+    deepDive:"domain4_deep_dive.html",
     color:"#FAECE7", textColor:"#712B13", fillColor:"#993C1D",
     desc:"Implement and manage security controls and ensure ongoing compliance. Focus on IAM, detective controls, encryption, and multi-account governance.",
     tasks:[
@@ -430,6 +436,7 @@ const domains = [
   {
     id:5, label:"Domain 5", short:"Networking & Content Delivery", weight:"18%",
     lesson:"domain5_networking_lesson.html",
+    deepDive:"domain5_deep_dive.html",
     color:"#FAEEDA", textColor:"#633806", fillColor:"#854F0B",
     desc:"Configure, troubleshoot, and optimize AWS networking. Covers VPC fundamentals through hybrid connectivity, DNS, CDN, and network security.",
     tasks:[
@@ -484,7 +491,7 @@ function renderDomain(){
   const d = domains[current];
   const pct = Math.round(((current+1)/domains.length)*100);
   const deepControl = d.lesson
-    ? `<a class="ask-btn" href="${d.lesson}">Go deep on this domain ↗</a>`
+    ? `<a class="ask-btn" href="${d.lesson}">Study lesson ↗</a>`
     : `<button class="ask-btn" onclick="sendPrompt('Teach me Domain ${d.id} of SOA-C03 (${d.short}) in depth with examples and exam tips')">Go deep on this domain ↗</button>`;
   document.getElementById('domain-content').innerHTML = `
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${d.fillColor}"></div></div>
@@ -528,6 +535,7 @@ function renderDomain(){
     <div class="nav-row">
       <button class="nav-btn" onclick="go(${current-1})" ${current===0?'disabled':''}>← Previous domain</button>
       ${deepControl}
+      <a class="deep-btn" href="${d.deepDive}">Full deep dive</a>
       <button class="share-btn" onclick="shareDomain()">Share this domain</button>
       <button class="nav-btn" onclick="go(${current+1})" ${current===domains.length-1?'disabled':''}>Next domain →</button>
     </div>

@@ -112,6 +112,10 @@ body[data-theme="light"] .theme-moon{display:none}
 .home-link:hover{border-color:#60A5FA;color:var(--color-text-primary)}
 .share-link{position:fixed;top:14px;right:64px;z-index:50;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 .share-link:hover{border-color:#60A5FA;color:var(--color-text-primary)}
+.full-dive-callout{border:1px solid var(--color-border-tertiary);border-left:4px solid #60A5FA;border-radius:12px;padding:14px 16px;margin:0 0 1rem;background:var(--color-background-secondary);animation:riseIn .5s ease both}
+.full-dive-callout strong{display:block;font-size:17px;margin-bottom:3px}
+.full-dive-callout p{color:var(--color-text-secondary);font-size:15px;margin-bottom:10px}
+.full-dive-callout a{display:inline-flex;text-decoration:none;border:1px solid var(--color-border-secondary);border-radius:999px;padding:7px 13px;color:var(--color-text-info);background:var(--color-background-primary)}
 body{width:min(100%,1100px);margin:0 auto;padding:1.25rem clamp(12px,3vw,28px)}
 button{max-width:100%;white-space:normal}
 .pg,.card,.qb,.qopt,.qex,.sc,.vpc-layer{min-width:0}
@@ -164,6 +168,7 @@ code{white-space:normal;overflow-wrap:anywhere}
 <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
 <h2 class="sr-only">Domain 5 SOA-C03 lesson: Networking and Content Delivery — VPC, DNS, CloudFront, connectivity, and troubleshooting</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
+<div class="full-dive-callout"><strong>High-yield notes here, full reference next.</strong><p>This lesson keeps the focused exam path. Open the full deep dive for VPC, DNS, CDN, hybrid connectivity, and harder troubleshooting scenarios.</p><a href="domain5_deep_dive.html">Open full deep dive</a></div>
 <div id="content"></div>
 
 <script>

@@ -1,0 +1,524 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Domain 4 Full Deep Dive: Security and Compliance | AWS SOA-C03 Blueprint</title>
+<link rel="canonical" href="https://aws-soa-c03.netlify.app/domain4_deep_dive.html">
+<meta name="description" content="Full SOA-C03 Domain 4 deep dive for AWS Cloud Ops: IAM, SCPs, GuardDuty, Security Hub, KMS, compliance, identity governance, and hard practice questions.">
+<meta property="og:title" content="Domain 4 Full Deep Dive: Security and Compliance | AWS SOA-C03 Blueprint">
+<meta property="og:description" content="Full SOA-C03 Domain 4 deep dive for AWS Cloud Ops: IAM, SCPs, GuardDuty, Security Hub, KMS, compliance, identity governance, and hard practice questions.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aws-soa-c03.netlify.app/domain4_deep_dive.html">
+<meta property="og:image" content="https://dummyimage.com/1200x630/111827/93c5fd&text=SOA-C03+Full+Deep+Dive+4">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+:root{--font-sans:Inter,Segoe UI,Arial,sans-serif;--font-mono:Consolas,Menlo,monospace;--border-radius-md:8px;--border-radius-lg:10px;--color-background-primary:#111827;--color-background-secondary:#1F2937;--color-background-tertiary:#0F172A;--color-text-primary:#F9FAFB;--color-text-secondary:#D1D5DB;--color-text-tertiary:#9CA3AF;--color-text-info:#93C5FD;--color-border-secondary:#4B5563;--color-border-tertiary:#374151;}
+body[data-theme="light"]{--color-background-primary:#F8FAFC;--color-background-secondary:#EEF2F7;--color-background-tertiary:#E2E8F0;--color-text-primary:#111827;--color-text-secondary:#374151;--color-text-tertiary:#6B7280;--color-text-info:#1D4ED8;--color-border-secondary:#CBD5E1;--color-border-tertiary:#E2E8F0;}
+body{background:var(--color-background-primary);width:min(100%,1100px);margin:0 auto;padding:4.25rem clamp(12px,3vw,28px) 1.25rem!important;font-size:17px!important;line-height:1.65!important;}
+body[data-theme="light"] .b-core,body[data-theme="light"] .tip,body[data-theme="light"] .qopt.reveal{background:#E6F1FB!important;color:#0C447C!important;border-color:#85B7EB!important}
+body[data-theme="light"] .b-imp,body[data-theme="light"] .ok,body[data-theme="light"] .qopt.ok2{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
+body[data-theme="light"] .b-trap,body[data-theme="light"] .trap-box{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
+body[data-theme="light"] .b-deep{background:#EEEDFE!important;color:#3C3489!important;border-color:#AFA9EC!important}
+body[data-theme="light"] .b-tip,body[data-theme="light"] .warn{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
+body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
+.b-core,.tip,.qopt.reveal{background:#17365F!important;color:#DBEAFE!important;border-color:#3B82F6!important}.b-imp,.ok,.qopt.ok2{background:#1F3A1D!important;color:#DCFCE7!important;border-color:#22C55E!important}.b-trap,.trap-box{background:#442016!important;color:#FED7AA!important;border-color:#F97316!important}.b-deep{background:#2E2A5F!important;color:#EDE9FE!important;border-color:#8B5CF6!important}.b-tip,.warn{background:#3B2A12!important;color:#FDE68A!important;border-color:#F59E0B!important}.qopt.bad{background:#4A1515!important;color:#FECACA!important;border-color:#EF4444!important}
+.home-link,.share-link,.lesson-link,.theme-toggle{position:fixed;top:14px;z-index:50;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.22);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.home-link{left:14px}.lesson-link{left:132px}.share-link{right:64px}.theme-toggle{right:14px;width:42px;height:42px;padding:0;font-size:18px}.home-link:hover,.share-link:hover,.lesson-link:hover,.theme-toggle:hover{transform:translateY(-2px);border-color:#F97316;color:var(--color-text-primary)}body:not([data-theme="light"]) .theme-sun{display:none}body[data-theme="light"] .theme-moon{display:none}
+.deep-hero{border:1px solid var(--color-border-tertiary);border-radius:18px;padding:22px clamp(16px,3vw,30px);margin-bottom:1.25rem;background:linear-gradient(135deg,rgba(24,95,165,.18),rgba(83,74,183,.16));box-shadow:0 20px 55px rgba(0,0,0,.2);animation:riseIn .55s ease both}.deep-eyebrow{font-size:12px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px}.deep-title{font-size:clamp(1.7rem,4vw,3.2rem);line-height:1.05;font-weight:800}.deep-sub{margin-top:10px;color:var(--color-text-secondary);font-size:16px}.top-tabs,.pg.on,.card,.qblock,.kv,.anatomy,.compare-col,.nr{animation:riseIn .48s cubic-bezier(.2,.8,.2,1) both}.ttab,.card,.qblock,.kv,.qopt,.nb,.dot,.anat-row,.compare-col{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}.card:hover,.qblock:hover,.kv:hover,.anatomy:hover,.compare-col:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(0,0,0,.18);border-color:#F97316}.ttab:hover,.qopt:hover,.nb:hover{transform:translateY(-2px)}.card-body.on,.qex.on{animation:softReveal .24s ease both}.tbl{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}.dot:hover,.dot.on{transform:scale(1.3)}.theme-toggle{animation:floatButton 3.4s ease-in-out infinite}@keyframes riseIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes softReveal{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}@keyframes floatButton{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}@media (max-width:700px){body{padding:4.25rem 12px 1rem!important;font-size:16px!important}.home-link{left:10px}.lesson-link{display:none}.share-link{right:60px}.top-tabs{display:grid;grid-template-columns:1fr;gap:8px}.ttab{text-align:left;border:1px solid var(--color-border-tertiary);border-radius:8px}.compare-cols,.grid2,.kv-grid{grid-template-columns:1fr}.anat-row{display:grid;grid-template-columns:1fr}.anat-label{width:auto}.nr{display:grid;grid-template-columns:1fr;gap:10px}.nb{width:100%}.dots{justify-content:center;order:-1}}@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);font-size:14px;line-height:1.6}
+.top-tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
+.ttab{background:none;border:none;font-family:var(--font-sans);font-size:13px;color:var(--color-text-secondary);padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.ttab:hover{color:var(--color-text-primary)}
+.ttab.on{color:#993C1D;border-bottom-color:#993C1D;font-weight:500}
+.pg{display:none;padding-bottom:1.5rem}
+.pg.on{display:block}
+.sec{font-size:12px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--color-text-tertiary);margin:1.5rem 0 .75rem;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
+.sec::after{content:'';flex:1;height:1px;background:var(--color-border-tertiary)}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:10px}
+.ch{padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-primary);user-select:none}
+.ch:hover{background:var(--color-background-secondary)}
+.ct{font-size:13px;font-weight:500}
+.cb{display:none;padding:12px 14px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);font-size:13px;color:var(--color-text-secondary);line-height:1.7}
+.cb.on{display:block}
+.cb code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-tertiary);padding:1px 5px;border-radius:4px;color:var(--color-text-info)}
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
+.bc{background:#FAECE7;color:#712B13}
+.bi{background:#EAF3DE;color:#27500A}
+.bt{background:#FAEEDA;color:#633806}
+.bd{background:#E6F1FB;color:#0C447C}
+.bp{background:#EEEDFE;color:#3C3489}
+.tip{border-left:3px solid #993C1D;padding:10px 14px;background:#FAECE7;margin:10px 0;font-size:13px;color:#712B13;line-height:1.5;border-radius:0}
+.warn{border-left:3px solid #854F0B;padding:10px 14px;background:#FAEEDA;margin:10px 0;font-size:13px;color:#633806;line-height:1.5;border-radius:0}
+.trap{border-left:3px solid #A32D2D;padding:10px 14px;background:#FCEBEB;margin:10px 0;font-size:13px;color:#791F1F;line-height:1.5;border-radius:0}
+.ok{border-left:3px solid #3B6D11;padding:10px 14px;background:#EAF3DE;margin:10px 0;font-size:13px;color:#27500A;line-height:1.5;border-radius:0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+.tbl th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.tbl td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-secondary)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--color-text-primary);font-weight:500}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem}
+.anat{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin:10px 0}
+.ar{display:flex;align-items:stretch;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ar:last-child{border-bottom:none}
+.al{width:150px;flex-shrink:0;padding:10px 12px;background:var(--color-background-secondary);font-size:12px;font-weight:500;color:var(--color-text-secondary);display:flex;align-items:center}
+.av{flex:1;padding:10px 12px;font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+.av code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-tertiary);padding:1px 5px;border-radius:4px;color:var(--color-text-info)}
+.cc{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.cc-col{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.cc-head{padding:8px 12px;font-size:13px;font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.cc-body{padding:10px 12px;font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.fb{padding:7px 12px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;text-align:center;line-height:1.4;min-width:72px}
+.fa{color:var(--color-text-tertiary);font-size:13px;flex-shrink:0}
+.eval-chain{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.eval-step{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary)}
+.eval-num{font-family:var(--font-mono);font-size:11px;font-weight:500;width:20px;flex-shrink:0;color:var(--color-text-tertiary)}
+.eval-label{font-size:13px;font-weight:500;min-width:160px}
+.eval-note{font-size:12px;color:var(--color-text-secondary)}
+.qblock{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:12px;overflow:hidden}
+.qhead{padding:12px 14px;font-size:13px;font-weight:500;background:var(--color-background-primary);line-height:1.6}
+.qdomain{font-size:10px;font-family:var(--font-mono);padding:2px 7px;border-radius:99px;display:inline-block;margin-bottom:5px;background:#FAECE7;color:#712B13}
+.qopts{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.qopt{padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);text-align:left;line-height:1.4;transition:background .1s}
+.qopt:hover:not([disabled]){background:var(--color-background-secondary)}
+.qopt.ok2{background:#EAF3DE;color:#27500A;border-color:#3B6D11}
+.qopt.bad{background:#FCEBEB;color:#791F1F;border-color:#A32D2D}
+.qex{margin:0 14px 12px;padding:10px 12px;border-radius:var(--border-radius-md);font-size:13px;line-height:1.6;display:none;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.qex.on{display:block}
+.nr{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;margin-top:.5rem;border-top:0.5px solid var(--color-border-tertiary)}
+.nb{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.nb:hover{background:var(--color-background-secondary)}
+.nb:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer}
+.dot.on{background:#993C1D}
+.score-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)}
+.score-num{font-family:var(--font-mono);font-size:20px;font-weight:500;color:#993C1D}
+.score-track{flex:1;height:4px;background:var(--color-border-tertiary);border-radius:99px;overflow:hidden}
+.score-fill{height:100%;border-radius:99px;background:#993C1D}
+</style>
+
+<a class="home-link" href="index.html" aria-label="Back to main page">? Main page</a>
+<a class="lesson-link" href="domain4_security_compliance_lesson.html" aria-label="Back to domain lesson">Lesson</a>
+<button class="share-link" type="button" onclick="shareDeepDive()" aria-label="Share full deep dive">Share</button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">?</span><span class="theme-moon">?</span></button>
+<div class="deep-hero"><div class="deep-eyebrow">Full deep dive</div><div class="deep-title">Domain 4: Security and Compliance</div><div class="deep-sub">Expanded reference notes, advanced traps, service internals, and harder practice questions.</div></div><h2 class="sr-only">Domain 4 deep-dive study notes for AWS SOA-C03: Security and Compliance — IAM policy evaluation, encryption, detective controls, identity governance, and 15 hard practice questions</h2>
+
+<div style="padding:1rem 0">
+<div class="top-tabs" id="tabs"></div>
+<div id="pages"></div>
+</div>
+
+<script>
+(() => {const savedTheme=localStorage.getItem('soaTheme')||'dark';document.body.dataset.theme=savedTheme;window.toggleTheme=()=>{const nextTheme=document.body.dataset.theme==='light'?'dark':'light';document.body.dataset.theme=nextTheme;localStorage.setItem('soaTheme',nextTheme);};})();
+async function shareDeepDive(){const payload={title:'Domain 4 Full Deep Dive: Security and Compliance | AWS SOA-C03 Blueprint',text:'Full SOA-C03 Domain 4 deep dive for AWS Cloud Ops: IAM, SCPs, GuardDuty, Security Hub, KMS, compliance, identity governance, and hard practice questions.',url:window.location.href};try{if(navigator.share){await navigator.share(payload);}else{await navigator.clipboard.writeText(window.location.href);alert('Deep dive link copied to clipboard.');}}catch(err){if(err.name!=='AbortError')alert('Could not share this deep dive right now.');}}
+const QS=[
+{sub:"IAM policy evaluation",
+q:"An IAM user in account A tries to call s3:GetObject on a bucket in account B. The user's IAM policy in account A allows s3:GetObject on the bucket ARN. The S3 bucket policy in account B allows the user's ARN with s3:GetObject. An SCP at the root OU denies s3:DeleteObject but does not restrict s3:GetObject. No permission boundary is attached to the user. Will the request succeed?",
+o:["No — cross-account S3 access always requires an IAM role assumption, not direct user access","Yes — the user's IAM policy allows it AND the bucket policy in account B explicitly allows it. Both sides allow = access granted","No — SCPs must explicitly allow every action, including s3:GetObject, for the request to succeed","No — the SCP deny on DeleteObject causes all S3 actions for that account to be denied"],
+c:1,e:"For cross-account resource access, BOTH the identity-based policy (in the requester's account) AND the resource-based policy (the S3 bucket policy in the target account) must allow the action. The SCP only denies s3:DeleteObject — it does not restrict s3:GetObject, so the SCP requirement is satisfied. No permission boundary = no additional restriction. Both the IAM policy AND the bucket policy allow s3:GetObject → access is granted. SCPs don't need to explicitly allow every action when FullAWSAccess is the base SCP (deny-list strategy) — they only need to not deny the action."},
+{sub:"Permission boundaries",
+q:"A junior admin is given the AdministratorAccess managed policy. The account admin also attaches a permission boundary that allows only the actions listed in a specific managed policy covering EC2, S3, and CloudWatch. The junior admin creates a new IAM role and attaches AdministratorAccess to it. The role tries to call iam:PassRole. Will the call succeed?",
+o:["Yes — the role has AdministratorAccess which includes iam:PassRole","No — the junior admin cannot create IAM roles because iam:CreateRole is outside the permission boundary","Yes — permission boundaries apply to users, not to roles they create","No — the effective permissions of the junior admin are EC2+S3+CloudWatch only. The role they created inherits the same boundary restriction"],
+c:3,e:"This is a subtle but critical point. The permission boundary on the junior admin restricts THEIR effective permissions to EC2+S3+CloudWatch. When the junior admin creates an IAM role and attaches AdministratorAccess, the role itself is not bounded by the admin's boundary. However, iam:PassRole is an action the JUNIOR ADMIN would need to perform to use this role — and iam:PassRole is outside their permission boundary. More importantly: iam:CreateRole is also outside the boundary, meaning the junior admin cannot create IAM roles at all. The question tests whether boundaries prevent privilege escalation. The answer: the boundary blocks any IAM action by the junior admin because iam:* is not in the boundary."},
+{sub:"SCP scope and limits",
+q:"A company applies an SCP at the Root OU that denies ec2:TerminateInstances. The management account administrator tries to terminate an EC2 instance in the management account. What happens?",
+o:["The termination fails because the SCP applies to the management account","The termination succeeds because SCPs do not apply to the management account","The SCP applies but can be overridden by an IAM administrator in the management account","The termination fails unless the management account has FullAWSAccess SCP also attached"],
+c:1,e:"This is one of the most critical SCP facts: SCPs attached at any level (Root, OU, or Account) do NOT apply to the AWS Organizations management account (formerly called the master account). The management account is immune to SCPs. If you need guardrails on the management account, you must use IAM policies directly in that account. This is a security consideration — the management account should be used minimally, with strict IAM controls, because it cannot be governed by SCPs."},
+{sub:"KMS key policy",
+q:"An IAM user has an IAM policy that grants kms:Decrypt on a specific CMK. The KMS key policy grants kms:Decrypt only to the account root principal. The user tries to call kms:Decrypt. What happens?",
+o:["Access is granted because the IAM policy allows it and the key policy allows the root (which covers all principals in the account)","Access is denied because the key policy does not explicitly grant access to the user's IAM principal","Access is granted because IAM policies take precedence over KMS key policies for same-account access","Access is denied because kms:Decrypt requires both MFA and a key grant to be present"],
+c:0,e:"This tests a nuanced KMS key policy rule. When a KMS key policy grants access to the account root principal (arn:aws:iam::ACCOUNT_ID:root), it enables IAM policies in that account to control access to the key. The root entry in the key policy is a delegation statement — it says 'IAM controls who in this account can use this key'. So the flow: key policy allows root → IAM policies can grant access → the user's IAM policy grants kms:Decrypt → access is allowed. If the key policy had NO root entry and only listed specific IAM principals, then only those listed principals would have access. Key insight: a key policy with only the root entry + IAM policy = access granted. Key policy with no root entry = only explicitly listed principals in key policy can access."},
+{sub:"GuardDuty findings",
+q:"GuardDuty generates a finding: UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B. The security team wants to automatically isolate the compromised IAM user by attaching a deny-all policy within 5 minutes of the finding. What is the most operationally efficient solution?",
+o:["Configure GuardDuty to directly modify IAM users via its built-in response actions","Create an EventBridge rule that matches GuardDuty findings of type UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B and triggers a Lambda function that attaches a deny-all managed policy to the affected IAM user principal","Create an AWS Config rule that detects IAM users with suspicious login patterns and triggers SSM Automation","Enable GuardDuty Malware Protection which automatically quarantines compromised principals"],
+c:1,e:"GuardDuty detects threats but does NOT automatically respond — it publishes findings to its console, Security Hub, and EventBridge. Automated response requires: EventBridge rule matching the specific GuardDuty finding type → Lambda function that parses the finding's affected principal from the detail field → calls iam:AttachUserPolicy or iam:PutUserPolicy to attach a deny-all policy (or iam:CreateLoginProfile deletion). The Lambda must have IAM permissions to modify the affected user. Config rules evaluate resource configurations on a schedule — too slow for 5-minute response. GuardDuty Malware Protection scans EBS volumes for malware, not IAM principals."},
+{sub:"Security Hub aggregation",
+q:"A company has 50 AWS accounts in an Organization. They enable Security Hub in all accounts. The security team in the management account wants to see all findings from all accounts in a single Security Hub view. What must be configured?",
+o:["Security Hub automatically aggregates findings across all accounts in an Organization with no additional configuration","Designate a Security Hub administrator account (can be the management account or a delegated admin) via AWS Organizations integration — member accounts automatically send findings to the administrator account","Create an EventBridge rule in each member account that forwards Security Hub findings to a central S3 bucket","Enable cross-account IAM roles in each member account that allow the management account to query Security Hub directly"],
+c:1,e:"Security Hub multi-account aggregation requires designating an administrator account. This can be done via: (1) AWS Organizations integration — the management account or a delegated administrator account is designated, and all member accounts in the organization are automatically enrolled as members. Findings from all members flow to the administrator's Security Hub view. This is not automatic without designation. The administrator can also configure finding aggregation regions to see findings from all regions in a single region. EventBridge forwarding to S3 is a custom solution that bypasses Security Hub's native aggregation. Cross-account IAM roles don't solve the Security Hub aggregation problem."},
+{sub:"Inspector vs GuardDuty vs Macie",
+q:"A security audit finds that an EC2 instance is running an Apache version with a known critical CVE (CVE-2023-XXXXX). The company wants to automatically detect this on all instances continuously without manual scanning. Which service provides this?",
+o:["Amazon GuardDuty — enable EC2 Malware Protection to scan for vulnerable software","Amazon Inspector — enable it on all EC2 instances to continuously scan OS packages and application libraries for CVEs","AWS Config with a custom rule that checks the software versions via SSM Inventory","Amazon Macie — enable sensitive data discovery which also scans for vulnerable software"],
+c:1,e:"Amazon Inspector is purpose-built for vulnerability management — it continuously scans EC2 instances, Lambda functions, and ECR container images for CVEs. For EC2, it uses the SSM Agent to collect installed package information and matches against the CVE database. It provides a risk score, remediation recommendations, and integrates findings into Security Hub. GuardDuty detects active threats and anomalous behaviour — not software vulnerabilities. Config + SSM Inventory can detect software versions but requires you to write the logic to compare against CVE databases. Macie discovers sensitive data in S3 — not software vulnerabilities."},
+{sub:"IAM Access Analyzer",
+q:"A company wants to ensure that no S3 buckets, IAM roles, KMS keys, or Lambda functions are accessible from outside their AWS Organization. They want continuous monitoring with alerts when unintended external access is detected. What is the most efficient solution?",
+o:["Enable AWS Config rules for each resource type that check for public access","Create an IAM Access Analyzer with the Organization as the zone of trust — it continuously analyzes resource policies and generates findings for any resource accessible from outside the Organization","Enable GuardDuty S3 Protection to detect external bucket access","Use Security Hub with the AWS Foundational Security Best Practices standard"],
+c:1,e:"IAM Access Analyzer is designed precisely for this use case. By setting the zone of trust to the Organization, it identifies all resources (S3 buckets, IAM roles, KMS keys, Lambda functions, SQS queues, Secrets Manager secrets) that have policies granting access to principals outside the Organization. It runs continuously — any new resource policy change that grants external access generates a finding immediately. Findings appear in Access Analyzer console and Security Hub. Config rules can check some public access settings but don't cover all resource types and require custom rules for most. GuardDuty S3 Protection detects suspicious access patterns, not policy-level external access grants."},
+{sub:"KMS encryption at rest",
+q:"A company stores sensitive documents in S3 with SSE-KMS using a customer-managed key. The security team wants to detect every time an object is decrypted and by whom, for compliance auditing. Where does this information appear?",
+o:["S3 server access logs — they record every GetObject request including the requester identity","CloudTrail — every call to KMS Decrypt (kms:Decrypt) made by the S3 service when decrypting the data key is logged, including the requester's IAM identity","VPC Flow Logs — they capture the encryption metadata for S3 requests","GuardDuty S3 Protection findings — it records every decryption event"],
+c:1,e:"When SSE-KMS is used, S3 calls the KMS API (kms:GenerateDataKey for uploads, kms:Decrypt for downloads) on behalf of the requester. Every KMS API call is logged in CloudTrail, including: which KMS key was used, the requester's IAM identity (user/role ARN), timestamp, source IP, and the S3 object context. This provides a complete audit trail of every decryption event. S3 server access logs record S3 API calls but do not include KMS operation details. SSE-S3 (not SSE-KMS) would not produce KMS CloudTrail entries. This is the primary reason to choose SSE-KMS with a CMK over SSE-S3 — KMS CloudTrail audit trail."},
+{sub:"Control Tower guardrails",
+q:"A company sets up AWS Control Tower. The security team wants to prevent any account in the Organization from creating unencrypted RDS instances. They also want to detect if any account has root user activity. What combination of Control Tower guardrails achieves this?",
+o:["Both requirements use detective guardrails implemented as Config rules","Preventing unencrypted RDS uses a preventive guardrail (SCP that denies rds:CreateDBInstance without StorageEncrypted=true). Detecting root activity uses a detective guardrail (Config rule that monitors CloudTrail for root login events)","Both requirements use preventive guardrails implemented as SCPs","Use proactive guardrails for both — they check during CloudFormation provisioning"],
+c:1,e:"Control Tower guardrail types map to different mechanisms: Preventive guardrails = SCPs that block the action before it happens. An SCP can include a condition that denies rds:CreateDBInstance unless the request includes StorageEncrypted=true. Detective guardrails = Config rules that evaluate existing resources and detect non-compliance after the fact. A detective guardrail checking CloudTrail events for root user activity detects it after it occurs. Proactive guardrails use CloudFormation hooks to check before stack resources are provisioned. The question has two different requirements: prevent (SCP) + detect (Config rule)."},
+{sub:"Secrets Manager rotation",
+q:"A Lambda function retrieves a database password from Secrets Manager at startup and caches it in memory for performance. After a rotation event, the Lambda starts failing with authentication errors. What is the best fix that requires the least code change?",
+o:["Increase the rotation interval to 90 days so the cached secret stays valid longer","Configure the Lambda to catch authentication errors and call GetSecretValue with VersionStage=AWSCURRENT to refresh the cached credential, then retry","Store the secret in SSM Parameter Store instead, which doesn't rotate","Delete the AWSPREVIOUS version after each rotation to force immediate cache invalidation"],
+c:1,e:"During Secrets Manager rotation, the new password is set on the database AND Secrets Manager updates AWSCURRENT. The Lambda's cached old password becomes AWSPREVIOUS. The correct pattern: on authentication failure → call GetSecretValue (versionStage defaults to AWSCURRENT) → get the new password → update the cache → retry. This 'error-driven refresh' pattern requires only catching auth errors and adding a retry — minimal code change. Increasing the rotation interval doesn't solve the caching problem — it just delays it. SSM Parameter Store migration is a large change. Deleting AWSPREVIOUS is dangerous — in-flight connections from other Lambda instances might still use it. Secrets Manager retains AWSPREVIOUS for exactly this reason."},
+{sub:"SCPs and service-linked roles",
+q:"A company applies an SCP that denies ALL actions on all services using a deny-all statement with a condition that excludes only specific actions. GuardDuty stops generating findings after the SCP is applied. Investigation shows GuardDuty's service-linked role cannot perform its required actions. What is the cause and fix?",
+o:["SCPs can accidentally block service-linked roles — add a condition to the deny SCP that excludes the GuardDuty service-linked role ARN from the deny","SCPs never affect service-linked roles — the issue must be in GuardDuty configuration","Add a new Allow SCP that explicitly grants GuardDuty permissions above the deny SCP","Service-linked roles require MFA to be disabled — enable MFA exemption for GuardDuty"],
+c:0,e:"This is a critical nuance: SCPs DO apply to service-linked roles in member accounts UNLESS explicitly excluded. When a deny-all SCP is applied without exclusions for service-linked roles, those roles cannot perform their actions either. The fix: add a condition to the deny statement: StringNotLike with aws:PrincipalARN matching the service-linked role pattern (e.g., arn:aws:iam::*:role/aws-service-role/guardduty.amazonaws.com/*). Alternatively, use the aws:PrincipalIsAWSService or ArnLike conditions. Note: AWS documentation states that SCPs DO affect service-linked roles in member accounts — this is a common misconception that they are exempt. The management account's service-linked roles are unaffected by SCPs."},
+{sub:"ACM certificate limits",
+q:"A company is building a multi-tenant SaaS application where each customer gets a custom domain (e.g., customer1.app.com, customer2.app.com). They want HTTPS for each custom domain via CloudFront. They have 200 customer domains. What is the most scalable approach?",
+o:["Create 200 separate ACM certificates, one per customer domain, and attach each to a separate CloudFront distribution","Create one ACM wildcard certificate (*.app.com) in us-east-1 and use it on a single CloudFront distribution with multiple CNAMEs","Create a single ACM certificate with all 200 SANs (Subject Alternative Names) attached to a single CloudFront distribution","Use AWS Certificate Manager Private CA to issue certificates for each customer domain"],
+c:1,e:"ACM wildcard certificates (*.app.com) cover all subdomains at one level — customer1.app.com, customer2.app.com, etc. One certificate, one CloudFront distribution (with all 200 CNAMEs added as Alternate Domain Names), one SSL termination point. ACM certificates for CloudFront must be created in us-east-1. 200 separate certificates and distributions is operationally unmanageable. A single certificate with 200 SANs works but has a limit (ACM supports up to 100 additional SANs per certificate by default — can be increased but wildcard is simpler). Private CA issues private certificates not trusted by browsers without custom CA distribution. The wildcard is the simplest, most scalable answer."},
+{sub:"IAM Identity Center",
+q:"A company uses IAM Identity Center with Azure Active Directory as the identity source (SAML 2.0). An engineer's Azure AD account is in the 'CloudOps' group, which is synced to IAM Identity Center. A permission set named 'CloudOpsAccess' is assigned to the CloudOps group for the production account. The engineer cannot access the production account from the IAM Identity Center portal. What is the most likely cause?",
+o:["The engineer needs a separate IAM user in the production account","The permission set 'CloudOpsAccess' is not provisioned to the production account — assigning a permission set to a group only takes effect when the permission set is also assigned to a specific account","SAML 2.0 federation requires MFA to be configured on the IAM Identity Center side","The engineer must first assume a role using the AWS CLI before accessing via the portal"],
+c:1,e:"In IAM Identity Center, access is configured in three parts: (1) identity source provides users/groups (Azure AD in this case), (2) permission sets define what access level is granted, and (3) account assignments connect a group + permission set to a specific account. All three must be configured. A permission set alone does nothing — it must be assigned to specific accounts with specific groups. The missing piece here is the account assignment: assign the 'CloudOps' group + 'CloudOpsAccess' permission set to the production account. IAM Identity Center portal then shows the production account with that role. No separate IAM user is needed — that defeats the purpose of Identity Center."},
+{sub:"Data protection — envelope encryption",
+q:"A developer asks why S3 with SSE-KMS doesn't call kms:Encrypt/kms:Decrypt for every S3 object. Instead, CloudTrail shows only kms:GenerateDataKey on upload and kms:Decrypt on download. Why?",
+o:["S3 only uses KMS for key management — the actual encryption uses S3's own encryption engine without KMS involvement","KMS uses envelope encryption: for upload, S3 calls GenerateDataKey to get a plaintext data key + encrypted data key. S3 encrypts the object with the plaintext key (locally), stores the encrypted data key with the object. For download, S3 calls Decrypt to decrypt the stored data key, uses the plaintext key to decrypt the object. This minimises KMS API calls to one per object operation","S3 batches all Encrypt/Decrypt calls to KMS once per hour to reduce costs","kms:Encrypt and kms:Decrypt are only used for asymmetric keys — SSE-KMS always uses symmetric keys which use GenerateDataKey"],
+c:1,e:"This is envelope encryption — the core KMS design pattern. KMS never encrypts large amounts of data directly (the KMS payload limit is 4KB). Instead: upload: GenerateDataKey returns a plaintext data key + an encrypted copy of that key. S3 encrypts the object with the plaintext data key locally, stores the encrypted data key alongside the object, and discards the plaintext key. Download: Decrypt is called with the stored encrypted data key to recover the plaintext data key. S3 decrypts the object with the plaintext key locally. This means KMS is only called once per object operation — dramatically reducing latency and cost compared to passing every byte through KMS. Understanding this is why GenerateDataKey (not Encrypt) appears in CloudTrail for SSE-KMS uploads."}
+];
+
+const PAGES=[
+{id:'overview',label:'Overview',c:`
+<div class="sec">Domain 4 mental model — three security layers</div>
+<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1.2rem">
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);border-left:3px solid #A32D2D;padding:10px 12px;background:var(--color-background-primary)">
+    <div style="font-size:12px;font-weight:500;color:#791F1F;margin-bottom:3px">Preventive — stop before it happens</div>
+    <div style="font-size:13px;color:var(--color-text-secondary)">SCPs, IAM permission boundaries, S3 Block Public Access, KMS key policies, VPC SGs/NACLs, resource-based Deny policies, ACM for HTTPS enforcement</div>
+  </div>
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);border-left:3px solid #854F0B;padding:10px 12px;background:var(--color-background-primary)">
+    <div style="font-size:12px;font-weight:500;color:#633806;margin-bottom:3px">Detective — find after it happens</div>
+    <div style="font-size:13px;color:var(--color-text-secondary)">GuardDuty, AWS Config, Security Hub, Amazon Inspector, Amazon Macie, IAM Access Analyzer, CloudTrail, VPC Flow Logs</div>
+  </div>
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);border-left:3px solid #3B6D11;padding:10px 12px;background:var(--color-background-primary)">
+    <div style="font-size:12px;font-weight:500;color:#27500A;margin-bottom:3px">Corrective — fix automatically</div>
+    <div style="font-size:13px;color:var(--color-text-secondary)">Config auto-remediation via SSM Automation, EventBridge + Lambda for GuardDuty response, Security Hub automated playbooks</div>
+  </div>
+</div>
+<div class="sec">Complete service map</div>
+<table class="tbl">
+  <tr><th>Service</th><th>Layer</th><th>What it does for SOA-C03</th><th>Weight</th></tr>
+  <tr><td>IAM</td><td>Preventive</td><td>Policy evaluation, roles, permission boundaries, cross-account trust</td><td>★★★★★</td></tr>
+  <tr><td>AWS Organizations + SCPs</td><td>Preventive</td><td>Org-level max permissions, deny-list strategy, management account exception</td><td>★★★★★</td></tr>
+  <tr><td>KMS</td><td>Preventive</td><td>CMK key policies, envelope encryption, rotation, envelope pattern</td><td>★★★★★</td></tr>
+  <tr><td>AWS Config</td><td>Detective+Corrective</td><td>Compliance rules, auto-remediation, conformance packs, aggregator</td><td>★★★★☆</td></tr>
+  <tr><td>GuardDuty</td><td>Detective</td><td>ML threat detection on CloudTrail/Flow Logs/DNS, finding types</td><td>★★★★☆</td></tr>
+  <tr><td>Security Hub</td><td>Detective</td><td>Aggregates all findings, multi-account administrator model, standards</td><td>★★★★☆</td></tr>
+  <tr><td>Amazon Inspector</td><td>Detective</td><td>CVE scanning for EC2, Lambda, ECR — continuous via SSM Agent</td><td>★★★☆☆</td></tr>
+  <tr><td>Amazon Macie</td><td>Detective</td><td>PII/sensitive data discovery in S3 via ML</td><td>★★★☆☆</td></tr>
+  <tr><td>IAM Access Analyzer</td><td>Detective</td><td>Finds resources accessible from outside account/org zone of trust</td><td>★★★☆☆</td></tr>
+  <tr><td>Secrets Manager</td><td>Preventive</td><td>Auto-rotating credentials, version staging, cross-account access</td><td>★★★★☆</td></tr>
+  <tr><td>ACM</td><td>Preventive</td><td>TLS cert management for ALB/CloudFront/APIGW, must be us-east-1 for CF</td><td>★★★☆☆</td></tr>
+  <tr><td>IAM Identity Center</td><td>Preventive</td><td>Multi-account SSO, external IdP SAML 2.0, permission sets</td><td>★★★☆☆</td></tr>
+  <tr><td>Control Tower</td><td>Preventive+Detective</td><td>Landing zone, preventive (SCP) + detective (Config) + proactive (CFN hooks) guardrails</td><td>★★★☆☆</td></tr>
+  <tr><td>WAF + Shield</td><td>Preventive</td><td>Layer 7 filtering (WAF), DDoS protection (Shield Standard/Advanced)</td><td>★★★☆☆</td></tr>
+</table>
+<div class="trap"><strong>Domain 4 #1 mistake:</strong> using detective tools as the answer to "prevent" questions, or using preventive tools as the answer to "detect" questions. Read every question carefully: "prevent" → SCP/boundary/policy. "detect/alert/monitor" → GuardDuty/Config/Security Hub/Macie/Inspector/Access Analyzer.</div>
+`},
+
+{id:'iam',label:'IAM Policy Evaluation',c:`
+<div class="sec">Policy evaluation order — the complete chain</div>
+<div class="eval-chain">
+  <div class="eval-step" style="border-left:3px solid #A32D2D">
+    <span class="eval-num">1</span>
+    <span class="eval-label" style="color:#791F1F">Explicit Deny anywhere</span>
+    <span class="eval-note">Any Deny in ANY policy (SCP, resource, identity, session, boundary) = immediate Deny. No overrides. No exceptions. This step wins over everything.</span>
+  </div>
+  <div class="eval-step" style="border-left:3px solid #854F0B">
+    <span class="eval-num">2</span>
+    <span class="eval-label" style="color:#633806">Organizations SCPs</span>
+    <span class="eval-note">Must not deny the action. If SCP denies or no SCP allows (allow-list mode), request is denied. SCPs define the ceiling for member accounts.</span>
+  </div>
+  <div class="eval-step" style="border-left:3px solid #534AB7">
+    <span class="eval-num">3</span>
+    <span class="eval-label" style="color:#3C3489">Resource-based policy</span>
+    <span class="eval-note">If resource policy explicitly allows the principal AND the request is within the same account, it may grant access even without an identity policy. Cross-account: still needs identity policy too.</span>
+  </div>
+  <div class="eval-step" style="border-left:3px solid #185FA5">
+    <span class="eval-num">4</span>
+    <span class="eval-label" style="color:#0C447C">IAM permission boundary</span>
+    <span class="eval-note">If attached: effective permissions = intersection of identity policy AND boundary. Boundary cannot grant permissions — it only caps them.</span>
+  </div>
+  <div class="eval-step" style="border-left:3px solid #0F6E56">
+    <span class="eval-num">5</span>
+    <span class="eval-label" style="color:#085041">Session policies</span>
+    <span class="eval-note">For assumed roles: the session policy further limits the session's effective permissions. Intersection of role's permissions AND session policy.</span>
+  </div>
+  <div class="eval-step" style="border-left:3px solid #3B6D11">
+    <span class="eval-num">6</span>
+    <span class="eval-label" style="color:#27500A">Identity-based policy</span>
+    <span class="eval-note">Must explicitly allow the action. If no Allow exists anywhere after all the above checks → implicit Deny.</span>
+  </div>
+</div>
+<div class="tip"><strong>Effective permissions formula:</strong> The actual permissions available = (identity policy) ∩ (permission boundary, if any) — further constrained by SCPs and session policies. An Allow in one layer does NOT compensate for a Deny in another.</div>
+
+<div class="sec">Permission boundaries — every nuance</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">What boundaries do and don't do</span><span class="badge bc">Core</span></div>
+    <div class="cb">Boundaries do NOT grant permissions. They only define the maximum permissions an IAM entity can have.<br><br><strong>Effective permissions = identity policy AND boundary (intersection).</strong><br><br>Example:<br>• Identity policy allows: <code>s3:*</code>, <code>ec2:*</code>, <code>iam:CreateUser</code><br>• Permission boundary allows: <code>s3:*</code>, <code>ec2:*</code><br>• Effective permissions: <code>s3:*</code>, <code>ec2:*</code> only (iam:CreateUser blocked by boundary)<br><br>Even if you add iam:CreateUser to the boundary, the identity policy must also allow it. Both must have it.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Delegated administration pattern</span><span class="badge bc">Core</span></div>
+    <div class="cb">The primary use case: allow junior admins to create IAM identities WITHOUT being able to escalate privileges beyond what the senior admin controls.<br><br><strong>Pattern:</strong><br>1. Senior admin creates a permission boundary policy defining allowed actions<br>2. Senior admin attaches the boundary to the junior admin's role<br>3. Junior admin's IAM policy includes <code>iam:CreateRole</code>, <code>iam:AttachRolePolicy</code><br>4. Junior admin can create roles BUT the senior admin adds a condition: <code>iam:PermissionsBoundary</code> must equal the standard boundary ARN<br>5. Any role the junior admin creates must also have the boundary — preventing privilege escalation<br><br>Without this pattern, a junior admin with <code>iam:CreateRole</code> + <code>iam:AttachRolePolicy</code> could create an admin role and use it to bypass their own restrictions.</div>
+  </div>
+</div>
+
+<div class="sec">SCPs — complete operational knowledge</div>
+<div class="anat">
+  <div class="ar"><div class="al">What SCPs govern</div><div class="av">The maximum permissions available to ALL principals in the affected accounts: IAM users, IAM roles, the account root user (for most services). Every API call in a member account is subject to SCP evaluation.</div></div>
+  <div class="ar"><div class="al">What SCPs do NOT govern</div><div class="av">The management account (immune). Service-linked roles in member accounts (SCPs apply to them — this is a common misconception). Actions performed by AWS services on your behalf using service roles (depends on context).</div></div>
+  <div class="ar"><div class="al">Deny-list strategy</div><div class="av">Start with the AWS-managed FullAWSAccess SCP attached to the root (which allows everything). Then attach specific Deny SCPs for prohibited actions. Simpler to manage — only deny what's explicitly banned. Most common approach.</div></div>
+  <div class="ar"><div class="al">Allow-list strategy</div><div class="av">Remove FullAWSAccess from root. Attach explicit Allow SCPs listing only permitted services/actions. More restrictive but requires maintaining the allow list as new services are needed. Often too operationally expensive for large organizations.</div></div>
+  <div class="ar"><div class="al">SCP conditions</div><div class="av">SCPs support IAM condition keys. Common patterns:<br><code>aws:RequestedRegion</code> — restrict to specific regions<br><code>ec2:Region</code> — alternative for EC2 actions<br><code>aws:PrincipalARN</code> — exclude specific roles from the deny (e.g., break-glass roles)<br><code>StringNotEquals aws:PrincipalTag/Team production</code> — allow only prod team<br><code>aws:ResourceTag/Environment</code> — allow only tagged resources</div></div>
+  <div class="ar"><div class="al">Management account</div><div class="av">SCPs NEVER apply to the management account. Even if you attach a Deny SCP at the root OU, principals in the management account are unaffected. This is why the management account should have strict IAM controls directly and minimal usage.</div></div>
+</div>
+
+<div class="sec">Cross-account access patterns</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Role assumption (STS AssumeRole)</span><span class="badge bc">Core</span></div>
+    <div class="cb">The standard cross-account access pattern:<br><br>1. Account B creates a role with a trust policy allowing Account A (or a specific ARN in A) to assume it<br>2. The role has a permissions policy for the required actions in Account B<br>3. A principal in Account A calls <code>sts:AssumeRole</code> with the role ARN<br>4. STS returns temporary credentials (valid 1-12 hours)<br>5. Principal uses temporary credentials to act in Account B<br><br><strong>External ID:</strong> condition in trust policy preventing the confused deputy attack. Third-party services must know your external ID to assume the role. Prevents malicious services from assuming your role by tricking your account.<br><br><strong>Cross-account resource policy:</strong> for S3, KMS, SQS — both the resource policy AND the caller's identity policy must allow the action.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Resource-based policies for cross-account</span><span class="badge bc">Core</span></div>
+    <div class="cb">Some resource types (S3, KMS, SQS, Lambda, Secrets Manager) have resource-based policies that can directly grant access to principals in other accounts.<br><br><strong>S3:</strong> bucket policy can grant a principal in Account A access to a bucket in Account B. The principal's own account IAM policy must also allow s3:GetObject.<br><br><strong>Same-account resource-based policy:</strong> if a resource policy in Account A grants access to a principal in Account A, that alone is sufficient — no identity policy needed. Cross-account: both resource policy AND identity policy required.<br><br><strong>KMS cross-account:</strong> key policy grants Account B's IAM principal, AND Account B's identity policy grants kms:Decrypt. Both required for cross-account KMS.</div>
+  </div>
+</div>
+`},
+
+{id:'detective',label:'Detective Controls',c:`
+<div class="sec">Four detective services — the definitive comparison</div>
+<table class="tbl">
+  <tr><th>Service</th><th>Detects</th><th>Data source</th><th>Exam trigger phrase</th></tr>
+  <tr><td>GuardDuty</td><td>Active threats, anomalous behaviour, compromised credentials, malware C2 traffic, crypto mining, recon</td><td>CloudTrail management+S3 events, VPC Flow Logs, DNS logs, (optional) EKS audit logs, RDS login, Lambda network</td><td>"Compromised IAM credentials", "unusual API calls", "EC2 calling TOR exit node", "crypto mining", "brute force RDS login"</td></tr>
+  <tr><td>Inspector</td><td>Software vulnerabilities (CVEs) in EC2 OS packages, Lambda dependencies, ECR container images</td><td>SSM Agent on EC2, Lambda function code scan, ECR image scan</td><td>"CVE in Apache/OpenSSL/Log4j", "vulnerable container image", "EC2 missing patches"</td></tr>
+  <tr><td>Macie</td><td>Sensitive data (PII, financial data, credentials, health data) in S3 objects</td><td>S3 object contents, ML classification</td><td>"Find PII in S3", "detect credit card numbers", "GDPR data discovery", "classify S3 data"</td></tr>
+  <tr><td>IAM Access Analyzer</td><td>Resources accessible from outside the zone of trust (account or Organization)</td><td>Resource-based policies (S3, IAM roles, KMS, Lambda, SQS, Secrets Manager)</td><td>"Which resources are publicly accessible?", "unintended external access", "cross-account access audit"</td></tr>
+</table>
+<div class="trap"><strong>The four-way trap:</strong> Runtime threat → GuardDuty. Software CVE → Inspector. PII in S3 → Macie. Resource policy external access → Access Analyzer. Never substitute one for another.</div>
+
+<div class="sec">GuardDuty — finding categories and architecture</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Finding types to know</span><span class="badge bc">Core</span></div>
+    <div class="cb"><code>UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B</code> — console login from unusual location<br><code>UnauthorizedAccess:IAMUser/TorIPCaller</code> — API call from TOR exit node<br><code>Recon:EC2/PortProbeUnprotectedPort</code> — port scanning detected<br><code>CryptoCurrency:EC2/BitcoinTool.B</code> — EC2 communicating with bitcoin pool<br><code>Trojan:EC2/BlackholeTraffic</code> — EC2 communicating with known malicious domain<br><code>CredentialAccess:IAMUser/AnomalousBehavior</code> — anomalous credential use<br><code>Exfiltration:S3/ObjectRead.Unusual</code> — unusual S3 data exfiltration pattern<br><code>Policy:S3/BucketPublicAccessGranted</code> — S3 bucket made public<br><br><strong>Finding format:</strong> ThreatType:ResourceType/ThreatName</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Multi-account and architecture</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>Designate administrator account</strong> via Organizations. All member accounts are enrolled. Findings from all members aggregate to the administrator.<br><br><strong>Data sources enabled by default:</strong> CloudTrail management events, VPC Flow Logs, DNS query logs.<br><br><strong>Optional protection plans (extra cost):</strong> S3 Protection, EKS Audit Log Monitoring, RDS Protection, Lambda Network Activity, Malware Protection (EBS volume scanning), Runtime Monitoring.<br><br><strong>Suppression rules:</strong> automatically archive findings that match specified criteria (e.g., suppress pentest IP ranges).<br><br><strong>Trusted IP lists:</strong> whitelist IPs that should not generate findings.<br><br><strong>Threat intel feeds:</strong> GuardDuty automatically uses AWS threat intelligence. You can add custom threat intel feeds (TXT file of malicious IPs in S3).</div>
+  </div>
+</div>
+
+<div class="sec">Security Hub — aggregation and standards</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Multi-account aggregation</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>Administrator account:</strong> designated via Organizations integration. Can be the management account or a delegated admin (recommended — isolates security function from management).<br><br><strong>Auto-enrollment:</strong> when the administrator account enables Security Hub integration with Organizations, all current and new member accounts are automatically enrolled.<br><br><strong>Finding aggregation region:</strong> designate one region to aggregate findings from all other regions into a single view. Eliminates need to check each region separately.<br><br><strong>Cross-account findings:</strong> administrator sees findings from all members. Members can only see their own findings.<br><br><strong>Automated response:</strong> Security Hub findings → EventBridge → Lambda for automated remediation playbooks.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Security standards and ASFF</span><span class="badge bc">Know it</span></div>
+    <div class="cb"><strong>Standards supported:</strong><br>• AWS Foundational Security Best Practices (FSBP)<br>• CIS AWS Foundations Benchmark v1.2 and v1.4<br>• NIST SP 800-53<br>• PCI DSS v3.2.1<br><br>Each standard has controls mapped to AWS checks. Security Hub runs these checks continuously and produces pass/fail findings per control per account.<br><br><strong>ASFF (Amazon Security Finding Format):</strong> normalized format for all Security Hub findings from any source. Enables consistent querying regardless of source service.<br><br><strong>Insights:</strong> pre-built correlated views — "Top accounts with most critical findings", "Resources with most findings".</div>
+  </div>
+</div>
+
+<div class="sec">AWS Config — compliance deep knowledge</div>
+<div class="anat">
+  <div class="ar"><div class="al">Evaluation triggers</div><div class="av"><code>Configuration change</code> — rule evaluates when the target resource type changes. Immediate detection of new non-compliant resources.<br><code>Periodic</code> — rule evaluates on a schedule (1h/3h/6h/12h/24h). For checks that don't map to resource changes.<br><code>Hybrid</code> — both change-triggered and periodic.</div></div>
+  <div class="ar"><div class="al">Conformance packs</div><div class="av">Bundles of Config rules + remediation actions deployed as one unit. Available for CIS, NIST 800-53, PCI DSS, HIPAA, FedRAMP. Deploy one pack to get dozens of compliance controls instantly. Custom packs can be created from your own rules.</div></div>
+  <div class="ar"><div class="al">Aggregator</div><div class="av">Collect Config data from all accounts and regions into one aggregator account for centralised compliance visibility. Combined with Security Hub for a complete cross-account security posture view.</div></div>
+  <div class="ar"><div class="al">Auto-remediation gotchas</div><div class="av">Two IAM layers must be correct: (1) Config remediation role needs <code>ssm:StartAutomationExecution</code>. (2) SSM execution role needs resource permissions (e.g., <code>ec2:StopInstances</code>). Both must be correct. Failure shows as 'Failed' in SSM Automation history with AccessDenied.</div></div>
+  <div class="ar"><div class="al">Config vs CloudTrail</div><div class="av">Config = "what did this resource look like over time, was it ever non-compliant?" CloudTrail = "who made the API call that changed this resource?" Use BOTH together for full incident investigation: Config shows the change timeline, CloudTrail shows who caused each change.</div></div>
+</div>
+`},
+
+{id:'encryption',label:'Encryption Deep Dive',c:`
+<div class="sec">KMS — complete architecture</div>
+<div class="anat">
+  <div class="ar"><div class="al">Key types</div><div class="av"><strong>AWS managed keys:</strong> created by AWS for you (aws/s3, aws/ebs, aws/lambda). Free. Rotated automatically every year by AWS. You cannot manage the key policy or disable them.<br><strong>Customer managed keys (CMK):</strong> you create, manage rotation, and set the key policy. Required for: audit via CloudTrail, cross-account sharing, custom key policy conditions, KMS grants. Charged per key per month + per API call.<br><strong>AWS owned keys:</strong> used internally by AWS, not visible to you.</div></div>
+  <div class="ar"><div class="al">Key policy rule</div><div class="av">The key policy is the PRIMARY access control for a CMK. Unlike most AWS resources where IAM alone is sufficient, KMS requires both the KEY POLICY and IAM policy to allow access.<br><br><strong>Root principal in key policy:</strong> <code>"Principal": {"AWS": "arn:aws:iam::ACCOUNT_ID:root"}</code> — this is a DELEGATION statement, not direct root access. It enables IAM policies in that account to control access. Without this, only explicitly listed principals in the key policy can access the key.</div></div>
+  <div class="ar"><div class="al">Envelope encryption</div><div class="av"><strong>Upload:</strong> <code>GenerateDataKey</code> → returns plaintext data key + encrypted data key. Service encrypts data with plaintext key locally, stores encrypted key alongside data, discards plaintext key.<br><strong>Download:</strong> <code>Decrypt</code> → decrypts the stored encrypted data key, returns plaintext key. Service decrypts data locally, discards plaintext key.<br><br>This means KMS handles only small key data (never your actual content). Reduces latency, cost, and KMS API usage dramatically.</div></div>
+  <div class="ar"><div class="al">Key rotation</div><div class="av">Auto-rotation: once per year for CMKs (symmetric only). Old key material is retained to decrypt data encrypted with it. New material generates new data keys. The key ID, ARN, and all aliases stay the same — applications don't need to change.<br><br>Cannot enable auto-rotation for: asymmetric keys, keys with imported key material, keys in custom key stores.</div></div>
+  <div class="ar"><div class="al">KMS grants</div><div class="av">Temporary delegation of KMS permissions to other principals without modifying the key policy. Used by AWS services (EBS, RDS, S3) to allow specific operations on your behalf. Grants can be retried and retired. More granular than key policy changes.</div></div>
+  <div class="ar"><div class="al">Key deletion</div><div class="av">Minimum waiting period: 7 days (default 30 days). During the waiting period, the key is disabled but not deleted. You can cancel deletion. After deletion: any data encrypted with the key is permanently inaccessible. Consider disabling instead of deleting for safety.</div></div>
+</div>
+
+<div class="sec">S3 encryption — every option in depth</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">SSE-S3 (AES-256)</span><span class="badge bi">Know it</span></div>
+    <div class="cb">AWS manages all aspects of key management. The encryption key is unique per object and is itself encrypted by a regularly-rotated master key. Completely transparent to users.<br><br><strong>Enable:</strong> bucket default encryption or per-object header <code>x-amz-server-side-encryption: AES256</code><br><br><strong>Cannot:</strong> audit key usage, share keys across accounts, set key policy conditions.<br><br><strong>Exam trigger:</strong> "simplest encryption, no key management overhead, don't need audit" → SSE-S3.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">SSE-KMS</span><span class="badge bc">Core</span></div>
+    <div class="cb">Uses a KMS key (aws/s3 managed key or a CMK you create).<br><br><strong>Requester needs:</strong> <code>kms:GenerateDataKey</code> (for uploads) and <code>kms:Decrypt</code> (for downloads). These are in addition to the s3: permissions.<br><br><strong>With CMK:</strong> every GenerateDataKey and Decrypt call logged in CloudTrail with the requester's identity. Full audit trail. Cross-account access possible via key policy + bucket policy.<br><br><strong>S3 Bucket Keys:</strong> optional optimization. Generates a short-lived S3-level data key from the KMS key, reducing the number of KMS API calls by ~99% for high-object-count buckets. Reduces cost significantly.<br><br><strong>Exam trigger:</strong> "audit who decrypted which S3 objects" → SSE-KMS with CMK.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">SSE-C</span><span class="badge bt">Know it</span></div>
+    <div class="cb">You provide the encryption key with every request. AWS encrypts/decrypts but NEVER stores your key (only a hash of it for validation).<br><br><strong>Requirements:</strong> HTTPS only (key transmitted over TLS). You manage key rotation and secure key storage. If you lose the key, the data is permanently inaccessible.<br><br><strong>Use when:</strong> regulatory requirement to maintain exclusive key custody (your HSM, never in AWS).<br><br><strong>Not compatible with:</strong> S3 replication, lifecycle transitions to Glacier, Cross-Region Replication.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Enforcing encryption</span><span class="badge bc">Core</span></div>
+    <div class="cb">Deny uploads without encryption using a bucket policy condition:<br><br><code>Condition: StringNotEquals s3:x-amz-server-side-encryption: "aws:kms"</code><br><br>Or deny if no encryption header at all:<br><code>Condition: Null s3:x-amz-server-side-encryption: true</code><br><br><strong>Deny specific KMS key:</strong> require uploads to use only your approved CMK:<br><code>Condition: StringNotEquals s3:x-amz-server-side-encryption-aws-kms-key-id: "arn:aws:kms:..."</code><br><br>Combined with S3 default encryption (fallback) and a bucket policy (hard enforcement).</div>
+  </div>
+</div>
+
+<div class="sec">Encrypting existing unencrypted resources</div>
+<div class="anat">
+  <div class="ar"><div class="al">EBS volume</div><div class="av">Cannot encrypt in-place. Process: create snapshot of unencrypted volume → copy snapshot with encryption enabled (specify KMS key) → create new volume from encrypted snapshot → detach old volume → attach new encrypted volume → update OS mount if needed.<br><br>Account-level EBS default encryption: enables all NEW volumes to be encrypted automatically. Does not affect existing unencrypted volumes.</div></div>
+  <div class="ar"><div class="al">RDS instance</div><div class="av">Cannot encrypt in-place. Process: take manual snapshot → copy snapshot with encryption enabled → restore new encrypted RDS instance → update application connection strings → optionally delete original unencrypted instance.<br><br>On restore: Multi-AZ and Read Replicas are NOT automatically recreated. Re-enable manually after restoration.</div></div>
+  <div class="ar"><div class="al">S3 objects</div><div class="av">S3 default encryption applies to NEW uploads only. Existing unencrypted objects are not retroactively encrypted. To encrypt existing objects: use S3 Batch Operations with a CopyObject operation (same bucket, same key, add encryption metadata). Or use the S3 Inventory to identify unencrypted objects then batch-copy them.</div></div>
+</div>
+
+<div class="sec">Secrets Manager — version staging deep knowledge</div>
+<div class="flow">
+  <div class="fb" style="background:#FAEEDA;color:#633806">AWSPENDING<br><span style="font-size:11px;font-weight:400">new creds being set</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:#EAF3DE;color:#27500A">AWSCURRENT<br><span style="font-size:11px;font-weight:400">active credentials</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:#E6F1FB;color:#0C447C">AWSPREVIOUS<br><span style="font-size:11px;font-weight:400">old creds, retained briefly</span></div>
+</div>
+<div class="warn"><strong>Why AWSPREVIOUS matters:</strong> After rotation, old credentials persist as AWSPREVIOUS for one rotation cycle. Applications that cache credentials can still authenticate using the old password while they refresh. If you delete AWSPREVIOUS, any cached-credential connections may break until the cache is refreshed. Secrets Manager retains AWSPREVIOUS specifically to prevent connection errors during rotation windows.</div>
+`},
+
+{id:'identity',label:'Identity Governance',c:`
+<div class="sec">IAM Identity Center — complete architecture</div>
+<div class="anat">
+  <div class="ar"><div class="al">Identity sources</div><div class="av"><strong>IAM Identity Center directory (default):</strong> built-in user store. Simple, no external dependency. Good for small orgs.<br><strong>AWS Managed Microsoft AD:</strong> connect to your own AD via AWS Directory Service.<br><strong>External IdP (SAML 2.0):</strong> Okta, Azure AD, Google Workspace, Ping. Users authenticate with their corporate credentials. IdP sends SAML assertions to Identity Center.<br><br>You can only have ONE identity source at a time. Changing identity sources requires careful planning.</div></div>
+  <div class="ar"><div class="al">Permission sets</div><div class="av">Define what access a user gets in an assigned account. Implemented as IAM roles when provisioned. Can use AWS managed policies, custom inline policies, or both.<br><br>Permission sets are account-agnostic — the same permission set can be assigned to multiple accounts with the same access level.</div></div>
+  <div class="ar"><div class="al">Account assignments</div><div class="av">The connection that grants access: (user or group) + (permission set) + (account). All three must be configured. A group with a permission set but no account assignment grants no access. An account with a permission set but no group/user assignment grants no access.</div></div>
+  <div class="ar"><div class="al">SCIM provisioning</div><div class="av">Automatic user/group synchronization from external IdPs (Okta, Azure AD) to Identity Center via SCIM 2.0. Users and groups created/updated/deleted in the IdP are automatically reflected in Identity Center. Without SCIM, you must manually create users in Identity Center that mirror the IdP.</div></div>
+  <div class="ar"><div class="al">Access portal</div><div class="av">The web UI where users sign in once and see all their assigned AWS accounts and roles. Click an account to get temporary console access or CLI credentials (using the AWS CLI SSO profile: <code>aws sso login --profile profile-name</code>).</div></div>
+</div>
+
+<div class="sec">Control Tower — guardrail types</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Guardrail categories</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>Mandatory:</strong> always enabled, cannot be disabled. Examples: disallow changes to CloudTrail in enrolled accounts, disallow creation of access keys for root user.<br><br><strong>Strongly recommended:</strong> based on AWS best practices, enabled by default but can be disabled.<br><br><strong>Elective:</strong> optional, for specific compliance requirements. Must be explicitly enabled.<br><br><strong>Preventive (SCP):</strong> blocks the action before it happens. DENY statement in an SCP.<br><strong>Detective (Config):</strong> detects non-compliance after the fact. Config rule evaluates resources.<br><strong>Proactive (CloudFormation hooks):</strong> evaluates CloudFormation resource properties before provisioning. Prevents non-compliant resources from being created via CloudFormation.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Landing zone structure</span><span class="badge bc">Core</span></div>
+    <div class="cb">Control Tower sets up a well-architected multi-account structure:<br><br><strong>Management account:</strong> Control Tower configuration, billing, Organizations management.<br><strong>Log Archive account:</strong> centralised CloudTrail logs and Config data from all accounts. Read-only for most.<br><strong>Audit account:</strong> security team access. Read access to all accounts for compliance review. Configured SNS topics for findings.<br><br><strong>Account Factory:</strong> automated account vending machine. Creates new accounts with the correct OU, guardrails, baseline config, and SSO assignment automatically. Supports Account Factory for Terraform (AFT) for IaC-driven provisioning.<br><br><strong>Customizations for Control Tower (CfCT):</strong> deploy custom CFN templates and SCPs to accounts during provisioning.</div>
+  </div>
+</div>
+
+<div class="sec">WAF and Shield — when to use each</div>
+<table class="tbl">
+  <tr><th>Service</th><th>Layer</th><th>Protects</th><th>Exam use case</th></tr>
+  <tr><td>AWS WAF</td><td>Layer 7 (application)</td><td>ALB, CloudFront, API Gateway, AppSync</td><td>Block SQL injection, XSS, specific IPs/geo, rate limit (throttle scrapers), HTTP flood protection. AWS Managed Rules for quick common threat coverage.</td></tr>
+  <tr><td>Shield Standard</td><td>Layer 3/4 (network)</td><td>All AWS resources (always-on, free)</td><td>Automatic SYN flood, UDP reflection, DNS amplification protection. No configuration needed.</td></tr>
+  <tr><td>Shield Advanced</td><td>Layer 3/4/7</td><td>EC2, ELB, CloudFront, Route 53, Global Accelerator</td><td>Enhanced DDoS protection, 24/7 DDoS Response Team (DRT) access, cost protection (AWS credits DDoS-related scaling costs), near-real-time visibility in CloudWatch. Requires subscription ($3k/month + data transfer).</td></tr>
+  <tr><td>Network Firewall</td><td>Layer 3-7 (VPC)</td><td>VPC east-west and north-south traffic</td><td>Deep packet inspection, domain-based filtering (block access to malicious domains), Suricata-compatible IDS/IPS rules. Deployed in dedicated firewall subnets.</td></tr>
+</table>
+`},
+
+{id:'exam',label:'15 Hard Practice Questions',c:`
+<div class="sec">15 exam-level questions — every sub-topic, harder than average</div>
+<div class="score-row">
+  <div style="font-size:13px;color:var(--color-text-secondary)">Score:</div>
+  <div class="score-num" id="score-display">0 / 0</div>
+  <div class="score-track"><div class="score-fill" id="score-fill" style="width:0%"></div></div>
+  <div style="font-size:12px;color:var(--color-text-tertiary)" id="score-pct">0%</div>
+</div>
+${QS.map((q,i)=>`
+<div class="qblock" id="q${i}">
+  <div class="qhead"><span class="qdomain">${q.sub}</span><br>Q${i+1}. ${q.q}</div>
+  <div class="qopts">${q.o.map((o,j)=>`<button class="qopt" id="qo${i}_${j}" onclick="doA(${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}</div>
+  <div class="qex" id="qe${i}"></div>
+</div>`).join('')}
+`},
+
+{id:'cheat',label:'Cheat Sheet',c:`
+<div class="sec">Master quick-reference — Domain 4</div>
+<table class="tbl">
+  <tr><th>Trigger phrase</th><th>Answer</th><th>Key caveat</th></tr>
+  <tr><td>Prevent action across ALL org accounts</td><td>SCP Deny at root OU</td><td>Does NOT apply to management account. Service-linked roles in member accounts ARE subject to SCPs.</td></tr>
+  <tr><td>Detect compromised IAM credentials / unusual API</td><td>GuardDuty</td><td>Enable once, no infra to manage. Multi-account needs administrator account designation.</td></tr>
+  <tr><td>Find PII / credit card numbers in S3</td><td>Amazon Macie</td><td>ML-based. Creates discovery jobs on S3. Findings go to Security Hub.</td></tr>
+  <tr><td>Scan EC2 / Lambda / containers for CVEs</td><td>Amazon Inspector</td><td>Continuous (not just on-demand). Uses SSM Agent for EC2. Findings go to Security Hub.</td></tr>
+  <tr><td>Single view of all security findings</td><td>AWS Security Hub</td><td>Needs administrator account designated. Finding aggregation region for multi-region view.</td></tr>
+  <tr><td>Resources accessible from outside account/org</td><td>IAM Access Analyzer</td><td>Zone of trust = account or Organization. Covers S3, IAM roles, KMS, Lambda, SQS, Secrets Manager.</td></tr>
+  <tr><td>Cap an identity's maximum permissions</td><td>IAM permission boundary</td><td>Does NOT grant permissions. Effective = identity policy AND boundary (intersection).</td></tr>
+  <tr><td>Prevent privilege escalation by junior admins</td><td>Permission boundary + iam:PermissionsBoundary condition on CreateRole</td><td>Forces junior admin to attach the standard boundary to any role they create.</td></tr>
+  <tr><td>Multi-account SSO with Okta/Azure AD</td><td>IAM Identity Center (SAML 2.0 + SCIM)</td><td>Account assignments = group + permission set + account. All three required for access.</td></tr>
+  <tr><td>Landing zone with guardrails and account vending</td><td>AWS Control Tower</td><td>Preventive=SCP, Detective=Config, Proactive=CloudFormation hooks.</td></tr>
+  <tr><td>Auto-rotate RDS credentials</td><td>Secrets Manager with built-in RDS rotation</td><td>AWSPREVIOUS retained for in-flight connections. Application should retry on auth failure with fresh secret.</td></tr>
+  <tr><td>Audit who decrypted which S3 objects</td><td>SSE-KMS with CMK → CloudTrail logs kms:Decrypt</td><td>SSE-S3 produces no KMS CloudTrail entries. Must use CMK for per-call audit trail.</td></tr>
+  <tr><td>Encrypt existing unencrypted RDS/EBS</td><td>Snapshot → copy with encryption → restore/new volume</td><td>Cannot encrypt in-place. New RDS = new endpoint. Multi-AZ/replicas not auto-recreated.</td></tr>
+  <tr><td>KMS AccessDenied</td><td>Check both IAM policy AND key policy</td><td>Both must allow. Root in key policy = IAM delegation, not direct root access.</td></tr>
+  <tr><td>TLS cert for CloudFront</td><td>ACM certificate in us-east-1 only</td><td>Certs in other regions cannot be used with CloudFront, regardless of origin region.</td></tr>
+  <tr><td>Block SQLi / XSS on ALB</td><td>AWS WAF with managed rules attached to ALB</td><td>WAF can also rate-limit, geo-block, and use custom regex patterns.</td></tr>
+  <tr><td>DDoS protection with cost protection + DRT access</td><td>AWS Shield Advanced</td><td>Shield Standard = free, automatic, L3/L4 only. Advanced = paid, L3-7, DRT, cost credits.</td></tr>
+</table>
+<div class="sec">Top 8 Domain 4 exam traps</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+  <div class="trap"><strong>Trap 1:</strong> SCPs do NOT apply to the management account. Any SCP — even at root OU — has no effect on principals in the management account. The management account must be protected with direct IAM policies.</div>
+  <div class="trap"><strong>Trap 2:</strong> KMS AccessDenied = check BOTH the IAM policy AND the key policy. The root entry in the key policy delegates access to IAM — it does not directly grant access to all principals. If there is no root entry, only explicitly listed principals in the key policy can access the key.</div>
+  <div class="trap"><strong>Trap 3:</strong> Permission boundaries do NOT grant permissions. They only cap. Effective permissions = IAM policy AND boundary (intersection). If a boundary doesn't include an action, the principal cannot perform it even if their IAM policy allows it.</div>
+  <div class="trap"><strong>Trap 4:</strong> GuardDuty vs Inspector vs Macie vs Access Analyzer — four distinct jobs. Runtime threats → GuardDuty. Software CVEs → Inspector. PII in S3 → Macie. External resource access → Access Analyzer. Substituting one for another in exam answers is always wrong.</div>
+  <div class="trap"><strong>Trap 5:</strong> Encrypting existing RDS/EBS in-place is impossible. Must use snapshot → copy with encryption → restore. New RDS instance = new endpoint. Multi-AZ and Read Replicas are not automatically recreated after restore.</div>
+  <div class="trap"><strong>Trap 6:</strong> Secrets Manager AWSPREVIOUS is retained intentionally for in-flight connections during rotation. Do not delete AWSPREVIOUS immediately after rotation. Applications should retry on authentication failure by calling GetSecretValue for AWSCURRENT.</div>
+  <div class="trap"><strong>Trap 7:</strong> IAM Identity Center account assignments require ALL THREE: user/group + permission set + specific account. Assigning a permission set to a group does nothing without also assigning it to a specific account. This is the most common Identity Center configuration mistake.</div>
+  <div class="trap"><strong>Trap 8:</strong> SCPs CAN affect service-linked roles in member accounts. A broad deny-all SCP can break GuardDuty, Config, or other services whose service-linked roles can no longer perform their required actions. Use aws:PrincipalARN conditions to exclude service-linked role ARNs from deny SCPs.</div>
+</div>
+<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+  <button onclick="sendPrompt('Give me 10 more hard practice questions for Domain 4 of SOA-C03 covering KMS key policy edge cases, SCP conditions, and GuardDuty automated response')" style="font-size:13px;padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-info);font-family:var(--font-sans)">10 more hard questions ↗</button>
+  <button onclick="sendPrompt('Teach me Domain 5 of SOA-C03 every nook and corner in depth with 15 hard questions')" style="font-size:13px;padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)">Next: Domain 5 deep dive ↗</button>
+</div>
+`}
+];
+
+let answered={},correct=0,total=0;
+function tog(h){h.nextElementSibling.classList.toggle('on')}
+function doA(qi,oi){
+  if(answered[qi]!==undefined)return;
+  const q=QS[qi];
+  answered[qi]=oi;
+  document.querySelectorAll(`#q${qi} .qopt`).forEach((o,j)=>{
+    o.disabled=true;
+    if(j===q.c)o.classList.add('ok2');
+    else if(j===oi&&j!==q.c)o.classList.add('bad');
+  });
+  const ex=document.getElementById('qe'+qi);
+  ex.innerHTML='<strong>'+(oi===q.c?'✓ Correct!':'✗ Incorrect.')+'</strong> '+q.e;
+  ex.classList.add('on');
+  if(oi===q.c)correct++;
+  total++;
+  const pct=Math.round((correct/total)*100);
+  document.getElementById('score-display').textContent=correct+' / '+total;
+  document.getElementById('score-fill').style.width=pct+'%';
+  document.getElementById('score-pct').textContent=pct+'%';
+}
+window.tog=tog;window.doA=doA;
+
+let cur=Number(localStorage.getItem('soaDeepDomain4Page') || 0);
+if(!Number.isInteger(cur) || cur < 0 || cur >= PAGES.length) cur = 0;
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  localStorage.setItem('soaDeepDomain4Page', String(cur));
+  document.querySelectorAll('.ttab').forEach((t,j)=>t.classList.toggle('on',j===i));
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('on',j===i));
+}
+window.go=go;
+
+const tabsEl=document.getElementById('tabs');
+const pagesEl=document.getElementById('pages');
+PAGES.forEach((p,i)=>{
+  const btn=document.createElement('button');
+  btn.className='ttab'+(i===0?' on':'');
+  btn.textContent=p.label;
+  btn.onclick=()=>go(i);
+  tabsEl.appendChild(btn);
+  const pg=document.createElement('div');
+  pg.className='pg'+(i===0?' on':'');
+  pg.innerHTML=p.c+`
+    <div class="nr">
+      <button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Previous</button>
+      <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
+      <button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+    </div>`;
+  pagesEl.appendChild(pg);
+});
+go(cur);
+</script>
+

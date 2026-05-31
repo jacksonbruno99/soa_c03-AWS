@@ -1,0 +1,913 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Domain 1 Full Deep Dive: Monitoring and Logging | AWS SOA-C03 Blueprint</title>
+<link rel="canonical" href="https://aws-soa-c03.netlify.app/domain1_deep_dive.html">
+<meta name="description" content="Full SOA-C03 Domain 1 deep dive for AWS Cloud Ops: CloudWatch internals, logging, tracing, remediation, exam traps, and hard practice questions.">
+<meta property="og:title" content="Domain 1 Full Deep Dive: Monitoring and Logging | AWS SOA-C03 Blueprint">
+<meta property="og:description" content="Full SOA-C03 Domain 1 deep dive for AWS Cloud Ops: CloudWatch internals, logging, tracing, remediation, exam traps, and hard practice questions.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aws-soa-c03.netlify.app/domain1_deep_dive.html">
+<meta property="og:image" content="https://dummyimage.com/1200x630/111827/93c5fd&text=SOA-C03+Full+Deep+Dive+1">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+:root{--font-sans:Inter,Segoe UI,Arial,sans-serif;--font-mono:Consolas,Menlo,monospace;--border-radius-md:8px;--border-radius-lg:10px;--color-background-primary:#111827;--color-background-secondary:#1F2937;--color-background-tertiary:#0F172A;--color-text-primary:#F9FAFB;--color-text-secondary:#D1D5DB;--color-text-tertiary:#9CA3AF;--color-text-info:#93C5FD;--color-border-secondary:#4B5563;--color-border-tertiary:#374151;}
+body[data-theme="light"]{--color-background-primary:#F8FAFC;--color-background-secondary:#EEF2F7;--color-background-tertiary:#E2E8F0;--color-text-primary:#111827;--color-text-secondary:#374151;--color-text-tertiary:#6B7280;--color-text-info:#1D4ED8;--color-border-secondary:#CBD5E1;--color-border-tertiary:#E2E8F0;}
+body{background:var(--color-background-primary);width:min(100%,1100px);margin:0 auto;padding:4.25rem clamp(12px,3vw,28px) 1.25rem!important;font-size:17px!important;line-height:1.65!important;}
+body[data-theme="light"] .b-core,body[data-theme="light"] .tip,body[data-theme="light"] .qopt.reveal{background:#E6F1FB!important;color:#0C447C!important;border-color:#85B7EB!important}
+body[data-theme="light"] .b-imp,body[data-theme="light"] .ok,body[data-theme="light"] .qopt.ok2{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
+body[data-theme="light"] .b-trap,body[data-theme="light"] .trap-box{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
+body[data-theme="light"] .b-deep{background:#EEEDFE!important;color:#3C3489!important;border-color:#AFA9EC!important}
+body[data-theme="light"] .b-tip,body[data-theme="light"] .warn{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
+body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
+.b-core,.tip,.qopt.reveal{background:#17365F!important;color:#DBEAFE!important;border-color:#3B82F6!important}.b-imp,.ok,.qopt.ok2{background:#1F3A1D!important;color:#DCFCE7!important;border-color:#22C55E!important}.b-trap,.trap-box{background:#442016!important;color:#FED7AA!important;border-color:#F97316!important}.b-deep{background:#2E2A5F!important;color:#EDE9FE!important;border-color:#8B5CF6!important}.b-tip,.warn{background:#3B2A12!important;color:#FDE68A!important;border-color:#F59E0B!important}.qopt.bad{background:#4A1515!important;color:#FECACA!important;border-color:#EF4444!important}
+.home-link,.share-link,.lesson-link,.theme-toggle{position:fixed;top:14px;z-index:50;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.22);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.home-link{left:14px}.lesson-link{left:132px}.share-link{right:64px}.theme-toggle{right:14px;width:42px;height:42px;padding:0;font-size:18px}.home-link:hover,.share-link:hover,.lesson-link:hover,.theme-toggle:hover{transform:translateY(-2px);border-color:#60A5FA;color:var(--color-text-primary)}body:not([data-theme="light"]) .theme-sun{display:none}body[data-theme="light"] .theme-moon{display:none}
+.deep-hero{border:1px solid var(--color-border-tertiary);border-radius:18px;padding:22px clamp(16px,3vw,30px);margin-bottom:1.25rem;background:linear-gradient(135deg,rgba(24,95,165,.18),rgba(83,74,183,.16));box-shadow:0 20px 55px rgba(0,0,0,.2);animation:riseIn .55s ease both}.deep-eyebrow{font-size:12px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px}.deep-title{font-size:clamp(1.7rem,4vw,3.2rem);line-height:1.05;font-weight:800}.deep-sub{margin-top:10px;color:var(--color-text-secondary);font-size:16px}.top-tabs,.pg.on,.card,.qblock,.kv,.anatomy,.compare-col,.nr{animation:riseIn .48s cubic-bezier(.2,.8,.2,1) both}.ttab,.card,.qblock,.kv,.qopt,.nb,.dot,.anat-row,.compare-col{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}.card:hover,.qblock:hover,.kv:hover,.anatomy:hover,.compare-col:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(0,0,0,.18);border-color:#60A5FA}.ttab:hover,.qopt:hover,.nb:hover{transform:translateY(-2px)}.card-body.on,.qex.on{animation:softReveal .24s ease both}.tbl{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}.dot:hover,.dot.on{transform:scale(1.3)}.theme-toggle{animation:floatButton 3.4s ease-in-out infinite}@keyframes riseIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes softReveal{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}@keyframes floatButton{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}@media (max-width:700px){body{padding:4.25rem 12px 1rem!important;font-size:16px!important}.home-link{left:10px}.lesson-link{display:none}.share-link{right:60px}.top-tabs{display:grid;grid-template-columns:1fr;gap:8px}.ttab{text-align:left;border:1px solid var(--color-border-tertiary);border-radius:8px}.compare-cols,.grid2,.kv-grid{grid-template-columns:1fr}.anat-row{display:grid;grid-template-columns:1fr}.anat-label{width:auto}.nr{display:grid;grid-template-columns:1fr;gap:10px}.nb{width:100%}.dots{justify-content:center;order:-1}}@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);font-size:14px;line-height:1.6}
+
+.top-tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem;padding-bottom:0}
+.ttab{background:none;border:none;font-family:var(--font-sans);font-size:13px;color:var(--color-text-secondary);padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.ttab:hover{color:var(--color-text-primary)}
+.ttab.on{color:#185FA5;border-bottom-color:#185FA5;font-weight:500}
+
+.pg{display:none;padding-bottom:1.5rem}
+.pg.on{display:block}
+
+.sec-title{font-size:12px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--color-text-tertiary);margin:1.5rem 0 .75rem;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--color-border-tertiary)}
+
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:10px}
+.card-head{padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-primary);user-select:none}
+.card-head:hover{background:var(--color-background-secondary)}
+.card-title{font-size:13px;font-weight:500}
+.card-body{display:none;padding:12px 14px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);font-size:13px;color:var(--color-text-secondary);line-height:1.7}
+.card-body.on{display:block}
+.card-body code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-tertiary);padding:1px 5px;border-radius:4px;color:var(--color-text-info)}
+
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
+.b-core{background:#E6F1FB;color:#0C447C}
+.b-imp{background:#EAF3DE;color:#27500A}
+.b-trap{background:#FAECE7;color:#712B13}
+.b-deep{background:#EEEDFE;color:#3C3489}
+.b-tip{background:#FAEEDA;color:#633806}
+
+.tip{border-left:3px solid #185FA5;padding:10px 14px;background:#E6F1FB;margin:10px 0;font-size:13px;color:#0C447C;line-height:1.5;border-radius:0}
+.warn{border-left:3px solid #854F0B;padding:10px 14px;background:#FAEEDA;margin:10px 0;font-size:13px;color:#633806;line-height:1.5;border-radius:0}
+.trap-box{border-left:3px solid #993C1D;padding:10px 14px;background:#FAECE7;margin:10px 0;font-size:13px;color:#712B13;line-height:1.5;border-radius:0}
+.ok{border-left:3px solid #3B6D11;padding:10px 14px;background:#EAF3DE;margin:10px 0;font-size:13px;color:#27500A;line-height:1.5;border-radius:0}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+.tbl th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.tbl td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-secondary)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--color-text-primary);font-weight:500}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem}
+
+.qblock{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:12px;overflow:hidden}
+.qhead{padding:12px 14px;font-size:13px;font-weight:500;background:var(--color-background-primary);line-height:1.6}
+.qopts{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.qopt{padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);text-align:left;line-height:1.4;transition:background .1s}
+.qopt:hover:not([disabled]){background:var(--color-background-secondary)}
+.qopt.ok2{background:#EAF3DE;color:#27500A;border-color:#3B6D11}
+.qopt.bad{background:#FCEBEB;color:#791F1F;border-color:#A32D2D}
+.qopt.reveal{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.qex{margin:0 14px 12px;padding:10px 12px;border-radius:var(--border-radius-md);font-size:13px;line-height:1.6;display:none;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.qex.on{display:block}
+
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.fbox{padding:6px 12px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;text-align:center;line-height:1.4}
+.farr{color:var(--color-text-tertiary);font-size:13px}
+
+.kv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin:10px 0}
+.kv{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;background:var(--color-background-primary)}
+.kv-key{font-size:11px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--font-mono)}
+.kv-val{font-size:13px;color:var(--color-text-primary);line-height:1.5}
+
+.mnemo{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:12px 14px;margin:10px 0;font-size:13px}
+.mnemo-title{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono);margin-bottom:6px}
+
+.nr{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;margin-top:.5rem;border-top:0.5px solid var(--color-border-tertiary)}
+.nb{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.nb:hover{background:var(--color-background-secondary)}
+.nb:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer}
+.dot.on{background:#185FA5}
+
+.anatomy{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin:10px 0}
+.anat-row{display:flex;align-items:stretch;border-bottom:0.5px solid var(--color-border-tertiary)}
+.anat-row:last-child{border-bottom:none}
+.anat-label{width:140px;flex-shrink:0;padding:10px 12px;background:var(--color-background-secondary);font-size:12px;font-weight:500;color:var(--color-text-secondary);display:flex;align-items:center}
+.anat-val{flex:1;padding:10px 12px;font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+.anat-val code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-tertiary);padding:1px 5px;border-radius:4px;color:var(--color-text-info)}
+
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.compare-col{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.compare-head{padding:8px 12px;font-size:13px;font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.compare-body{padding:10px 12px;font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+</style>
+
+<a class="home-link" href="index.html" aria-label="Back to main page">? Main page</a>
+<a class="lesson-link" href="domain1_monitoring_lesson.html" aria-label="Back to domain lesson">Lesson</a>
+<button class="share-link" type="button" onclick="shareDeepDive()" aria-label="Share full deep dive">Share</button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">?</span><span class="theme-moon">?</span></button>
+<div class="deep-hero"><div class="deep-eyebrow">Full deep dive</div><div class="deep-title">Domain 1: Monitoring and Logging</div><div class="deep-sub">Expanded reference notes, advanced traps, service internals, and harder practice questions.</div></div><h2 class="sr-only">Domain 1 deep-dive study notes for AWS SOA-C03: CloudWatch, logging, tracing, and automated remediation</h2>
+
+<div style="padding:1rem 0">
+<div class="top-tabs" id="tabs"></div>
+<div id="pages"></div>
+</div>
+
+<script>
+(() => {const savedTheme=localStorage.getItem('soaTheme')||'dark';document.body.dataset.theme=savedTheme;window.toggleTheme=()=>{const nextTheme=document.body.dataset.theme==='light'?'dark':'light';document.body.dataset.theme=nextTheme;localStorage.setItem('soaTheme',nextTheme);};})();
+async function shareDeepDive(){const payload={title:'Domain 1 Full Deep Dive: Monitoring and Logging | AWS SOA-C03 Blueprint',text:'Full SOA-C03 Domain 1 deep dive for AWS Cloud Ops: CloudWatch internals, logging, tracing, remediation, exam traps, and hard practice questions.',url:window.location.href};try{if(navigator.share){await navigator.share(payload);}else{await navigator.clipboard.writeText(window.location.href);alert('Deep dive link copied to clipboard.');}}catch(err){if(err.name!=='AbortError')alert('Could not share this deep dive right now.');}}
+const QS = [
+  {q:"An EC2 Auto Scaling group has detailed monitoring disabled. A CloudWatch alarm is configured with a period of 60 seconds and threshold of 80% CPU. The alarm is in INSUFFICIENT_DATA after 4 minutes. What is the root cause?",
+   o:["The threshold is set too high","CloudWatch Alarms require at least 5 minutes to initialize","Standard monitoring publishes data every 5 minutes — 60-second alarm periods cannot receive data points at that resolution","The Auto Scaling group must have at least 2 instances for CloudWatch to function"],
+   c:2,e:"Standard monitoring on EC2 publishes data every 5 minutes. A 60-second alarm period expects a data point every 60 seconds, but none arrive — so the alarm stays in INSUFFICIENT_DATA. The fix is either enable Detailed Monitoring (1-min resolution) OR set the alarm period to 300 seconds (5 minutes). The alarm initialisation period is not the issue."},
+  {q:"A CloudOps engineer creates a metric filter on a CloudWatch log group to count lines containing 'FATAL'. The alarm fires immediately after creation even though no FATAL logs have been emitted. What is the most likely reason?",
+   o:["Metric filters backfill historical log data and found existing FATAL entries","The filter pattern syntax is incorrect and matches everything","The alarm was configured with treat missing data as BREACHING, and no data points exist yet","CloudWatch automatically generates test data when a metric filter is created"],
+   c:2,e:"When a new metric filter is created, no historical data is published to the metric. The metric has zero data points. If the alarm's 'treat missing data' option is set to BREACHING (or notBreaching threshold is inverted), it immediately enters ALARM state. The fix is to set 'treat missing data' to 'notBreaching' or 'ignore'. Metric filters never backfill historical data."},
+  {q:"A company's security policy requires that all CloudTrail logs older than 90 days be queryable but not modifiable. They also need to verify that logs haven't been tampered with. Which combination satisfies both requirements?",
+   o:["Enable CloudTrail Event History with extended retention and configure MFA delete on the S3 bucket","Create a CloudTrail Trail delivering to S3, enable log file validation, apply S3 Object Lock in compliance mode, and use Athena to query","Enable AWS Config to record CloudTrail log delivery and set a compliance rule for log integrity","Use CloudWatch Logs to store CloudTrail events with a retention policy of 1 year"],
+   c:1,e:"A Trail delivers logs continuously to S3 (solving >90d retention). Log file validation creates SHA-256 digest files per log file — you can cryptographically verify no tampering. S3 Object Lock in compliance mode prevents any deletion or overwrite even by the root account. Athena queries S3 directly for ad-hoc SQL analysis. Event History only keeps 90 days and isn't queryable at scale. Config records resource changes, not log file integrity."},
+  {q:"An application emits custom CloudWatch metrics using PutMetricData. During a traffic spike, metrics stop appearing for 8 minutes. What is the most likely cause?",
+   o:["CloudWatch has a hard limit of 150 data points per minute","PutMetricData throttles at 40 TPS by default — sustained bursts will be throttled and metrics will be dropped","Custom metrics require Detailed Monitoring to be enabled on the EC2 instances","CloudWatch does not accept metrics from Auto Scaling groups with more than 10 instances"],
+   c:1,e:"PutMetricData has a default quota of 40 transactions per second (TPS) per account per region. During a traffic spike, if your application emits metrics at a higher rate, API calls are throttled (HTTP 400 ThrottlingException). Metrics in throttled calls are simply lost — CloudWatch does not buffer them. The fix is to batch multiple data points per PutMetricData call (up to 20 per call) or request a quota increase."},
+  {q:"A VPC Flow Log shows the following record: ACCEPT for src 10.0.1.5 → dst 10.0.2.10 port 443. But the application team reports the connection fails at the TLS handshake. What should the engineer investigate next?",
+   o:["The NACL outbound rules on the source subnet for ephemeral ports","The application certificate on the destination instance","The security group on the destination instance for port 443 outbound","A route table entry is missing for the 10.0.0.0/8 CIDR"],
+   c:1,e:"VPC Flow Logs only capture Layer 3/4 metadata — IP, port, protocol, and ACCEPT/REJECT. The ACCEPT record means the TCP connection was allowed at the network level (security group and NACL). A TLS handshake failure is a Layer 5+ issue, happening AFTER the TCP connection is established. This means the application certificate is invalid, expired, has a hostname mismatch, or uses an untrusted CA. Flow logs cannot diagnose application-layer issues."},
+  {q:"A CloudOps engineer wants to receive a single alert when BOTH CPU utilisation exceeds 90% AND memory utilisation exceeds 85% simultaneously on any instance. Individual alarms exist for each metric. What should be configured?",
+   o:["Create a CloudWatch Alarm with multiple metric conditions using the AND operator in the alarm expression","Create a Composite Alarm using the ALARM(cpuAlarmArn) AND ALARM(memAlarmArn) expression","Configure an EventBridge rule that matches both alarm state changes with a filter pattern","Create a Lambda function that checks both alarms and sends an SNS notification"],
+   c:1,e:"Composite alarms are designed exactly for this use case. They combine the state of multiple child alarms using AND/OR logical operators. The expression ALARM('cpuAlarmArn') AND ALARM('memAlarmArn') only enters ALARM state when both child alarms are simultaneously in ALARM. This reduces alert noise. EventBridge rules can match individual alarm events but cannot enforce a simultaneous condition. Lambda would work but adds unnecessary complexity."},
+  {q:"AWS X-Ray sampling is configured at the default rate. A new Lambda function processes 50,000 requests per minute. The X-Ray service map shows only 250 traces per minute. An engineer wants to increase trace coverage for error requests to 100% while keeping the default rate for non-error requests. What should be configured?",
+   o:["Increase the default sampling rate to 100% in the X-Ray console","Create a sampling rule with a fixed_rate of 1.0 and a reservoir of 50000, with a rule condition matching http.url containing the function name","Create a sampling rule with fixed_rate=1.0 targeted at requests where the annotation error=true exists, with a higher priority than the default rule","Enable X-Ray active tracing on the Lambda function and set SAMPLING_RATE environment variable to 1.0"],
+   c:2,e:"X-Ray sampling rules are evaluated in priority order (lower number = higher priority). You create a custom rule with higher priority (e.g. priority=1) targeting error=true annotation or HTTP status codes 4xx/5xx with fixed_rate=1.0 (100%). The default rule (priority=10000) catches everything else at the standard 5% + 1 req/sec rate. Increasing the global rate would create enormous cost and storage at 50,000 req/min. Lambda environment variables don't control sampling rules."},
+  {q:"A company configures a CloudWatch Logs subscription filter to send logs to a Kinesis Data Firehose delivery stream for near-real-time archival to S3. After setup, no logs appear in S3 for 2 hours. The delivery stream shows successful deliveries. What is the most likely cause?",
+   o:["Kinesis Firehose has a minimum buffer time of 2 hours before delivering to S3","The subscription filter was applied to the wrong log group","The S3 bucket's default encryption is blocking the Firehose delivery","Kinesis Firehose buffers data based on buffer size (1-128 MB) or buffer interval (60-900 seconds) before delivering"],
+   c:3,e:"Kinesis Data Firehose does NOT deliver records in real-time — it buffers incoming data and delivers in batches based on whichever condition is met first: buffer size (up to 128 MB) or buffer interval (60 to 900 seconds). If little data is flowing, you'll wait up to the full buffer interval (default is often 300 seconds). The delivery stream showing 'successful' means data is arriving at Firehose correctly. After the buffer interval, data WILL appear in S3. This is expected Firehose behaviour, not an error."},
+  {q:"A CloudOps engineer needs to identify which Lambda function in a microservices chain is responsible for a 4-second latency spike that occurs on 0.3% of requests. The team needs to correlate the request across Lambda, API Gateway, and DynamoDB. Which approach is most effective?",
+   o:["Enable CloudWatch Detailed Monitoring on all Lambda functions and analyse the Duration metric histogram","Query all CloudWatch log groups simultaneously using CloudWatch Logs Insights cross-log-group queries","Enable AWS X-Ray active tracing on Lambda and API Gateway — use the X-Ray Service Map and filter traces by duration > 3000ms","Enable VPC Flow Logs on all subnets and correlate source/destination addresses with service names"],
+   c:2,e:"X-Ray is the only service that provides end-to-end distributed tracing across Lambda, API Gateway, and DynamoDB in a single trace. By enabling active tracing on Lambda and API Gateway, X-Ray automatically instruments these services and creates subsegments for DynamoDB calls. You can then filter traces in the X-Ray console by duration > 3000ms to isolate the slow traces and see exactly which segment (which Lambda function or which DynamoDB call) consumed the 4 seconds. CloudWatch Logs Insights can query multiple log groups but cannot correlate a single request across services."},
+  {q:"An AWS Config rule `encrypted-volumes` is detecting non-compliant EBS volumes. Auto-remediation is configured using an SSM Automation document. After enabling, volumes are still reported as non-compliant 24 hours later. What is the most likely cause?",
+   o:["AWS Config rules only evaluate compliance once per week","The SSM Automation document requires manual approval and has a pending approval step","Auto-remediation requires an EventBridge rule — it cannot be triggered directly by Config","The IAM role used by Config for remediation does not have permission to execute the SSM Automation document or encrypt EBS volumes"],
+   c:3,e:"Config auto-remediation works by triggering an SSM Automation document when a resource is NON_COMPLIANT. The most common failure is a permissions issue: Config's remediation IAM role must have ssm:StartAutomationExecution on the document, AND the SSM Automation execution role must have ec2:CreateSnapshot, ec2:CopySnapshot, ec2:DescribeVolumes, and kms:CreateGrant permissions to encrypt the volume. Without these, the automation starts but fails silently. Check the SSM Automation execution history for error messages."}
+];
+
+const PAGES = [
+{id:'overview',label:'Overview & Architecture',content:`
+<div class="sec-title">Domain 1 mental model</div>
+<div class="flow">
+  <div class="fbox" style="background:#E6F1FB;color:#0C447C">Collect<br><span style="font-weight:400;font-size:11px">metrics, logs, traces</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#EAF3DE;color:#27500A">Analyse<br><span style="font-weight:400;font-size:11px">alarms, insights, queries</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#EEEDFE;color:#3C3489">Detect<br><span style="font-weight:400;font-size:11px">alarm state, anomaly</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#FAEEDA;color:#633806">Remediate<br><span style="font-weight:400;font-size:11px">EventBridge → SSM/Lambda</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#FAECE7;color:#712B13">Optimise<br><span style="font-weight:400;font-size:11px">right-size, reduce cost</span></div>
+</div>
+
+<div class="sec-title">Three tasks and their weights</div>
+<div class="kv-grid">
+  <div class="kv"><div class="kv-key">Task 1.1</div><div class="kv-val">Metrics, alarms, filters — the core observability stack. Most theory questions.</div></div>
+  <div class="kv"><div class="kv-key">Task 1.2</div><div class="kv-val">Log collection and analysis — knowing which source answers which question. Most source-selection questions.</div></div>
+  <div class="kv"><div class="kv-key">Task 1.3</div><div class="kv-val">Automated remediation and optimisation — EventBridge, Config, SSM, Compute Optimizer. Scenario-heavy questions.</div></div>
+</div>
+
+<div class="sec-title">Complete service map</div>
+<table class="tbl">
+  <tr><th>Service</th><th>Layer</th><th>What it does in one line</th><th>Exam weight</th></tr>
+  <tr><td>CloudWatch Metrics</td><td>Collect</td><td>Time-series numerical data for every AWS resource</td><td>★★★★★</td></tr>
+  <tr><td>CloudWatch Alarms</td><td>Detect</td><td>Threshold-based state machine on any metric</td><td>★★★★★</td></tr>
+  <tr><td>CloudWatch Logs</td><td>Collect</td><td>Central log storage for apps, OS, Lambda, AWS services</td><td>★★★★★</td></tr>
+  <tr><td>CloudWatch Logs Insights</td><td>Analyse</td><td>Ad-hoc SQL-like query engine on log groups</td><td>★★★★☆</td></tr>
+  <tr><td>Metric Filters</td><td>Collect→Analyse</td><td>Convert log patterns to CloudWatch metrics</td><td>★★★★★</td></tr>
+  <tr><td>Contributor Insights</td><td>Analyse</td><td>Top-N contributors in high-cardinality log data</td><td>★★★☆☆</td></tr>
+  <tr><td>Composite Alarms</td><td>Detect</td><td>AND/OR logic across multiple alarms</td><td>★★★★☆</td></tr>
+  <tr><td>CloudTrail</td><td>Collect</td><td>AWS API call audit log</td><td>★★★★★</td></tr>
+  <tr><td>VPC Flow Logs</td><td>Collect</td><td>Network traffic metadata per ENI</td><td>★★★★☆</td></tr>
+  <tr><td>AWS X-Ray</td><td>Analyse</td><td>Distributed tracing and service map</td><td>★★★★☆</td></tr>
+  <tr><td>EventBridge</td><td>Remediate</td><td>Event routing to Lambda/SSM/Step Functions</td><td>★★★★☆</td></tr>
+  <tr><td>AWS Config</td><td>Detect→Remediate</td><td>Resource compliance evaluation and auto-fix</td><td>★★★★☆</td></tr>
+  <tr><td>Compute Optimizer</td><td>Optimise</td><td>ML-based right-sizing recommendations</td><td>★★★☆☆</td></tr>
+  <tr><td>Trusted Advisor</td><td>Optimise</td><td>Broad best-practice checks across 5 pillars</td><td>★★★☆☆</td></tr>
+  <tr><td>Kinesis Data Firehose</td><td>Collect</td><td>Near-real-time log streaming to S3/Splunk</td><td>★★★☆☆</td></tr>
+</table>
+
+<div class="tip"><strong>Exam focus:</strong> Domain 1 = 22% of 50 scored questions ≈ 11 questions. Roughly 4 questions on metrics/alarms, 4 on log sources and querying, 3 on remediation. Every question gives you a symptom or requirement and asks which service/combination solves it.</div>
+`},
+
+{id:'metrics',label:'CloudWatch Metrics',content:`
+<div class="sec-title">Metric anatomy — know every term</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">Namespace</div><div class="anat-val">Logical container for related metrics. AWS services use <code>AWS/EC2</code>, <code>AWS/RDS</code>, <code>AWS/Lambda</code>. Your custom metrics go in a namespace you choose, e.g. <code>MyApp/Orders</code>. Namespaces are isolated — <code>AWS/EC2</code> CPUUtilization is different from your custom <code>MyApp/CPUUtilization</code>.</div></div>
+  <div class="anat-row"><div class="anat-label">Metric name</div><div class="anat-val">The measurement, e.g. <code>CPUUtilization</code>, <code>NetworkIn</code>, <code>Errors</code>. A metric name alone is not unique — it must be combined with namespace and dimensions.</div></div>
+  <div class="anat-row"><div class="anat-label">Dimensions</div><div class="anat-val">Key-value pairs that identify what produced the metric. For EC2: <code>InstanceId=i-abc123</code>. For RDS: <code>DBInstanceIdentifier=prod-db</code>. A metric with different dimensions is a different data series. Up to 30 dimensions per metric.</div></div>
+  <div class="anat-row"><div class="anat-label">Timestamp</div><div class="anat-val">When the data point was recorded. Can be up to 2 weeks in the past or 2 hours in the future when publishing via PutMetricData.</div></div>
+  <div class="anat-row"><div class="anat-label">Value</div><div class="anat-val">The actual measurement. CloudWatch also accepts statistical sets (SampleCount, Sum, Min, Max) to reduce API calls when aggregating many data points before publishing.</div></div>
+  <div class="anat-row"><div class="anat-label">Unit</div><div class="anat-val">Optional. Seconds, Microseconds, Bytes, Bits, Percent, Count, Count/Second, None, etc. Helps CloudWatch display values correctly.</div></div>
+  <div class="anat-row"><div class="anat-label">StorageResolution</div><div class="anat-val"><strong>Standard (default):</strong> 60-second granularity. <strong>High-resolution:</strong> 1-second granularity. Set <code>StorageResolution=1</code> in PutMetricData. High-resolution metrics cost more and are retained at full resolution for 3 hours, then downsampled.</div></div>
+</div>
+
+<div class="sec-title">Monitoring types — standard vs detailed</div>
+<div class="compare-cols">
+  <div class="compare-col">
+    <div class="compare-head">Standard monitoring (default)</div>
+    <div class="compare-body">
+      • Data published every <strong>5 minutes</strong><br>
+      • Free for EC2<br>
+      • Alarm minimum period: 300 seconds<br>
+      • Enabled by default on all EC2 instances<br><br>
+      <strong>Exam trap:</strong> If you create an alarm with a 60s period and standard monitoring, the alarm stays in INSUFFICIENT_DATA because no data points arrive at 60s intervals.
+    </div>
+  </div>
+  <div class="compare-col">
+    <div class="compare-head">Detailed monitoring</div>
+    <div class="compare-body">
+      • Data published every <strong>1 minute</strong><br>
+      • Paid (small charge per metric/month)<br>
+      • Alarm minimum period: 60 seconds<br>
+      • Must be explicitly enabled on EC2<br>
+      • Auto-enabled on ECS, Lambda, RDS, others<br><br>
+      <strong>Enable via:</strong> EC2 console, CLI, or launch template <code>--monitoring Enabled=true</code>
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">Custom metrics — deep knowledge</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">PutMetricData API</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      Publish custom metrics from any application, script, or Lambda.<br><br>
+      <strong>Key constraints:</strong><br>
+      • Default quota: 40 TPS per account per region<br>
+      • Max 20 MetricData entries per PutMetricData call<br>
+      • Max 30 dimensions per metric<br>
+      • Data points outside ±2 weeks of now are rejected<br><br>
+      <strong>Batching tip:</strong> Group multiple data points in one call to avoid throttling during high-volume publishing.<br><br>
+      <strong>Statistical sets:</strong> Instead of sending individual data points, send pre-aggregated sets (Sum, Min, Max, SampleCount) — reduces API calls dramatically for high-frequency metrics.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">High-resolution metrics</span><span class="badge b-deep">Deep</span></div>
+    <div class="card-body">
+      Set <code>StorageResolution=1</code> when publishing for 1-second granularity.<br><br>
+      <strong>Retention schedule:</strong><br>
+      • 1-second data: retained 3 hours<br>
+      • 60-second data: retained 15 days<br>
+      • 5-minute data: retained 63 days<br>
+      • 1-hour data: retained 15 months<br><br>
+      CloudWatch automatically aggregates finer-resolution data into coarser buckets as time passes.<br><br>
+      <strong>High-resolution alarms:</strong> Can evaluate every 10 or 30 seconds — useful for applications where 60s response is too slow (e.g. auto-scaling financial trading systems).
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">EC2 metrics — what's included and what's NOT</div>
+<div class="compare-cols">
+  <div class="compare-col">
+    <div class="compare-head" style="color:#27500A">Available without agent</div>
+    <div class="compare-body">
+      CPUUtilization, CPUCreditBalance (T-types), NetworkIn, NetworkOut, NetworkPacketsIn, NetworkPacketsOut, DiskReadBytes, DiskWriteBytes (instance store only), StatusCheckFailed, StatusCheckFailed_Instance, StatusCheckFailed_System
+    </div>
+  </div>
+  <div class="compare-col">
+    <div class="compare-head" style="color:#712B13">Requires CloudWatch Agent</div>
+    <div class="compare-body">
+      <strong>Memory utilization</strong> (MemoryUtilization), <strong>Disk space utilization</strong> on EBS (DiskSpaceUtilization), swap usage, process-level CPU, custom application metrics, OS-level metrics<br><br>
+      <strong>Exam trap:</strong> Memory is NOT available as a built-in EC2 metric. You must install and configure the CloudWatch Unified Agent to collect memory metrics.
+    </div>
+  </div>
+</div>
+<div class="trap-box"><strong>Critical trap:</strong> A question says "alert when memory exceeds 90%" — the answer always requires installing the CloudWatch Unified Agent first. You cannot alarm on memory without it.</div>
+
+<div class="sec-title">CloudWatch Unified Agent vs legacy Logs Agent</div>
+<table class="tbl">
+  <tr><th></th><th>CloudWatch Unified Agent (recommended)</th><th>Legacy Logs Agent</th></tr>
+  <tr><td>Collects logs</td><td>Yes</td><td>Yes</td></tr>
+  <tr><td>Collects system metrics</td><td>Yes — memory, disk, CPU, swap, processes</td><td>No — logs only</td></tr>
+  <tr><td>Config format</td><td>JSON config file (wizard: amazon-cloudwatch-agent-config-wizard)</td><td>INI/awslogs.conf</td></tr>
+  <tr><td>SSM integration</td><td>Config stored in SSM Parameter Store</td><td>No</td></tr>
+  <tr><td>Recommended</td><td>Yes — use for all new deployments</td><td>No — legacy, no new features</td></tr>
+</table>
+`},
+
+{id:'alarms',label:'Alarms & Anomaly Detection',content:`
+<div class="sec-title">Alarm state machine — complete</div>
+<div class="flow">
+  <div class="fbox" style="background:#EAF3DE;color:#27500A">OK<br><span style="font-size:11px;font-weight:400">below threshold</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#FCEBEB;color:#791F1F">ALARM<br><span style="font-size:11px;font-weight:400">M of N breached</span></div>
+  <div class="farr">↔</div>
+  <div class="fbox" style="background:#FAEEDA;color:#633806">INSUFFICIENT_DATA<br><span style="font-size:11px;font-weight:400">no data points yet</span></div>
+</div>
+
+<div class="sec-title">Alarm anatomy — every configuration option</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">Metric</div><div class="anat-val">The metric, namespace, and dimensions being monitored. One metric per alarm (for standard alarms) or a math expression combining multiple metrics.</div></div>
+  <div class="anat-row"><div class="anat-label">Period</div><div class="anat-val">How long each evaluation interval is. Standard metrics: minimum 60 seconds. High-resolution: 10 or 30 seconds. A period of 300 = 5 minutes per data point.</div></div>
+  <div class="anat-row"><div class="anat-label">Evaluation periods (N)</div><div class="anat-val">Total number of periods in the evaluation window. E.g. N=5 means the alarm looks at the last 5 data points.</div></div>
+  <div class="anat-row"><div class="anat-label">Datapoints to alarm (M)</div><div class="anat-val">How many of those N periods must breach the threshold to enter ALARM. M ≤ N. M=1,N=1 = immediately on first breach. M=3,N=5 = 3 out of any 5 consecutive periods. Reduces false alarms from transient spikes.</div></div>
+  <div class="anat-row"><div class="anat-label">Threshold</div><div class="anat-val">The value that triggers ALARM. Can be static (e.g. CPU > 80) or anomaly detection band (based on ML model).</div></div>
+  <div class="anat-row"><div class="anat-label">Comparison operator</div><div class="anat-val">GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold, LessThanLowerOrGreaterThanUpperThreshold (anomaly detection).</div></div>
+  <div class="anat-row"><div class="anat-label">Treat missing data</div><div class="anat-val"><strong>missing:</strong> alarm maintains current state.<br><strong>notBreaching:</strong> treated as within threshold (alarm won't fire).<br><strong>breaching:</strong> treated as threshold violation (alarm fires immediately when data disappears).<br><strong>ignore:</strong> current alarm state is maintained (same as missing).<br><br><strong>Exam tip:</strong> New metric filters have no historical data → if treat missing = breaching, alarm fires immediately after creation.</div></div>
+  <div class="anat-row"><div class="anat-label">Actions</div><div class="anat-val">Per state (OK, ALARM, INSUFFICIENT_DATA):<br>• SNS notification<br>• Auto Scaling action (scale out/in)<br>• EC2 action: Stop, Terminate, Reboot, Recover<br>• Systems Manager OpsItem<br>• EventBridge (implicit — alarm state changes are always published)</div></div>
+</div>
+
+<div class="sec-title">EC2 alarm actions — four types</div>
+<table class="tbl">
+  <tr><th>Action</th><th>Trigger metric</th><th>What it does</th><th>Exam context</th></tr>
+  <tr><td>Recover</td><td>StatusCheckFailed_System</td><td>Migrates the instance to new hardware. Retains same instance ID, EIP, private IP, metadata.</td><td>Use for underlying hardware failures. Does NOT work on all instance types (no instance store volumes).</td></tr>
+  <tr><td>Reboot</td><td>StatusCheckFailed_Instance</td><td>Soft reboot of the instance OS.</td><td>Use for OS-level failures. Retains instance store data.</td></tr>
+  <tr><td>Stop</td><td>Any metric</td><td>Stops the instance. EBS data preserved.</td><td>Use for cost savings when idle.</td></tr>
+  <tr><td>Terminate</td><td>Any metric</td><td>Terminates the instance permanently.</td><td>Use in ASG scale-in workflows (though ASG normally handles this).</td></tr>
+</table>
+
+<div class="sec-title">Composite alarms — noise reduction</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">How composite alarms work</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      A composite alarm is a parent alarm that evaluates the states of multiple child alarms using a logical expression.<br><br>
+      <strong>Expression syntax:</strong><br>
+      <code>ALARM("child-alarm-1") AND ALARM("child-alarm-2")</code><br>
+      <code>ALARM("cpu-alarm") OR ALARM("memory-alarm")</code><br>
+      <code>NOT ALARM("maintenance-window")</code><br><br>
+      <strong>Key properties:</strong><br>
+      • Composite alarms themselves cannot have metric-based conditions — only references to other alarms<br>
+      • Suppression: use NOT ALARM("maintenance-window") to suppress alerts during planned maintenance<br>
+      • Child alarms can be other composite alarms (nesting)<br>
+      • Actions on composite alarms can be SNS or Systems Manager OpsItem
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">When to use composite vs separate alarms</span><span class="badge b-imp">Scenario</span></div>
+    <div class="card-body">
+      <strong>Scenario A:</strong> Alert if EITHER CPU > 80% OR memory > 85%<br>
+      → <code>ALARM(cpu) OR ALARM(memory)</code><br><br>
+      <strong>Scenario B:</strong> Alert only if BOTH CPU > 80% AND disk I/O is saturated (reducing noise)<br>
+      → <code>ALARM(cpu) AND ALARM(disk-io)</code><br><br>
+      <strong>Scenario C:</strong> Suppress all alerts on Sundays 2-4am (maintenance)<br>
+      → Create a "maintenance-window" alarm (always ALARM during maintenance, OK otherwise)<br>
+      → Wrap each alarm: <code>ALARM(service-alarm) AND NOT ALARM(maintenance)</code><br><br>
+      <strong>Exam tip:</strong> "Reduce alert noise from many related alarms" → always Composite Alarm.
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">Metric math and anomaly detection</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Metric math expressions</span><span class="badge b-deep">Deep</span></div>
+    <div class="card-body">
+      Create alarms on derived metrics — expressions that calculate a new value from one or more existing metrics.<br><br>
+      <strong>Examples:</strong><br>
+      • Error rate: <code>error_count / total_requests * 100</code><br>
+      • Cache hit ratio: <code>hits / (hits + misses)</code><br>
+      • Aggregate across instances: <code>SUM([METRICS("CPUUtilization")])</code><br><br>
+      <strong>Functions:</strong> ANOMALY_DETECTION_BAND, FILL, RATE, SEARCH, SUM, AVG, MIN, MAX, PERIOD, IF, ABS<br><br>
+      <strong>Exam tip:</strong> "Alert when error rate exceeds 5%" — you cannot alarm on a rate directly if only counts are published. Use metric math to calculate the rate and alarm on the expression.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Anomaly detection alarms</span><span class="badge b-deep">Deep</span></div>
+    <div class="card-body">
+      CloudWatch uses ML to model the expected behaviour of a metric based on historical patterns (time of day, day of week, seasonal trends).<br><br>
+      <strong>How it works:</strong><br>
+      1. CloudWatch trains a model on at least 2 weeks of metric data<br>
+      2. The model produces an expected value and confidence band<br>
+      3. The alarm fires when the actual value falls outside the band<br><br>
+      <strong>Band width:</strong> Controlled by a standard deviation multiplier. Higher multiplier = wider band = fewer false alarms.<br><br>
+      <strong>Use when:</strong> A static threshold doesn't make sense because the normal value changes over time (e.g. web traffic is high on weekdays, low on weekends — a static threshold would false-alarm every weekend or miss real spikes on weekdays).
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">Metric filters — full specification</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">What it does</div><div class="anat-val">Scans incoming log events against a pattern. Every matching event increments (or adds a specific value from the log) to a custom CloudWatch metric.</div></div>
+  <div class="anat-row"><div class="anat-label">Pattern types</div><div class="anat-val">
+    Simple text: <code>[ERROR]</code> — matches lines containing the word ERROR<br>
+    Exclusion: <code>[ERROR -DEBUG]</code> — matches ERROR but not lines also containing DEBUG<br>
+    Space-delimited: <code>[ip, user, timestamp, request, status_code=5*, size]</code> — parse structured text<br>
+    JSON: <code>{ $.level = "ERROR" }</code> — match on a specific JSON field<br>
+    Combined: <code>{ $.level = "ERROR" && $.latency > 1000 }</code>
+  </div></div>
+  <div class="anat-row"><div class="anat-label">Metric value</div><div class="anat-val">Can be a static value (e.g. 1 per match) or extracted from the log line using a metric value token (e.g. <code>$latency</code> to sum latencies from matched events).</div></div>
+  <div class="anat-row"><div class="anat-label">Default value</div><div class="anat-val">Published when no log events arrive in a period. Default is NULL (no data point). Set to 0 to publish a zero when there are no matches — prevents INSUFFICIENT_DATA on low-traffic periods.</div></div>
+  <div class="anat-row"><div class="anat-label">Backfill</div><div class="anat-val"><strong>Never backfills.</strong> Only events arriving AFTER the filter is created are evaluated. Historical log data is never scanned. This is a critical exam fact.</div></div>
+  <div class="anat-row"><div class="anat-label">Limit</div><div class="anat-val">Up to 3 metric filters per log group (soft limit, can be increased). Each filter publishes to one CloudWatch custom metric.</div></div>
+</div>
+<div class="trap-box"><strong>Exam trap:</strong> "The metric filter alarm fired immediately after creation" → The metric has no data yet AND treat missing data = BREACHING. Fix: set treat missing data to notBreaching OR set metric filter default value to 0.</div>
+`},
+
+{id:'logs',label:'Log Sources Deep Dive',content:`
+<div class="sec-title">Log source decision matrix</div>
+<table class="tbl">
+  <tr><th>Question you need to answer</th><th>Right log source</th><th>Why not the others</th></tr>
+  <tr><td>Who called DeleteBucket / TerminateInstances / CreateUser?</td><td>CloudTrail</td><td>VPC Flow Logs = network traffic only. CloudWatch Logs = app logs, not AWS API calls.</td></tr>
+  <tr><td>Why is TCP traffic from 10.0.1.5 being rejected by the security group?</td><td>VPC Flow Logs</td><td>CloudTrail doesn't capture network-level traffic. Security group logs don't exist separately.</td></tr>
+  <tr><td>Which Lambda function is causing 4s latency in my microservice chain?</td><td>AWS X-Ray</td><td>CloudWatch Logs shows individual function duration but can't correlate across services in one trace.</td></tr>
+  <tr><td>Why did this S3 bucket become public? When exactly?</td><td>CloudTrail (and AWS Config timeline)</td><td>Config shows what changed. CloudTrail shows who made the API call that caused the change.</td></tr>
+  <tr><td>Application is throwing NullPointerExceptions — show me the stack traces</td><td>CloudWatch Logs</td><td>CloudTrail doesn't capture application-level errors. X-Ray captures errors in traces but not full stack traces.</td></tr>
+  <tr><td>Which users are generating the most 4xx responses?</td><td>Contributor Insights on access logs</td><td>Logs Insights can query this but Contributor Insights continuously ranks top contributors automatically.</td></tr>
+  <tr><td>DNS queries to a suspicious domain from within the VPC</td><td>Route 53 Resolver Query Logs</td><td>VPC Flow Logs do NOT capture DNS queries. This is a critical exception.</td></tr>
+</table>
+
+<div class="sec-title">CloudTrail — deep specification</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Event types</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      <strong>Management events (default ON):</strong> Control plane operations — creating/deleting/modifying resources. ConsoleSignIn, CreateBucket, RunInstances, DeleteSecurityGroup, etc. Published to Event History immediately.<br><br>
+      <strong>Data events (default OFF, extra cost):</strong> Object-level operations. S3: GetObject, PutObject, DeleteObject. Lambda: Invoke. DynamoDB: GetItem, PutItem. Required for detailed S3 object-level auditing.<br><br>
+      <strong>Insights events (optional, extra cost):</strong> Detects unusual API call volume patterns (e.g. sudden spike in TerminateInstances calls). Generates an Insights event when anomaly is detected. Published to a separate S3 prefix.<br><br>
+      <strong>Network activity events (new):</strong> Captures API calls made through VPC endpoints.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Trail configuration</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      <strong>Event History:</strong> Free, 90 days, management events only, not queryable at scale. Not a Trail.<br><br>
+      <strong>Trail:</strong> Continuously delivers events to S3 (and optionally CloudWatch Logs and SNS). Required for:<br>
+      • Retention beyond 90 days<br>
+      • Data events<br>
+      • Insights events<br>
+      • Cross-account log aggregation<br><br>
+      <strong>Multi-region trail:</strong> Single trail captures events from ALL regions. Best practice. Delivers to one S3 bucket.<br><br>
+      <strong>Organization trail:</strong> Created in the management account — captures events from ALL member accounts. Members cannot modify it.<br><br>
+      <strong>Log file validation:</strong> Produces SHA-256 digest files every hour. Use <code>validate-logs</code> CLI command to verify integrity. Detects if logs were deleted or modified after delivery.
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">VPC Flow Logs — what IS and ISN'T captured</div>
+<div class="compare-cols">
+  <div class="compare-col">
+    <div class="compare-head" style="color:#27500A">Is captured</div>
+    <div class="compare-body">
+      • All TCP/UDP/ICMP traffic between ENIs<br>
+      • Traffic to/from internet gateway, NAT gateway, VPC endpoints, VPC peering connections<br>
+      • Traffic that was ACCEPT or REJECT by security groups / NACLs<br>
+      • Source/destination IP, port, protocol, bytes, packets<br>
+      • Start time, end time, log status
+    </div>
+  </div>
+  <div class="compare-col">
+    <div class="compare-head" style="color:#712B13">Is NOT captured</div>
+    <div class="compare-body">
+      • DNS queries to Route 53 Resolver (169.254.169.253)<br>
+      • DHCP traffic<br>
+      • Instance metadata service (169.254.169.254)<br>
+      • Amazon Windows licence activation<br>
+      • AWS Time Sync (169.254.169.123)<br>
+      • Traffic between a transit gateway and a VPC endpoint<br>
+      • Packet contents (only metadata/headers)
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">Flow log record fields — exam-relevant</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">action</div><div class="anat-val"><code>ACCEPT</code> — traffic allowed by SG and NACL. <code>REJECT</code> — traffic blocked by SG or NACL. <strong>If you see REJECT, the traffic never reached the instance.</strong></div></div>
+  <div class="anat-row"><div class="anat-label">log-status</div><div class="anat-val"><code>OK</code> — normal. <code>NODATA</code> — no traffic in the capture window (this is a legitimate record, not an error). <code>SKIPDATA</code> — records were skipped due to capacity limitations.</div></div>
+  <div class="anat-row"><div class="anat-label">flow-direction</div><div class="anat-val">Available in v5+ format: <code>ingress</code> or <code>egress</code> relative to the ENI.</div></div>
+  <div class="anat-row"><div class="anat-label">traffic-path</div><div class="anat-val">Available in v5+ format: indicates if traffic went through internet gateway (1), NAT gateway (4), VPC peering (3), etc.</div></div>
+</div>
+<div class="tip"><strong>Troubleshooting pattern:</strong> ACCEPT inbound but no response received → check NACL outbound rules for ephemeral port range (1024-65535). NACLs are stateless. REJECT inbound → security group missing allow rule OR NACL deny rule before allow. No records at all for a port → traffic never reached the ENI (route table issue upstream).</div>
+
+<div class="sec-title">AWS X-Ray — deep concepts</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">Trace</div><div class="anat-val">The complete end-to-end record of one request as it flows through all services. Identified by a unique Trace ID in the HTTP header X-Amzn-Trace-Id. All segments from that request share the same Trace ID.</div></div>
+  <div class="anat-row"><div class="anat-label">Segment</div><div class="anat-val">One service's contribution to a trace. Contains: service name, timing, errors, annotations, metadata, and subsegments.</div></div>
+  <div class="anat-row"><div class="anat-label">Subsegment</div><div class="anat-val">Detail within a segment — a specific operation like an AWS API call, SQL query, HTTP request to downstream service. Adds precision to timing analysis.</div></div>
+  <div class="anat-row"><div class="anat-label">Annotations</div><div class="anat-val">Indexed key-value pairs (string, number, boolean). Searchable and filterable in the X-Ray console. Limited to 50 per trace. Use for business-relevant identifiers (userId, orderId, region).</div></div>
+  <div class="anat-row"><div class="anat-label">Metadata</div><div class="anat-val">Non-indexed additional data. Not searchable but visible in trace detail. No size limit. Use for debugging data you don't need to filter on.</div></div>
+  <div class="anat-row"><div class="anat-label">Sampling</div><div class="anat-val"><strong>Default rule:</strong> 5% of requests + 1 request per second per host (reservoir). Ensures at least one trace per second regardless of rate.<br><br><strong>Custom sampling rules:</strong> Evaluated in priority order. Can match on service name, URL, HTTP method, host. Set fixed_rate (0.0-1.0) and reservoir (absolute minimum per second).<br><br><strong>Priority:</strong> Lower number = evaluated first. Default rule priority = 10000 (last resort).</div></div>
+  <div class="anat-row"><div class="anat-label">Service map</div><div class="anat-val">Automatically generated graph of all services in your traces with edges showing call relationships. Each edge shows: average latency, error rate, fault rate, throttle rate. Click any node to filter to traces through that service.</div></div>
+  <div class="anat-row"><div class="anat-label">X-Ray groups</div><div class="anat-val">Named filter expressions applied to traces. Create a group for "all traces with errors" or "all traces for service X". Groups have their own CloudWatch metrics for error rate and latency.</div></div>
+</div>
+
+<div class="sec-title">CloudWatch Logs Insights — full syntax reference</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Core commands</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      <code>fields @timestamp, @message, @logStream</code> — select fields<br>
+      <code>filter @message like /ERROR/</code> — regex match<br>
+      <code>filter @message not like /DEBUG/</code> — exclusion<br>
+      <code>filter statusCode >= 500</code> — numeric comparison<br>
+      <code>filter @logStream = "my-stream"</code> — exact match<br>
+      <code>stats count(*) by bin(5m)</code> — aggregate over time<br>
+      <code>stats sum(duration) by requestId</code> — sum per group<br>
+      <code>stats avg(duration), max(duration), min(duration)</code><br>
+      <code>sort @timestamp desc</code> — order results<br>
+      <code>limit 50</code> — cap result count<br>
+      <code>parse @message "* ERROR *" as pre, post</code> — extract fields
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Special fields and multi-log-group queries</span><span class="badge b-deep">Deep</span></div>
+    <div class="card-body">
+      <strong>Built-in fields (always available):</strong><br>
+      <code>@timestamp</code> — event timestamp<br>
+      <code>@message</code> — full log line<br>
+      <code>@logStream</code> — which log stream<br>
+      <code>@log</code> — log group name<br>
+      <code>@ingestionTime</code> — when CloudWatch received it<br><br>
+      <strong>Multi-log-group queries:</strong> In the console, select up to 50 log groups before running a query. Results are merged and sorted by timestamp. The <code>@log</code> field tells you which group each result came from.<br><br>
+      <strong>Query result limit:</strong> 10,000 rows. Use aggregation functions for large datasets.
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">Log export — real-time vs batch</div>
+<table class="tbl">
+  <tr><th>Method</th><th>Latency</th><th>Use case</th><th>Key detail</th></tr>
+  <tr><td>CreateExportTask (S3)</td><td>Up to 12 hours</td><td>One-time historical export for archival or compliance</td><td>Not suitable for real-time. Only one export task can run at a time per account.</td></tr>
+  <tr><td>Subscription filter → Kinesis Data Firehose → S3</td><td>60-900 seconds (Firehose buffer)</td><td>Near-real-time streaming to S3, Splunk, OpenSearch</td><td>Firehose buffers by size (1-128 MB) or time (60-900s). "Near-real-time" not instant. Max 2 subscription filters per log group.</td></tr>
+  <tr><td>Subscription filter → Lambda</td><td>Seconds</td><td>Real-time processing, alerting, forwarding</td><td>Lambda processes batches synchronously. Max 2 subscription filters per log group. Lambda must decompress (gzip) the payload.</td></tr>
+  <tr><td>Subscription filter → Kinesis Data Streams</td><td>Seconds</td><td>Real-time streaming to multiple consumers</td><td>Use when multiple downstream consumers need the same log data independently.</td></tr>
+  <tr><td>CloudWatch Logs Live Tail</td><td>Real-time (console)</td><td>Interactive debugging in the console</td><td>Not for automation — console-only feature for live log viewing.</td></tr>
+</table>
+<div class="trap-box"><strong>Critical exam trap:</strong> "Stream logs to S3 in near-real-time" → Subscription filter → Kinesis Firehose → S3. Never CreateExportTask (too slow). Maximum 2 subscription filters per log group — if you need a third, use Kinesis Data Streams as the target and fan out from there.</div>
+`},
+
+{id:'remediation',label:'Remediation & Config',content:`
+<div class="sec-title">EventBridge — anatomy and patterns</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">Event bus</div><div class="anat-val"><strong>Default bus:</strong> receives all AWS service events automatically — no setup required. <strong>Custom bus:</strong> create your own for custom application events. <strong>Partner bus:</strong> receive events from SaaS partners (Datadog, Zendesk, etc.).</div></div>
+  <div class="anat-row"><div class="anat-label">Event pattern</div><div class="anat-val">JSON filter that matches incoming events. Match on: <code>source</code>, <code>detail-type</code>, specific fields in <code>detail</code>. Example: match only EC2 instance state changes to "stopped" state.<br>Pattern: <code>{"source":["aws.ec2"],"detail-type":["EC2 Instance State-change Notification"],"detail":{"state":["stopped"]}}</code></div></div>
+  <div class="anat-row"><div class="anat-label">Targets</div><div class="anat-val">Lambda, SSM Automation, SSM Run Command, Step Functions, ECS task, SQS, SNS, Kinesis, CodePipeline, API Gateway, EventBridge (cross-region/account). Up to 5 targets per rule.</div></div>
+  <div class="anat-row"><div class="anat-label">Retry policy</div><div class="anat-val">On target invocation failure, EventBridge retries for up to 24 hours with exponential backoff. Failed events can be sent to a dead-letter queue (SQS or SNS) for analysis.</div></div>
+  <div class="anat-row"><div class="anat-label">Input transformer</div><div class="anat-val">Reshape the event payload before passing to the target. Extract specific fields from the event JSON and format them as the target expects. Avoids needing Lambda just to transform input.</div></div>
+  <div class="anat-row"><div class="anat-label">Scheduled rules</div><div class="anat-val">Trigger on a cron expression or rate expression. <code>rate(5 minutes)</code>, <code>cron(0 2 ? * SUN *)</code>. The event has no real AWS source — EventBridge generates it on the schedule.</div></div>
+</div>
+
+<div class="sec-title">AWS Config — complete operational model</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Configuration recorder and delivery channel</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      <strong>Configuration recorder:</strong> continuously tracks resource configuration changes. When you enable Config, it takes a snapshot of all current resources (the configuration history baseline).<br><br>
+      <strong>Configuration item:</strong> a point-in-time snapshot of one resource's configuration attributes, relationships, and tags.<br><br>
+      <strong>Delivery channel:</strong> sends configuration items to an S3 bucket (and optionally an SNS topic). Config also streams changes to CloudWatch Events/EventBridge.<br><br>
+      <strong>Configuration history:</strong> all configuration items for a resource over time. You can view exactly what a security group looked like on any given date.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Config rules — evaluation types</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      <strong>Trigger types:</strong><br>
+      • <strong>Configuration change:</strong> rule evaluates whenever the targeted resource type changes<br>
+      • <strong>Periodic:</strong> rule evaluates on a schedule (1h, 3h, 6h, 12h, 24h)<br>
+      • <strong>Hybrid:</strong> both change-triggered and periodic<br><br>
+      <strong>Rule types:</strong><br>
+      • <strong>Managed rules:</strong> pre-built by AWS (200+ available). Examples: encrypted-volumes, restricted-ssh, s3-bucket-public-read-prohibited, iam-root-access-key-check, require-tags.<br>
+      • <strong>Custom Lambda rules:</strong> your Lambda function evaluates the resource and returns COMPLIANT or NON_COMPLIANT.<br>
+      • <strong>Custom policy rules:</strong> write Guard (policy-as-code) rules in the Config console without Lambda.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Auto-remediation deep dive</span><span class="badge b-core">Core</span></div>
+    <div class="card-body">
+      When a rule evaluates as NON_COMPLIANT, Config can automatically trigger an SSM Automation document.<br><br>
+      <strong>Configuration steps:</strong><br>
+      1. Config rule → select remediation action<br>
+      2. Choose SSM document (AWS managed or custom)<br>
+      3. Set resource ID parameter mapping (Config maps the resource ID to the document parameter)<br>
+      4. Set the IAM role for the remediation execution<br>
+      5. Set retry logic (attempts + retry delay)<br><br>
+      <strong>Why remediation fails (exam question!):</strong><br>
+      • IAM role missing permissions to execute the SSM document<br>
+      • SSM document execution role missing permissions to modify the resource<br>
+      • Resource is protected by an SCP or permission boundary<br>
+      • Auto-remediation is set to manual approval and no one approved it
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Config aggregator and conformance packs</span><span class="badge b-imp">Important</span></div>
+    <div class="card-body">
+      <strong>Aggregator:</strong> collects Config data from multiple accounts and regions into a single aggregator account. Allows viewing compliance across your entire organisation from one place.<br><br>
+      <strong>Conformance packs:</strong> a collection of Config rules and remediation actions deployed as a single entity. Available for CIS AWS Foundations, NIST 800-53, PCI DSS, HIPAA, FedRAMP.<br><br>
+      <strong>Config vs CloudTrail distinction:</strong><br>
+      • "Was this security group ever open to 0.0.0.0/0?" → Config (resource configuration history)<br>
+      • "Who opened this security group to 0.0.0.0/0?" → CloudTrail (API audit)
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">SSM integration with monitoring — complete picture</div>
+<div class="flow">
+  <div class="fbox" style="background:#E6F1FB;color:#0C447C">CW Alarm<br><span style="font-size:11px;font-weight:400">ALARM state</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#EAF3DE;color:#27500A">EventBridge<br><span style="font-size:11px;font-weight:400">alarm state change event</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#EEEDFE;color:#3C3489">SSM Automation<br><span style="font-size:11px;font-weight:400">runbook executes</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#FAEEDA;color:#633806">Remediation<br><span style="font-size:11px;font-weight:400">resource fixed</span></div>
+  <div class="farr">→</div>
+  <div class="fbox" style="background:#EAF3DE;color:#27500A">CW Alarm OK<br><span style="font-size:11px;font-weight:400">alarm clears</span></div>
+</div>
+
+<div class="sec-title">Compute Optimizer vs Trusted Advisor — precise differences</div>
+<table class="tbl">
+  <tr><th></th><th>Compute Optimizer</th><th>Trusted Advisor</th></tr>
+  <tr><td>What it optimises</td><td>EC2, EBS, Lambda, ECS on Fargate, ASG</td><td>Cost, performance, security, fault tolerance, service limits</td></tr>
+  <tr><td>Data source</td><td>CloudWatch metrics (actual usage patterns)</td><td>Account configuration state</td></tr>
+  <tr><td>Recommendation type</td><td>Specific: "change from m5.xlarge to m5.large, estimated 42% cost savings"</td><td>General: "You have underutilised EC2 instances"</td></tr>
+  <tr><td>Requires data history</td><td>14+ days of CloudWatch metric data</td><td>No — evaluates current state</td></tr>
+  <tr><td>Opt-in</td><td>Yes, must enable</td><td>No, always available</td></tr>
+  <tr><td>Cost</td><td>Free (standard). Enhanced recommendations = paid</td><td>Free (7 checks). Full access = Business/Enterprise support</td></tr>
+  <tr><td>Exam trigger phrase</td><td>"Right-size based on actual usage" / "Is this EC2 instance over-provisioned?"</td><td>"Check security best practices" / "Approaching service limits"</td></tr>
+</table>
+`},
+
+{id:'contributor',label:'Contributor Insights',content:`
+<div class="sec-title">What Contributor Insights actually does</div>
+<div class="card" style="margin-bottom:12px">
+  <div class="card-head" onclick="tog(this)"><span class="card-title">Core concept and use cases</span><span class="badge b-core">Core</span></div>
+  <div class="card-body">
+    Contributor Insights continuously analyses CloudWatch log data to identify the top N contributors to a metric — designed for high-cardinality data where the key question is "which specific entity (IP, user, resource) is responsible for the most load/errors?".<br><br>
+    <strong>What it produces:</strong> A real-time ranked list of the top contributors, updated every minute. Can be added to a CloudWatch Dashboard.<br><br>
+    <strong>Supported log sources:</strong><br>
+    • Any CloudWatch Logs log group (with a custom rule)<br>
+    • DynamoDB (built-in rule — no log group needed)<br>
+    • API Gateway access logs<br>
+    • VPC Flow Logs<br>
+    • ALB access logs<br><br>
+    <strong>Rule definition:</strong> specify the log format (JSON, CLF, etc.), the key field (what to group by, e.g. <code>$.clientIP</code>), and optionally a filter condition (e.g. only count requests where status = 4xx).
+  </div>
+</div>
+
+<div class="sec-title">Contributor Insights vs Logs Insights — when to use each</div>
+<table class="tbl">
+  <tr><th></th><th>Contributor Insights</th><th>Logs Insights</th></tr>
+  <tr><td>Question type</td><td>"Which entities are responsible for the most X?"</td><td>"What happened in my logs during this time range?"</td></div></tr>
+  <tr><td>Execution</td><td>Continuous, real-time, always running</td><td>On-demand query, run manually</td></tr>
+  <tr><td>Cardinality</td><td>Designed for high cardinality (millions of unique IPs)</td><td>Better for filtered/specific queries</td></tr>
+  <tr><td>Output</td><td>Ranked contributor list, CloudWatch metric per contributor</td><td>Table of matching log records</td></tr>
+  <tr><td>Dashboard integration</td><td>Yes — add contributor chart to dashboards</td><td>Limited — query results only in console</td></tr>
+  <tr><td>Exam trigger</td><td>"Which IPs cause the most 4xx?" / "Top 10 customers by error count"</td><td>"Show me ERROR logs from the last hour" / "Count errors per minute"</td></tr>
+</table>
+`},
+
+{id:'xray',label:'X-Ray In Depth',content:`
+<div class="sec-title">X-Ray instrumentation — how to enable</div>
+<table class="tbl">
+  <tr><th>Service</th><th>How to enable X-Ray</th><th>What's auto-instrumented</th></tr>
+  <tr><td>Lambda</td><td>Enable "Active tracing" in function configuration (or via Lambda console → Monitoring → Enable X-Ray tracing)</td><td>Lambda invocation segment created automatically. Add SDK for downstream calls.</td></tr>
+  <tr><td>API Gateway</td><td>Enable X-Ray tracing on the Stage settings</td><td>API Gateway segment + latency breakdown per stage. Trace ID passed to backend.</td></tr>
+  <tr><td>EC2 / ECS</td><td>Install X-Ray daemon. Add SDK to application code.</td><td>Nothing auto — SDK must be added to application. Daemon runs as sidecar/service and forwards segments.</td></tr>
+  <tr><td>EKS</td><td>Run X-Ray daemon as a DaemonSet. Add SDK to app pods.</td><td>Daemon collects from pods on each node.</td></tr>
+  <tr><td>Elastic Beanstalk</td><td>Enable X-Ray in platform config or add .ebextensions</td><td>Daemon installed automatically.</td></tr>
+  <tr><td>App Mesh</td><td>Configure Envoy to report traces</td><td>Service mesh traces between services.</td></tr>
+</table>
+
+<div class="sec-title">Sampling rules — deep specification</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">Default rule</div><div class="anat-val">Priority 10000 (always last). Records 1 request per second per host (reservoir) + 5% of remaining requests. Cannot be deleted, but can be overridden by custom rules with lower priority numbers.</div></div>
+  <div class="anat-row"><div class="anat-label">Reservoir</div><div class="anat-val">Minimum number of requests sampled per second, regardless of total request rate. Ensures at least N traces per second even on very low-traffic services. The reservoir is distributed across X-Ray daemon instances.</div></div>
+  <div class="anat-row"><div class="anat-label">Fixed rate</div><div class="anat-val">Percentage (0.0–1.0) of requests beyond the reservoir that are sampled. 0.05 = 5%, 1.0 = 100%.</div></div>
+  <div class="anat-row"><div class="anat-label">Rule conditions</div><div class="anat-val">Match on: service name (e.g. my-api), HTTP method, URL path (e.g. /health), host, resource ARN. Wildcards supported.</div></div>
+  <div class="anat-row"><div class="anat-label">Priority</div><div class="anat-val">Lower number = evaluated first. First matching rule wins. Create a priority=1 rule to capture 100% of error requests before the default 5% rule applies.</div></div>
+</table>
+
+<div class="sec-title">X-Ray trace structure example</div>
+<div class="anatomy">
+  <div class="anat-row"><div class="anat-label">Trace (root)</div><div class="anat-val">id: 1-5e6d7... | total duration: 4.2s | HTTP GET /api/order</div></div>
+  <div class="anat-row"><div class="anat-label">└ Segment: API Gateway</div><div class="anat-val">duration: 0.1ms | service: api-gateway | throttle: false</div></div>
+  <div class="anat-row"><div class="anat-label">  └ Segment: Lambda: OrderHandler</div><div class="anat-val">duration: 4.1s | errors: 0 | init_duration: 0.8s (cold start!)</div></div>
+  <div class="anat-row"><div class="anat-label">    └ Subsegment: DynamoDB GetItem</div><div class="anat-val">duration: 3.2s ← BOTTLENECK | table: orders | consumed RCU: 1</div></div>
+  <div class="anat-row"><div class="anat-label">    └ Subsegment: S3 GetObject</div><div class="anat-val">duration: 0.05s | bucket: assets</div></div>
+</div>
+<div class="tip"><strong>Reading this:</strong> The DynamoDB GetItem took 3.2 of the 4.2 total seconds. X-Ray isolates the bottleneck precisely. Without X-Ray you'd only know "Lambda took 4.1 seconds" — not that DynamoDB was the cause.</div>
+
+<div class="sec-title">X-Ray groups and insights</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">X-Ray groups</span><span class="badge b-deep">Deep</span></div>
+    <div class="card-body">
+      Named filter expressions applied to traces.<br><br>
+      <strong>Example group:</strong> <code>responsetime > 2 AND fault = true</code><br><br>
+      Groups create their own CloudWatch metrics: <code>ThrottleCount</code>, <code>ErrorCount</code>, <code>FaultCount</code>, <code>ResponseTime</code> — all scoped to traces matching the group filter.<br><br>
+      You can alarm on these group-level CloudWatch metrics. E.g. alarm when the group "high-latency-errors" has FaultCount > 10 per minute.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">X-Ray Insights (automatic anomaly detection)</span><span class="badge b-deep">Deep</span></div>
+    <div class="card-body">
+      X-Ray Insights automatically detects anomalies in fault rates across your service graph and notifies you via SNS.<br><br>
+      <strong>How it works:</strong><br>
+      1. X-Ray analyses the service map continuously<br>
+      2. Detects when fault or error rate for a service deviates from baseline<br>
+      3. Creates an Insight event with the affected service, root cause path, and impact assessment<br>
+      4. Sends SNS notification if configured<br><br>
+      <strong>Exam tip:</strong> "Automatically detect when a specific microservice starts degrading" → X-Ray Insights (not manual trace filtering).
+    </div>
+  </div>
+</div>
+`},
+
+{id:'scenarios',label:'Scenario Mastery',content:`
+<div class="sec-title">The eight scenario archetypes in Domain 1</div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 1: "Alert when X exceeds Y"</span><span class="badge b-core">Most common</span></div>
+    <div class="card-body">
+      <strong>If X is a CloudWatch metric (CPU, network, etc.):</strong><br>
+      → CloudWatch Alarm on that metric with threshold Y<br><br>
+      <strong>If X is a log pattern (error count, status codes):</strong><br>
+      → Metric filter on log group → custom metric → CloudWatch Alarm<br><br>
+      <strong>If X is a rate (error rate = errors/requests):</strong><br>
+      → Two metric filters → metric math expression → alarm<br><br>
+      <strong>If X must be sub-minute:</strong><br>
+      → High-resolution custom metric (StorageResolution=1) + 10s or 30s alarm period
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 2: "Alert only when multiple conditions met"</span><span class="badge b-core">Common</span></div>
+    <div class="card-body">
+      → Create individual alarms for each condition<br>
+      → Create a Composite Alarm with AND logic<br><br>
+      <strong>Example:</strong> Alert only when CPU > 80% AND Memory > 85%<br>
+      → cpu-alarm (CPU > 80) + mem-alarm (memory > 85)<br>
+      → composite-alarm: ALARM(cpu-alarm) AND ALARM(mem-alarm)<br><br>
+      <strong>Don't confuse with:</strong> metric math multi-metric alarm (which can combine metrics in an expression but cannot enforce simultaneous state conditions like composite alarms can).
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 3: "Auto-remediate X when Y happens"</span><span class="badge b-core">Common</span></div>
+    <div class="card-body">
+      Pattern depends on trigger type:<br><br>
+      <strong>CloudWatch Alarm fires:</strong><br>
+      → Alarm action (EC2 recover/reboot) — for EC2-specific<br>
+      → EventBridge rule on alarm state change → SSM Automation / Lambda — for custom logic<br><br>
+      <strong>Config rule NON_COMPLIANT:</strong><br>
+      → Config auto-remediation → SSM Automation document<br><br>
+      <strong>AWS API event (e.g. someone opens port 22):</strong><br>
+      → EventBridge rule on CloudTrail event → Lambda / SSM Automation<br><br>
+      <strong>Scheduled (every Sunday 2am):</strong><br>
+      → EventBridge scheduled rule → SSM Automation / Lambda
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 4: "Who/when/why for AWS API actions"</span><span class="badge b-core">Common</span></div>
+    <div class="card-body">
+      → <strong>Always CloudTrail</strong><br><br>
+      "Who terminated the EC2 instances?" → CloudTrail<br>
+      "When was this S3 bucket made public?" → CloudTrail + Config timeline<br>
+      "What IAM role made these API calls?" → CloudTrail<br>
+      "Were any root account logins in the last 30 days?" → CloudTrail (filter on ConsoleLogin where userIdentity.type = Root)<br><br>
+      <strong>For > 90-day queries:</strong> Must have a Trail delivering to S3. Event History is insufficient.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 5: "Diagnose network connectivity"</span><span class="badge b-core">Common</span></div>
+    <div class="card-body">
+      → <strong>VPC Flow Logs</strong> for traffic accept/reject analysis<br><br>
+      "Traffic is being rejected between two instances" → Flow logs REJECT record → check SG or NACL<br>
+      "Traffic accepted but TLS fails" → Flow logs show ACCEPT = network OK → issue is application-layer (certificate, protocol)<br>
+      "No flow log records for a port" → traffic never reached the ENI → check route table upstream<br><br>
+      <strong>DNS issues within VPC:</strong> Route 53 Resolver query logs (NOT VPC Flow Logs — DNS is excluded from flow logs)
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 6: "Find latency root cause in microservices"</span><span class="badge b-imp">Important</span></div>
+    <div class="card-body">
+      → <strong>AWS X-Ray</strong><br><br>
+      Must have tracing enabled on all services in the chain (Lambda, API Gateway, etc.).<br><br>
+      Process: Enable X-Ray → filter traces by duration > Xms → click longest trace → inspect service map and segment breakdown → identify bottleneck subsegment (e.g. DynamoDB call taking 3s)<br><br>
+      <strong>CloudWatch Logs Insights can NOT do this</strong> — it can show individual Lambda duration but cannot correlate a single request across multiple services.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 7: "Stream / export logs at scale"</span><span class="badge b-imp">Important</span></div>
+    <div class="card-body">
+      <strong>Real-time processing:</strong> Subscription filter → Lambda (function processes log data immediately)<br><br>
+      <strong>Near-real-time to S3:</strong> Subscription filter → Kinesis Firehose → S3 (buffer 60-900s)<br><br>
+      <strong>Fan-out to multiple consumers:</strong> Subscription filter → Kinesis Data Streams → multiple Lambda/application consumers<br><br>
+      <strong>One-time historical export:</strong> CreateExportTask → S3 (up to 12h)<br><br>
+      <strong>Query S3 logs:</strong> Athena on S3 — useful for long-term analysis after export<br><br>
+      <strong>Retention:</strong> Always set log retention policy — default is never expires.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head" onclick="tog(this)"><span class="card-title">Archetype 8: "Optimise resource sizing"</span><span class="badge b-imp">Important</span></div>
+    <div class="card-body">
+      <strong>"Right-size this EC2 based on usage patterns":</strong> Compute Optimizer (needs 14+ days CloudWatch data, opt-in)<br><br>
+      <strong>"Broad best-practice check across all 5 pillars":</strong> Trusted Advisor (Business/Enterprise for all checks)<br><br>
+      <strong>"Alert when approaching service limits":</strong> Trusted Advisor Service Limits checks<br><br>
+      <strong>"EFS storage costs are too high":</strong> Enable EFS lifecycle policy to move infrequently accessed files to EFS-IA (92% cheaper). General Purpose vs Max I/O performance mode selection.<br><br>
+      <strong>"Lambda is consuming too much memory":</strong> Compute Optimizer Lambda recommendations.
+    </div>
+  </div>
+</div>
+`},
+
+{id:'exam',label:'Practice Questions',content:`
+<div class="sec-title">10 exam-level questions — click an answer to reveal explanation</div>
+${QS.map((q,i)=>`
+<div class="qblock" id="q${i}">
+  <div class="qhead">Q${i+1}. ${q.q}</div>
+  <div class="qopts">${q.o.map((o,j)=>`<button class="qopt" id="qo${i}_${j}" onclick="doAns(${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}</div>
+  <div class="qex" id="qe${i}"></div>
+</div>`).join('')}
+`},
+
+{id:'cheatsheet',label:'Cheat Sheet',content:`
+<div class="sec-title">Master quick-reference — Domain 1</div>
+<table class="tbl">
+  <tr><th>Trigger phrase</th><th>Answer</th><th>Key caveat</th></tr>
+  <tr><td>Who made this AWS API call?</td><td>CloudTrail</td><td>Event History = 90 days only. Trail → S3 for longer.</td></tr>
+  <tr><td>Why is network traffic rejected?</td><td>VPC Flow Logs</td><td>Does NOT capture DNS, DHCP, metadata service.</td></tr>
+  <tr><td>Which microservice causes latency?</td><td>AWS X-Ray</td><td>Must be instrumented on all services in the chain.</td></tr>
+  <tr><td>Which IPs/users cause the most errors?</td><td>Contributor Insights</td><td>Not Logs Insights — CI is continuous and ranked.</td></tr>
+  <tr><td>Alert when logs contain a pattern</td><td>Metric filter → CW Alarm</td><td>Only captures NEW log events. Set default value=0 to avoid INSUFFICIENT_DATA alarms.</td></tr>
+  <tr><td>Ad-hoc query log data</td><td>CloudWatch Logs Insights</td><td>Max 10,000 result rows. Up to 50 log groups per query.</td></tr>
+  <tr><td>Auto-fix a misconfigured resource</td><td>Config rule + SSM auto-remediation</td><td>Check IAM permissions if remediation silently fails.</td></tr>
+  <tr><td>Right-size EC2 by usage</td><td>Compute Optimizer</td><td>Needs 14+ days data. Must opt in. Not Trusted Advisor.</td></tr>
+  <tr><td>Reduce alarm noise</td><td>Composite Alarm (AND/OR)</td><td>Child alarms must exist first. Composite adds logic layer.</td></tr>
+  <tr><td>Stream logs to S3 near-real-time</td><td>Subscription filter → Kinesis Firehose → S3</td><td>CreateExportTask takes up to 12h. Max 2 subscription filters per log group.</td></tr>
+  <tr><td>Memory metric for EC2</td><td>CloudWatch Unified Agent</td><td>Not available natively. Must install agent.</td></tr>
+  <tr><td>Alert within 10 seconds</td><td>High-resolution custom metric + 10s alarm</td><td>StorageResolution=1 in PutMetricData.</td></tr>
+  <tr><td>DNS query logs from VPC</td><td>Route 53 Resolver query logs</td><td>VPC Flow Logs do NOT capture DNS traffic.</td></tr>
+  <tr><td>Suppress alerts during maintenance</td><td>Composite Alarm with NOT ALARM(maintenance)</td><td>Create a maintenance alarm that is ALARM during windows.</td></tr>
+  <tr><td>Cryptographically verify CloudTrail integrity</td><td>Log file validation (digest files)</td><td>Enable on Trail. Use validate-logs CLI command.</td></tr>
+  <tr><td>Alert on static threshold that changes by time of day</td><td>Anomaly detection alarm</td><td>ML model needs 2+ weeks of data for good predictions.</td></tr>
+  <tr><td>Config rule auto-remediation silently fails</td><td>Check IAM permissions on remediation role</td><td>Also check: manual approval step, SCP restrictions.</td></tr>
+  <tr><td>New metric filter alarm fires immediately at creation</td><td>Set treat missing data = notBreaching</td><td>Or set metric filter default value = 0.</td></tr>
+</table>
+
+<div class="sec-title">Top 8 Domain 1 exam traps</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+  <div class="trap-box"><strong>Trap 1:</strong> Standard EC2 monitoring = 5-min intervals. If you create a 60s alarm with standard monitoring, it stays in INSUFFICIENT_DATA. Fix: enable Detailed Monitoring or use 300s period.</div>
+  <div class="trap-box"><strong>Trap 2:</strong> Memory utilization is NOT a built-in EC2 CloudWatch metric. You MUST install the CloudWatch Unified Agent to collect it.</div>
+  <div class="trap-box"><strong>Trap 3:</strong> Metric filters do NOT backfill historical log data. Only new events after creation are evaluated.</div>
+  <div class="trap-box"><strong>Trap 4:</strong> CloudTrail Event History = 90 days max. For longer retention or data events, you need a Trail delivering to S3.</div>
+  <div class="trap-box"><strong>Trap 5:</strong> VPC Flow Logs do NOT capture DNS queries (Route 53 Resolver), DHCP, or metadata service (169.254.x.x) traffic. Use Route 53 Resolver query logs for DNS.</div>
+  <div class="trap-box"><strong>Trap 6:</strong> CreateExportTask for CloudWatch Logs → S3 can take up to 12 hours. For near-real-time, use Subscription Filter → Kinesis Firehose → S3.</div>
+  <div class="trap-box"><strong>Trap 7:</strong> Logs Insights = ad-hoc interactive queries. Contributor Insights = continuous real-time top-N ranking. Never confuse these two for "who causes the most errors" questions.</div>
+  <div class="trap-box"><strong>Trap 8:</strong> Config auto-remediation silently fails → almost always a permissions issue. The Config remediation IAM role needs SSM:StartAutomationExecution, and the SSM execution role needs resource-specific permissions.</div>
+</div>
+<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+  <button onclick="sendPrompt('Give me 10 more hard practice questions for Domain 1 of SOA-C03 covering CloudWatch internals, X-Ray, and Config remediation')" style="font-size:13px;padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-info);font-family:var(--font-sans)">10 more hard practice questions ↗</button>
+  <button onclick="sendPrompt('Teach me Domain 2 of SOA-C03 every nook and corner in depth')" style="font-size:13px;padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)">Next: Domain 2 deep dive ↗</button>
+</div>
+`}
+];
+
+function tog(h){h.nextElementSibling.classList.toggle('on')}
+function doAns(qi,oi){
+  const q=QS[qi];
+  document.querySelectorAll(`#q${qi} .qopt`).forEach((o,j)=>{
+    o.disabled=true;
+    if(j===q.c)o.classList.add('ok2');
+    else if(j===oi&&j!==q.c)o.classList.add('bad');
+  });
+  const ex=document.getElementById('qe'+qi);
+  ex.innerHTML='<strong>'+(oi===q.c?'✓ Correct!':'✗ Incorrect.')+'</strong> '+q.e;
+  ex.classList.add('on');
+}
+window.tog=tog;window.doAns=doAns;
+
+let cur=Number(localStorage.getItem('soaDeepDomain1Page') || 0);
+if(!Number.isInteger(cur) || cur < 0 || cur >= PAGES.length) cur = 0;
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  localStorage.setItem('soaDeepDomain1Page', String(cur));
+  document.querySelectorAll('.ttab').forEach((t,j)=>t.classList.toggle('on',j===i));
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('on',j===i));
+}
+window.go=go;
+
+const tabsEl=document.getElementById('tabs');
+const pagesEl=document.getElementById('pages');
+PAGES.forEach((p,i)=>{
+  const btn=document.createElement('button');
+  btn.className='ttab'+(i===0?' on':'');
+  btn.textContent=p.label;
+  btn.onclick=()=>go(i);
+  tabsEl.appendChild(btn);
+
+  const pg=document.createElement('div');
+  pg.className='pg'+(i===0?' on':'');
+  pg.innerHTML=p.content+`
+    <div class="nr">
+      <button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Previous</button>
+      <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
+      <button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+    </div>`;
+  pagesEl.appendChild(pg);
+});
+go(cur);
+</script>
+

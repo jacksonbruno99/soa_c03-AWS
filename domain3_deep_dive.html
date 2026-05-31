@@ -1,0 +1,537 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Domain 3 Full Deep Dive: Deployment and Automation | AWS SOA-C03 Blueprint</title>
+<link rel="canonical" href="https://aws-soa-c03.netlify.app/domain3_deep_dive.html">
+<meta name="description" content="Full SOA-C03 Domain 3 deep dive for AWS Cloud Ops: CloudFormation, CDK, Systems Manager, containers, deployment strategies, and hard practice questions.">
+<meta property="og:title" content="Domain 3 Full Deep Dive: Deployment and Automation | AWS SOA-C03 Blueprint">
+<meta property="og:description" content="Full SOA-C03 Domain 3 deep dive for AWS Cloud Ops: CloudFormation, CDK, Systems Manager, containers, deployment strategies, and hard practice questions.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aws-soa-c03.netlify.app/domain3_deep_dive.html">
+<meta property="og:image" content="https://dummyimage.com/1200x630/111827/93c5fd&text=SOA-C03+Full+Deep+Dive+3">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+:root{--font-sans:Inter,Segoe UI,Arial,sans-serif;--font-mono:Consolas,Menlo,monospace;--border-radius-md:8px;--border-radius-lg:10px;--color-background-primary:#111827;--color-background-secondary:#1F2937;--color-background-tertiary:#0F172A;--color-text-primary:#F9FAFB;--color-text-secondary:#D1D5DB;--color-text-tertiary:#9CA3AF;--color-text-info:#93C5FD;--color-border-secondary:#4B5563;--color-border-tertiary:#374151;}
+body[data-theme="light"]{--color-background-primary:#F8FAFC;--color-background-secondary:#EEF2F7;--color-background-tertiary:#E2E8F0;--color-text-primary:#111827;--color-text-secondary:#374151;--color-text-tertiary:#6B7280;--color-text-info:#1D4ED8;--color-border-secondary:#CBD5E1;--color-border-tertiary:#E2E8F0;}
+body{background:var(--color-background-primary);width:min(100%,1100px);margin:0 auto;padding:4.25rem clamp(12px,3vw,28px) 1.25rem!important;font-size:17px!important;line-height:1.65!important;}
+body[data-theme="light"] .b-core,body[data-theme="light"] .tip,body[data-theme="light"] .qopt.reveal{background:#E6F1FB!important;color:#0C447C!important;border-color:#85B7EB!important}
+body[data-theme="light"] .b-imp,body[data-theme="light"] .ok,body[data-theme="light"] .qopt.ok2{background:#EAF3DE!important;color:#27500A!important;border-color:#3B6D11!important}
+body[data-theme="light"] .b-trap,body[data-theme="light"] .trap-box{background:#FAECE7!important;color:#712B13!important;border-color:#F0997B!important}
+body[data-theme="light"] .b-deep{background:#EEEDFE!important;color:#3C3489!important;border-color:#AFA9EC!important}
+body[data-theme="light"] .b-tip,body[data-theme="light"] .warn{background:#FAEEDA!important;color:#633806!important;border-color:#E0AA59!important}
+body[data-theme="light"] .qopt.bad{background:#FCEBEB!important;color:#791F1F!important;border-color:#A32D2D!important}
+.b-core,.tip,.qopt.reveal{background:#17365F!important;color:#DBEAFE!important;border-color:#3B82F6!important}.b-imp,.ok,.qopt.ok2{background:#1F3A1D!important;color:#DCFCE7!important;border-color:#22C55E!important}.b-trap,.trap-box{background:#442016!important;color:#FED7AA!important;border-color:#F97316!important}.b-deep{background:#2E2A5F!important;color:#EDE9FE!important;border-color:#8B5CF6!important}.b-tip,.warn{background:#3B2A12!important;color:#FDE68A!important;border-color:#F59E0B!important}.qopt.bad{background:#4A1515!important;color:#FECACA!important;border-color:#EF4444!important}
+.home-link,.share-link,.lesson-link,.theme-toggle{position:fixed;top:14px;z-index:50;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.22);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.home-link{left:14px}.lesson-link{left:132px}.share-link{right:64px}.theme-toggle{right:14px;width:42px;height:42px;padding:0;font-size:18px}.home-link:hover,.share-link:hover,.lesson-link:hover,.theme-toggle:hover{transform:translateY(-2px);border-color:#A78BFA;color:var(--color-text-primary)}body:not([data-theme="light"]) .theme-sun{display:none}body[data-theme="light"] .theme-moon{display:none}
+.deep-hero{border:1px solid var(--color-border-tertiary);border-radius:18px;padding:22px clamp(16px,3vw,30px);margin-bottom:1.25rem;background:linear-gradient(135deg,rgba(24,95,165,.18),rgba(83,74,183,.16));box-shadow:0 20px 55px rgba(0,0,0,.2);animation:riseIn .55s ease both}.deep-eyebrow{font-size:12px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px}.deep-title{font-size:clamp(1.7rem,4vw,3.2rem);line-height:1.05;font-weight:800}.deep-sub{margin-top:10px;color:var(--color-text-secondary);font-size:16px}.top-tabs,.pg.on,.card,.qblock,.kv,.anatomy,.compare-col,.nr{animation:riseIn .48s cubic-bezier(.2,.8,.2,1) both}.ttab,.card,.qblock,.kv,.qopt,.nb,.dot,.anat-row,.compare-col{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}.card:hover,.qblock:hover,.kv:hover,.anatomy:hover,.compare-col:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(0,0,0,.18);border-color:#A78BFA}.ttab:hover,.qopt:hover,.nb:hover{transform:translateY(-2px)}.card-body.on,.qex.on{animation:softReveal .24s ease both}.tbl{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}.dot:hover,.dot.on{transform:scale(1.3)}.theme-toggle{animation:floatButton 3.4s ease-in-out infinite}@keyframes riseIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes softReveal{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}@keyframes floatButton{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}@media (max-width:700px){body{padding:4.25rem 12px 1rem!important;font-size:16px!important}.home-link{left:10px}.lesson-link{display:none}.share-link{right:60px}.top-tabs{display:grid;grid-template-columns:1fr;gap:8px}.ttab{text-align:left;border:1px solid var(--color-border-tertiary);border-radius:8px}.compare-cols,.grid2,.kv-grid{grid-template-columns:1fr}.anat-row{display:grid;grid-template-columns:1fr}.anat-label{width:auto}.nr{display:grid;grid-template-columns:1fr;gap:10px}.nb{width:100%}.dots{justify-content:center;order:-1}}@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);font-size:14px;line-height:1.6}
+.top-tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
+.ttab{background:none;border:none;font-family:var(--font-sans);font-size:13px;color:var(--color-text-secondary);padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.ttab:hover{color:var(--color-text-primary)}
+.ttab.on{color:#534AB7;border-bottom-color:#534AB7;font-weight:500}
+.pg{display:none;padding-bottom:1.5rem}
+.pg.on{display:block}
+.sec{font-size:12px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--color-text-tertiary);margin:1.5rem 0 .75rem;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
+.sec::after{content:'';flex:1;height:1px;background:var(--color-border-tertiary)}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:10px}
+.ch{padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-primary);user-select:none}
+.ch:hover{background:var(--color-background-secondary)}
+.ct{font-size:13px;font-weight:500}
+.cb{display:none;padding:12px 14px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);font-size:13px;color:var(--color-text-secondary);line-height:1.7}
+.cb.on{display:block}
+.cb code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-tertiary);padding:1px 5px;border-radius:4px;color:var(--color-text-info)}
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
+.bc{background:#EEEDFE;color:#3C3489}
+.bi{background:#EAF3DE;color:#27500A}
+.bt{background:#FAECE7;color:#712B13}
+.bd{background:#E6F1FB;color:#0C447C}
+.bw{background:#FAEEDA;color:#633806}
+.tip{border-left:3px solid #534AB7;padding:10px 14px;background:#EEEDFE;margin:10px 0;font-size:13px;color:#3C3489;line-height:1.5;border-radius:0}
+.warn{border-left:3px solid #854F0B;padding:10px 14px;background:#FAEEDA;margin:10px 0;font-size:13px;color:#633806;line-height:1.5;border-radius:0}
+.trap{border-left:3px solid #993C1D;padding:10px 14px;background:#FAECE7;margin:10px 0;font-size:13px;color:#712B13;line-height:1.5;border-radius:0}
+.ok{border-left:3px solid #3B6D11;padding:10px 14px;background:#EAF3DE;margin:10px 0;font-size:13px;color:#27500A;line-height:1.5;border-radius:0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+.tbl th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.tbl td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-secondary)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--color-text-primary);font-weight:500}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem}
+.anat{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin:10px 0}
+.ar{display:flex;align-items:stretch;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ar:last-child{border-bottom:none}
+.al{width:150px;flex-shrink:0;padding:10px 12px;background:var(--color-background-secondary);font-size:12px;font-weight:500;color:var(--color-text-secondary);display:flex;align-items:center}
+.av{flex:1;padding:10px 12px;font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+.av code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-tertiary);padding:1px 5px;border-radius:4px;color:var(--color-text-info)}
+.cc{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.cc-col{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.cc-head{padding:8px 12px;font-size:13px;font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.cc-body{padding:10px 12px;font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.fb{padding:7px 12px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;text-align:center;line-height:1.4;min-width:72px}
+.fa{color:var(--color-text-tertiary);font-size:13px;flex-shrink:0}
+.qblock{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:12px;overflow:hidden}
+.qhead{padding:12px 14px;font-size:13px;font-weight:500;background:var(--color-background-primary);line-height:1.6}
+.qdomain{font-size:10px;font-family:var(--font-mono);padding:2px 7px;border-radius:99px;display:inline-block;margin-bottom:5px;background:#EEEDFE;color:#3C3489}
+.qopts{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.qopt{padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);text-align:left;line-height:1.4;transition:background .1s}
+.qopt:hover:not([disabled]){background:var(--color-background-secondary)}
+.qopt.ok2{background:#EAF3DE;color:#27500A;border-color:#3B6D11}
+.qopt.bad{background:#FCEBEB;color:#791F1F;border-color:#A32D2D}
+.qex{margin:0 14px 12px;padding:10px 12px;border-radius:var(--border-radius-md);font-size:13px;line-height:1.6;display:none;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.qex.on{display:block}
+.nr{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;margin-top:.5rem;border-top:0.5px solid var(--color-border-tertiary)}
+.nb{font-size:13px;padding:7px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.nb:hover{background:var(--color-background-secondary)}
+.nb:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer}
+.dot.on{background:#534AB7}
+.deploy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:10px 0}
+.dc{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:11px 12px;background:var(--color-background-primary)}
+.dc-risk{font-size:10px;font-family:var(--font-mono);font-weight:500;padding:2px 7px;border-radius:99px;display:inline-block;margin-bottom:6px}
+.dc-name{font-size:13px;font-weight:500;margin-bottom:4px}
+.dc-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.score-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;color:var(--color-text-secondary)}
+.score-label{min-width:140px}
+.score-track{flex:1;height:4px;background:var(--color-border-tertiary);border-radius:99px;overflow:hidden}
+.score-fill{height:100%;border-radius:99px;background:#534AB7}
+.qscore-display{font-family:var(--font-mono);font-size:22px;font-weight:500;color:#534AB7;text-align:center;margin:12px 0}
+</style>
+
+<a class="home-link" href="index.html" aria-label="Back to main page">? Main page</a>
+<a class="lesson-link" href="domain3_deployment_provisioning_lesson.html" aria-label="Back to domain lesson">Lesson</a>
+<button class="share-link" type="button" onclick="shareDeepDive()" aria-label="Share full deep dive">Share</button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">?</span><span class="theme-moon">?</span></button>
+<div class="deep-hero"><div class="deep-eyebrow">Full deep dive</div><div class="deep-title">Domain 3: Deployment and Automation</div><div class="deep-sub">Expanded reference notes, advanced traps, service internals, and harder practice questions.</div></div><h2 class="sr-only">Domain 3 deep-dive study notes for AWS SOA-C03: Deployment, Provisioning and Automation — CloudFormation, SSM, containers, CI/CD, and 15 hard practice questions</h2>
+
+<div style="padding:1rem 0">
+<div class="top-tabs" id="tabs"></div>
+<div id="pages"></div>
+</div>
+
+<script>
+(() => {const savedTheme=localStorage.getItem('soaTheme')||'dark';document.body.dataset.theme=savedTheme;window.toggleTheme=()=>{const nextTheme=document.body.dataset.theme==='light'?'dark':'light';document.body.dataset.theme=nextTheme;localStorage.setItem('soaTheme',nextTheme);};})();
+async function shareDeepDive(){const payload={title:'Domain 3 Full Deep Dive: Deployment and Automation | AWS SOA-C03 Blueprint',text:'Full SOA-C03 Domain 3 deep dive for AWS Cloud Ops: CloudFormation, CDK, Systems Manager, containers, deployment strategies, and hard practice questions.',url:window.location.href};try{if(navigator.share){await navigator.share(payload);}else{await navigator.clipboard.writeText(window.location.href);alert('Deep dive link copied to clipboard.');}}catch(err){if(err.name!=='AbortError')alert('Could not share this deep dive right now.');}}
+const QS=[
+{sub:"CloudFormation internals",
+ q:"A CloudFormation stack update is failing with the error: 'Resource of type AWS::RDS::DBInstance cannot be updated with interruption type Replacement because DeletionPolicy is not Retain or Snapshot.' The engineer wants to update the DBInstanceClass of a production RDS instance. What must they do first?",
+ o:["Set UpdateReplacePolicy: Retain on the RDS resource, then run the stack update","Add DeletionPolicy: Snapshot and UpdateReplacePolicy: Snapshot to the RDS resource in the template, then execute a change set","Delete the stack, modify the template, and redeploy","Use cfn-hup on the EC2 instances to signal readiness"],
+ c:1,e:"UpdateReplacePolicy controls what happens to the OLD resource when CloudFormation replaces it (as opposed to DeletionPolicy which applies when the stack is deleted). Changing DBInstanceClass on RDS requires resource replacement. Without UpdateReplacePolicy: Snapshot, CloudFormation would delete the original DB without a snapshot. The correct sequence: add both DeletionPolicy: Snapshot AND UpdateReplacePolicy: Snapshot to the RDS resource → create a change set → review it shows replacement → execute. Deleting the stack loses production data. cfn-hup is for configuration updates on EC2, not RDS."},
+{sub:"StackSets edge case",
+ q:"A company uses CloudFormation StackSets with service-managed permissions targeting their entire AWS Organization. After deploying, a new AWS account is added to the Root OU. What happens to that new account?",
+ o:["The StackSet does nothing — new accounts must be manually added to the StackSet deployment","The StackSet automatically deploys the stack to the new account if 'Automatic deployment' is enabled on the StackSet","An EventBridge rule must be created to detect new account creation and trigger StackSet deployment","The new account must first be moved to a child OU before StackSets can target it"],
+ c:1,e:"StackSets with service-managed permissions has an 'Automatic deployment' setting. When enabled: new accounts added to targeted OUs automatically receive the StackSet. When accounts are removed from the OU, the stack is automatically deleted from them. This is the key operational advantage of service-managed over self-managed permissions — zero manual action for organizational changes. Without Automatic deployment enabled, you must manually add the new account to the StackSet deployment targets."},
+{sub:"CloudFormation drift",
+ q:"A CloudFormation stack manages an EC2 security group. An engineer manually adds an inbound rule via the AWS console for emergency troubleshooting. Later, a CloudFormation stack update runs and does NOT modify the security group. The manual rule is still present. Why?",
+ o:["CloudFormation automatically reverts manual changes — the rule would have been removed during any update","CloudFormation only modifies resources if the template changes. Since the security group template definition didn't change, CloudFormation did not re-apply it, leaving the manual rule in place","Drift detection would have triggered an automatic rollback","Security groups are immutable in CloudFormation and cannot be updated"],
+ c:1,e:"This is a critical CloudFormation behaviour: CloudFormation uses a desired-state model based on the TEMPLATE, not real-time resource state. It only modifies a resource if its template definition changes. If the security group template definition is unchanged, CloudFormation doesn't touch the resource — even if the actual resource has drifted. The manual rule persists. This is why you run drift detection proactively. To remove the manual rule, you must either: (1) run drift detection → manually fix the resource, or (2) update the template and run a stack update that touches the security group."},
+{sub:"SSM Automation failure",
+ q:"An AWS Config rule (encrypted-volumes) detects a non-compliant EBS volume. Auto-remediation is configured to trigger SSM Automation document AWS-EnableEbsEncryptionByDefault. 24 hours later the volume is still non-compliant. The SSM Automation execution history shows status 'Failed' with error: 'AccessDenied'. What is the most likely cause and fix?",
+ o:["The Config rule evaluation is delayed — wait another 24 hours","The SSM Automation document AWS-EnableEbsEncryptionByDefault does not exist — create a custom document","The IAM role used for the Config remediation does not have ssm:StartAutomationExecution, and/or the SSM Automation execution role lacks ec2:EnableEbsEncryptionByDefault permission — add these permissions","Config auto-remediation only works for S3 resources, not EBS"],
+ c:2,e:"Config auto-remediation has two IAM layers: (1) The Config remediation IAM role — needs ssm:StartAutomationExecution on the target document. (2) The SSM Automation execution role — needs the actual resource permissions (in this case ec2:EnableEbsEncryptionByDefault or ec2:ModifyVolume). The execution history showing 'Failed' with 'AccessDenied' confirms a permissions problem. The fix: grant ssm:StartAutomationExecution to the Config role AND grant ec2:EnableEbsEncryptionByDefault to the SSM execution role. Config supports remediation for all resource types, not just S3."},
+{sub:"SSM Parameter Store vs Secrets Manager",
+ q:"A Lambda function retrieves database credentials from SSM Parameter Store (SecureString) at startup. A new requirement mandates that DB passwords rotate every 30 days automatically. The simplest migration path is required. What should be done?",
+ o:["Create a CloudWatch Events rule that triggers a Lambda function every 30 days to update the SSM Parameter Store value","Migrate the credentials to Secrets Manager with RDS rotation enabled — update the Lambda function to use the Secrets Manager SDK instead of SSM","Write a custom rotation script and schedule it with EventBridge + Lambda to update the SSM SecureString","Enable the 'auto-rotation' feature on the existing SSM Parameter Store SecureString"],
+ c:1,e:"SSM Parameter Store does NOT support automatic rotation of any kind — SecureString or otherwise. There is no auto-rotation feature to enable. The only way to auto-rotate credentials is Secrets Manager. The migration: create a Secrets Manager secret with the DB credentials → enable built-in RDS rotation (30-day schedule) → update the Lambda to use secretsmanager:GetSecretValue instead of ssm:GetParameter. The custom EventBridge + Lambda approach works technically but is more complex than using the native Secrets Manager rotation. The simplest path = Secrets Manager."},
+{sub:"ECS IAM roles",
+ q:"An ECS Fargate task runs a Python application. The app successfully calls DynamoDB but fails with AccessDenied when calling S3:GetObject. The ECS task definition has both a task role (with DynamoDB full access) and an execution role (with ECR pull and CloudWatch Logs permissions). What is the fix?",
+ o:["Add S3:GetObject to the execution role","Add S3:GetObject to the task role","Add a VPC endpoint for S3 to allow Fargate to reach S3","Attach an S3 bucket policy allowing the ECS service principal"],
+ c:1,e:"The task role is the IAM role assumed by the running container process to make AWS API calls. DynamoDB works because it's in the task role. S3 fails because it's missing from the task role. The execution role is for ECS infrastructure operations: pulling the container image from ECR and writing logs to CloudWatch — it has no effect on what your application code can call. Add S3:GetObject (scoped to the specific bucket/prefix) to the task role. VPC endpoints for S3 are optional and solve network routing, not IAM permission, issues."},
+{sub:"ECS blue/green with CodeDeploy",
+ q:"A company uses ECS with an ALB. They configure CodeDeploy for blue/green deployments. After deploying a new task definition revision, the deployment gets stuck at 'Waiting for the replacement task set to become stable'. What is the most likely cause?",
+ o:["The ALB listener rule has no weighted target group configured","The new task set's tasks are failing their health checks — the ALB health check path returns a non-200 status code for the new container","CodeDeploy requires manual approval at this stage — approve via console","The ECS task execution role is missing ecs:RegisterTaskDefinition permission"],
+ c:1,e:"In an ECS blue/green deployment, CodeDeploy launches a new (green) task set and waits for its tasks to register as healthy in the ALB target group. 'Waiting for replacement task set to become stable' means the ALB health checks are failing for the new tasks — returning non-200 responses, timing out, or the container is crashing. Check: ECS service events for task failures, CloudWatch Logs for the new container's startup errors, and ALB target group health check configuration (path, port, success codes). This is not a manual approval step — that would show a different status."},
+{sub:"ECR lifecycle policies",
+ q:"A team pushes a new Docker image to ECR on every commit. After 6 months, ECR storage costs are very high due to thousands of untagged images and old tagged images. They want to keep only the last 10 tagged images per repository and delete all untagged images immediately. What is the most operationally efficient solution?",
+ o:["Write a Lambda function triggered by ECR push events to delete old images using the ECR API","Configure an ECR lifecycle policy with two rules: Rule 1 (priority 1) - expire untagged images older than 1 day. Rule 2 (priority 2) - keep only 10 tagged images per repository","Create a CloudWatch Events rule that runs a daily script to clean up ECR images","Manually delete old images via the ECR console weekly"],
+ c:1,e:"ECR lifecycle policies are the native, zero-code solution. Rule evaluation order: lower priority number wins when an image matches multiple rules. Rule 1 (priority 1): countType=sinceImagePushed, countUnit=days, countNumber=1, tagStatus=untagged → expires untagged images after 1 day. Rule 2 (priority 2): countType=imageCountMoreThan, countNumber=10, tagStatus=tagged → keeps only the 10 most recently pushed tagged images. ECR evaluates rules in priority order and the first matching rule applies. This runs automatically after every push — no Lambda, no cron, zero operational overhead."},
+{sub:"CodeDeploy Lambda canary",
+ q:"A Lambda function processes financial transactions. A new version is deployed using CodeDeploy with the Canary10Percent5Minutes deployment configuration. A CloudWatch alarm on Lambda errors is configured as a rollback trigger. After deployment starts, 8% of requests fail with the new version. The deployment continues past the canary phase without rolling back. Why?",
+ o:["The 8% failure rate is below the 10% canary traffic percentage — CodeDeploy only monitors failures in the canary slice, not the overall error rate","The CloudWatch alarm must be in ALARM state for at least 2 consecutive evaluation periods before CodeDeploy triggers rollback — the alarm hasn't sustained","The CloudWatch alarm's namespace must be AWS/CodeDeploy — custom Lambda error alarms are not supported as rollback triggers","The alarm's treat missing data setting is 'ignore' which prevents it from entering ALARM state during the monitoring period"],
+ c:1,e:"CodeDeploy checks the configured CloudWatch alarms at deployment time to determine whether to roll back. The alarm must be in ALARM state when CodeDeploy evaluates it. If the alarm requires multiple consecutive breaching periods before entering ALARM state (M-of-N evaluation), a brief spike may not sustain long enough to trigger ALARM before CodeDeploy's monitoring window passes. The fix: configure the alarm with datapoints-to-alarm=1 (1 out of 1 period) so it enters ALARM on the first breaching period. Also check that the alarm evaluation period is short enough to fire during the 5-minute canary window."},
+{sub:"Beanstalk immutable vs blue/green",
+ q:"An Elastic Beanstalk environment uses an immutable deployment policy. During a deployment, what happens if the health checks on the new instances fail?",
+ o:["The existing instances are terminated and the environment enters a degraded state","Beanstalk terminates only the new Auto Scaling group and new instances, rolling back to the original instances which were never touched during the immutable deployment","Beanstalk automatically switches to a rolling deployment strategy","The deployment is paused and requires manual intervention to continue or rollback"],
+ c:1,e:"Immutable deployment creates a SEPARATE temporary Auto Scaling group with the new instances. The original ASG and its instances remain completely untouched during the entire deployment. If health checks fail on new instances, Beanstalk terminates the temporary ASG (and all its instances) and the environment continues serving traffic from the original ASG — instant rollback with zero impact on the original environment. This is why immutable is the safest deployment policy: the original instances are never modified. Compare this to rolling updates, where already-updated instances have the new version and rollback requires re-deploying the old version."},
+{sub:"CodePipeline manual approval",
+ q:"A CodePipeline has a manual approval action before the production deployment stage. The approval action has an SNS notification configured. An engineer approves the deployment via email link. The pipeline still shows 'Action execution failed'. Why?",
+ o:["Manual approvals via email links require MFA confirmation","The SNS notification email contains a review link but approval must be done via the AWS console, CLI, or API — clicking a link in the email does not directly approve the action","The approval token has expired — manual approval tokens expire after 7 days","The approver's IAM user lacks codepipeline:PutApprovalResult permission"],
+ c:3,e:"This is a common operational trap. CodePipeline sends an SNS notification with a REVIEW link — this link takes you to the AWS console to view the pipeline state. Actual approval requires calling the PutApprovalResult API (via console Approve/Reject buttons, CLI, or SDK). If the approver's IAM user/role does not have codepipeline:PutApprovalResult permission on the pipeline resource, the approval action will fail with AccessDenied. The SNS email is for notification purposes only — it doesn't grant approval rights. Fix: add codepipeline:PutApprovalResult to the approver's IAM policy."},
+{sub:"EC2 Image Builder",
+ q:"A company uses EC2 Image Builder to create AMIs weekly. The pipeline runs successfully and distributes the AMI to 3 regions. The engineering team wants all new EC2 instances launched by the Auto Scaling group to automatically use the latest AMI without updating the launch template manually. What is the most efficient solution?",
+ o:["Configure a CloudWatch Events rule that detects new AMI creation and triggers a Lambda to update the ASG launch template","Configure the Image Builder pipeline to store the latest AMI ID in SSM Parameter Store. Set the ASG launch template to use the SSM parameter as the AMI ID using the resolve:ssm syntax","Create a scheduled Lambda function that queries the latest AMI ID and updates the launch template version","Use the 'Latest' AMI alias in the launch template which automatically resolves to the newest AMI"],
+ c:1,e:"EC2 Image Builder can publish the latest AMI ID to an SSM Parameter Store parameter after each successful build. The Auto Scaling Group launch template supports dynamic resolution of SSM parameters using the syntax: resolve:ssm:/path/to/ami-id. This means every time a new instance launches, ASG resolves the current SSM value — always getting the latest AMI ID automatically. No Lambda, no manual updates, no scheduled jobs. This pattern (Image Builder → SSM → launch template SSM resolve) is the canonical zero-touch AMI management pattern. There is no 'Latest' AMI alias feature in launch templates."},
+{sub:"SSM State Manager vs Run Command",
+ q:"A security team requires that the CrowdStrike Falcon agent is always running on all EC2 instances. New instances are being launched by Auto Scaling. The agent sometimes crashes and needs to be restarted automatically. What is the correct SSM capability to use?",
+ o:["SSM Run Command with a scheduled EventBridge rule every 5 minutes to check and restart the agent on all instances","SSM State Manager association using a document that installs and ensures the service is running, applied to all instances with a 30-minute schedule","Create a Lambda function that monitors CloudWatch agent metrics and triggers SSM Run Command when the process is not detected","Use Systems Manager Inventory to track the agent and trigger Run Command on non-compliant instances"],
+ c:1,e:"SSM State Manager is designed precisely for continuous configuration enforcement — it re-applies the desired state on a schedule. A State Manager association: targets all instances (by tag or all managed), runs a document (e.g. AWS-RunShellScript or custom document that checks/installs/starts the CrowdStrike service) every 30 minutes. Even if the agent crashes, the next association run restores it. New Auto Scaling instances automatically receive the association when they register with SSM. Run Command with EventBridge is a valid workaround but is architecturally inferior — it's a one-time execution, not a state enforcement mechanism. Inventory tracks but doesn't enforce."},
+{sub:"CDK vs CloudFormation",
+ q:"A CDK application defines a Stack with an S3 bucket and a Lambda function. The developer runs cdk deploy. During deployment, an error occurs: 'The security token included in the request is expired'. What is the most likely cause and where does CDK fail?",
+ o:["The CDK application code has a bug — review the TypeScript for syntax errors","CDK synthesises the app into a CloudFormation template and calls CloudFormation APIs to deploy. The expired token error occurs when CloudFormation attempts to provision resources using the caller's AWS credentials — the session token expired between cdk synth and the CloudFormation stack update","CDK directly calls AWS service APIs (S3, Lambda) without going through CloudFormation — the Lambda API token expired","The CDK bootstrap stack is outdated and needs to be updated with cdk bootstrap"],
+ c:1,e:"Understanding CDK's execution model is critical. cdk deploy: (1) synthesises the app into a CloudFormation template (cdk synth), (2) uploads assets to S3 bootstrap bucket, (3) calls CloudFormation CreateStack/UpdateStack. CloudFormation then provisions resources using the caller's credentials. If the AWS session token expires between synthesis and the CloudFormation deployment completing, API calls within CloudFormation's provisioning will fail with expired token. CDK never directly calls S3 or Lambda APIs — it always goes through CloudFormation. The fix: refresh AWS credentials and re-run cdk deploy."},
+{sub:"Multi-capability hard scenario",
+ q:"A company has 200 EC2 instances running a Java application. The security team mandates that all instances must have Java 17 installed within 2 hours (replacing Java 11), and they need a compliance report showing which instances succeeded. No SSH access is available. What is the correct approach?",
+ o:["Create a CloudFormation stack update to change the UserData script and trigger an instance refresh on the Auto Scaling group — complete within 2 hours","Use SSM Run Command with AWS-RunShellScript targeting all instances by a tag, execute the Java upgrade script, set rate control to 50 concurrent instances, and review results in SSM Run Command history or export to CloudWatch Logs and S3","Use SSM Patch Manager with a custom patch baseline that includes the Java 17 package and run it immediately via Maintenance Window","Create a Lambda function that uses the SSM API to send commands to each instance sequentially"],
+ c:1,e:"SSM Run Command is the exact tool for this: run a script on a fleet without SSH, with rate control and execution history. Configuration: target instances by tag (e.g. Environment=production), document=AWS-RunShellScript, commands=['yum remove java-11-amazon-corretto -y', 'yum install java-17-amazon-corretto -y', 'java -version'], MaxConcurrency=50 (or percentage), MaxErrors=10%. Results per instance (success/failure/output) are visible in SSM Run Command history and can be streamed to CloudWatch Logs or S3 for the compliance report. CloudFormation instance refresh would work but takes hours and replaces instances. Patch Manager is for OS/package patching but doesn't map cleanly to a 2-hour emergency Java upgrade with immediate reporting. Sequential Lambda execution of 200 instances would take far longer."}
+];
+
+const PAGES=[
+{id:'overview',label:'Overview',c:`
+<div class="sec">Domain 3 mental model and scope</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:1rem">
+  ${[['Weight','22% — ~11 questions out of 50'],['Most-tested','SSM capabilities, ECS task vs execution role, CloudFormation StackSets'],['New in SOA-C03','Containers (ECS, EKS, ECR) fully in scope for the first time'],['Core mental model','"Without SSH" = SSM. "Multi-account CFN" = StackSets. "Auto-rotate creds" = Secrets Manager']].map(([k,v])=>`<div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;background:var(--color-background-primary)"><div style="font-size:11px;font-weight:500;color:var(--color-text-tertiary);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${k}</div><div style="font-size:13px;color:var(--color-text-primary)">${v}</div></div>`).join('')}
+</div>
+<div class="sec">Four task areas and exam weight distribution</div>
+<div class="flow">
+  <div class="fb" style="background:#EEEDFE;color:#3C3489">Task 3.1<br><span style="font-size:11px;font-weight:400">Provisioning &amp; IaC</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:#E1F5EE;color:#085041">Task 3.2<br><span style="font-size:11px;font-weight:400">Automation (SSM)</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:#E6F1FB;color:#0C447C">Task 3.3<br><span style="font-size:11px;font-weight:400">Container workloads</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:#FAEEDA;color:#633806">Task 3.4<br><span style="font-size:11px;font-weight:400">Deployment strategies</span></div>
+</div>
+<div class="sec">Complete service map</div>
+<table class="tbl">
+  <tr><th>Service</th><th>Purpose in Domain 3</th><th>Exam weight</th></tr>
+  <tr><td>CloudFormation</td><td>IaC stack lifecycle, change sets, drift, StackSets, DeletionPolicy, UpdateReplacePolicy</td><td>★★★★★</td></tr>
+  <tr><td>SSM Run Command</td><td>Ad-hoc script execution on fleets, no SSH, rate control, output to S3/CW</td><td>★★★★★</td></tr>
+  <tr><td>SSM Patch Manager</td><td>OS patching with baselines, patch groups, maintenance windows, compliance reports</td><td>★★★★☆</td></tr>
+  <tr><td>SSM Automation</td><td>Multi-step runbooks interacting with AWS APIs, triggered by Config/EventBridge</td><td>★★★★☆</td></tr>
+  <tr><td>SSM State Manager</td><td>Continuous configuration enforcement via associations on a schedule</td><td>★★★★☆</td></tr>
+  <tr><td>SSM Parameter Store</td><td>Config values, AMI IDs, SecureString — no auto-rotation</td><td>★★★★☆</td></tr>
+  <tr><td>Secrets Manager</td><td>Auto-rotating credentials for RDS, Redshift, custom Lambda rotation</td><td>★★★★☆</td></tr>
+  <tr><td>EC2 Image Builder</td><td>AMI creation pipelines, scheduled builds, SSM Parameter Store integration</td><td>★★★★☆</td></tr>
+  <tr><td>ECS + Fargate</td><td>Task roles vs execution roles, blue/green with CodeDeploy, Container Insights</td><td>★★★★★</td></tr>
+  <tr><td>ECR</td><td>Image scanning (Inspector), lifecycle policies, cross-account replication</td><td>★★★☆☆</td></tr>
+  <tr><td>EKS</td><td>IRSA for pod permissions, managed node groups, Container Insights DaemonSet</td><td>★★★☆☆</td></tr>
+  <tr><td>CodeDeploy</td><td>EC2/Lambda/ECS deployments, canary configs, rollback on alarms, AppSpec</td><td>★★★★★</td></tr>
+  <tr><td>CodePipeline</td><td>CI/CD orchestration, manual approval actions, cross-account deployment</td><td>★★★☆☆</td></tr>
+  <tr><td>Elastic Beanstalk</td><td>Deployment policies, immutable vs rolling vs traffic splitting</td><td>★★★★☆</td></tr>
+  <tr><td>AWS CDK</td><td>Synthesises to CloudFormation, constructs (L1/L2/L3), cdk synth/deploy lifecycle</td><td>★★★☆☆</td></tr>
+</table>
+`},
+
+{id:'cfn',label:'CloudFormation Deep Dive',c:`
+<div class="sec">Stack lifecycle — every phase</div>
+<div class="anat">
+  <div class="ar"><div class="al">CREATE_IN_PROGRESS</div><div class="av">CloudFormation is creating resources. Any resource failure triggers a rollback to DELETE all created resources. Pre-existing resources with DeletionPolicy: Retain are kept.</div></div>
+  <div class="ar"><div class="al">UPDATE_IN_PROGRESS</div><div class="av">CloudFormation is applying changes. On failure, it rolls back to the previous known good state. UpdateReplacePolicy controls what happens to replaced resources during rollback.</div></div>
+  <div class="ar"><div class="al">ROLLBACK_IN_PROGRESS</div><div class="av">Stack creation failed and CFN is deleting all created resources. Cannot be interrupted.</div></div>
+  <div class="ar"><div class="al">UPDATE_ROLLBACK_FAILED</div><div class="av">Stack update failed AND rollback failed. Stack is stuck. Must use the ContinueUpdateRollback API or manually fix the blocking resource to recover.</div></div>
+  <div class="ar"><div class="al">REVIEW_IN_PROGRESS</div><div class="av">Change set is created and awaiting execution. Stack is not being modified yet.</div></div>
+</div>
+
+<div class="sec">DeletionPolicy vs UpdateReplacePolicy — critical distinction</div>
+<div class="cc">
+  <div class="cc-col">
+    <div class="cc-head">DeletionPolicy</div>
+    <div class="cc-body">Controls what happens to a resource when its <strong>stack is deleted</strong> or when the resource is removed from the template.<br><br><code>Delete</code> (default) — resource is deleted<br><code>Retain</code> — resource is kept, no longer managed by CFN<br><code>Snapshot</code> — final snapshot taken, then resource deleted (RDS, EBS, ElastiCache, Redshift)<br><br><strong>Exam use:</strong> protect RDS/EBS data from accidental stack deletion.</div>
+  </div>
+  <div class="cc-col">
+    <div class="cc-head">UpdateReplacePolicy</div>
+    <div class="cc-body">Controls what happens to the <strong>old resource</strong> when CloudFormation <strong>replaces</strong> it during a stack update (some property changes require replacement).<br><br><code>Delete</code> (default) — old resource deleted after replacement<br><code>Retain</code> — old resource kept (but no longer managed by CFN)<br><code>Snapshot</code> — snapshot of old resource before it's deleted<br><br><strong>Exam use:</strong> protect production data when a property change requires resource replacement.</div>
+  </div>
+</div>
+<div class="trap"><strong>Both are needed for full protection:</strong> DeletionPolicy protects when the stack is deleted. UpdateReplacePolicy protects when a resource property change forces replacement. For a production RDS instance, you need BOTH set to Snapshot. A common exam scenario presents a stack update error due to missing UpdateReplacePolicy.</div>
+
+<div class="sec">Change sets — deep knowledge</div>
+<div class="anat">
+  <div class="ar"><div class="al">What it shows</div><div class="av">The diff between the current stack state and what would result from applying the template change. Shows: which resources are Added, Modified, Removed. For Modified: whether the change is a No interruption update, Some interruption, or Replacement.</div></div>
+  <div class="ar"><div class="al">Replacement types</div><div class="av"><code>Never</code> — property can be updated in-place (no downtime)<br><code>Conditional</code> — replacement depends on whether the old value is deleted (e.g. some EC2 network changes)<br><code>Always</code> — changing this property always requires creating a new resource and deleting the old one (e.g. RDS engine version, EC2 InstanceType on some types)</div></div>
+  <div class="ar"><div class="al">Execution</div><div class="av">Change sets are a preview ONLY. Creating a change set does NOT modify any resources. You must explicitly execute it. If you create a second change set while one exists, the first is NOT executed — they coexist until one is executed or deleted.</div></div>
+  <div class="ar"><div class="al">Nested stacks</div><div class="av">Change sets on parent stacks show changes in nested stacks. Best practice for modular architectures: separate stacks for network, compute, database, with cross-stack references via Export/ImportValue.</div></div>
+</div>
+
+<div class="sec">StackSets — permission models and deployment options</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Service-managed vs self-managed</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>Self-managed:</strong><br>• You manually create two IAM roles in every target account: AWSCloudFormationStackSetAdministrationRole (in admin account) and AWSCloudFormationStackSetExecutionRole (in each target account)<br>• Works for accounts not in AWS Organizations<br>• Manual process for adding new accounts<br><br><strong>Service-managed:</strong><br>• Requires AWS Organizations<br>• No manual IAM role creation<br>• Automatic deployment to new accounts option<br>• Delegated admin account can manage StackSets without using the management account<br>• Exam default answer for org-wide deployments</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Deployment options and failure tolerance</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>MaxConcurrentCount / MaxConcurrentPercentage:</strong> how many accounts deploy simultaneously. Higher = faster. Lower = safer (blast radius control).<br><br><strong>FailureToleranceCount / FailureTolerancePercentage:</strong> how many account failures are allowed before the entire StackSet operation fails. 0 = any single failure stops the operation.<br><br><strong>Region order:</strong> specify the order in which regions are deployed. Deploy to a canary region first to catch problems before global rollout.<br><br><strong>Retain stacks on account removal:</strong> by default, removing an account from the target OU deletes the stack. Enable "retain stacks" to keep them.</div>
+  </div>
+</div>
+
+<div class="sec">Drift detection — in depth</div>
+<div class="anat">
+  <div class="ar"><div class="al">What it detects</div><div class="av">Compares actual resource configuration against the expected configuration from the stack template. Identifies resources that have been modified outside of CloudFormation (manual console edits, direct API calls, other tools).</div></div>
+  <div class="ar"><div class="al">Drift statuses</div><div class="av"><code>DRIFTED</code> — at least one resource has drifted<br><code>IN_SYNC</code> — all resources match the template<br><code>NOT_CHECKED</code> — drift detection not yet run<br><code>DELETED</code> — a resource in the template no longer exists</div></div>
+  <div class="ar"><div class="al">What it does NOT do</div><div class="av">Drift detection is READ-ONLY. It does not fix drift. To resolve drift: either import the actual resource state into the template (cfn-import) OR run a stack update that re-applies the template definition to the resource.</div></div>
+  <div class="ar"><div class="al">Resource coverage</div><div class="av">Not all resource types support drift detection. Check the CloudFormation documentation for the list. EC2, RDS, S3, SG, Lambda, IAM roles are supported. Some newer or complex resource types may not be.</div></div>
+</div>
+
+<div class="sec">cfn-init, cfn-signal, cfn-hup — EC2 helper scripts</div>
+<table class="tbl">
+  <tr><th>Helper</th><th>What it does</th><th>Exam use case</th></tr>
+  <tr><td>cfn-init</td><td>Reads CloudFormation::Init metadata from the template and executes it on the EC2 instance (install packages, write files, run commands, configure services)</td><td>Bootstrap an EC2 instance with software defined in the template. Runs once on launch.</td></tr>
+  <tr><td>cfn-signal</td><td>Sends a SUCCESS or FAILURE signal back to CloudFormation. Used with CreationPolicy or WaitCondition to pause the stack until the instance is ready.</td><td>"Stack should wait until EC2 is fully configured before marking CREATE_COMPLETE" → cfn-signal with CreationPolicy:ResourceSignal.</td></tr>
+  <tr><td>cfn-hup</td><td>Daemon that monitors for CloudFormation metadata changes and re-runs cfn-init when they occur</td><td>"Update EC2 configuration without replacing the instance when template metadata changes" → cfn-hup detects the change and applies the new config in-place.</td></tr>
+</table>
+`},
+
+{id:'ssm',label:'SSM Deep Dive',c:`
+<div class="sec">SSM capability selector — complete decision table</div>
+<table class="tbl">
+  <tr><th>Requirement</th><th>SSM capability</th><th>Key config detail</th></tr>
+  <tr><td>Run script on 200 instances NOW, no SSH</td><td>Run Command</td><td>Target by tag, AWS-RunShellScript, MaxConcurrency, MaxErrors, output to S3/CloudWatch</td></tr>
+  <tr><td>Patch all instances every Sunday 02:00-04:00 UTC</td><td>Patch Manager + Maintenance Window</td><td>Patch baseline (rules) + Patch Group tag + Maintenance Window schedule. Compliance reports built in.</td></tr>
+  <tr><td>Ensure Datadog agent is always running on all instances</td><td>State Manager</td><td>Association = document + schedule (e.g. every 30 min) + target instances. Re-runs on schedule, drift-corrects automatically.</td></tr>
+  <tr><td>Multi-step runbook: stop instance, snapshot, resize, start</td><td>SSM Automation</td><td>AWS-StopEC2Instance → AWS-CreateImage → custom resize step → AWS-StartEC2Instance. Can include human approval steps.</td></tr>
+  <tr><td>Store the latest AMI ID for ASG reference</td><td>Parameter Store (String)</td><td>Free. Publish from Image Builder. Launch template uses resolve:ssm:/path to dynamic reference.</td></tr>
+  <tr><td>Store DB password, no rotation needed</td><td>Parameter Store (SecureString)</td><td>Encrypted by KMS. Free tier. Lambda uses ssm:GetParameter with decryption.</td></tr>
+  <tr><td>Rotate DB password every 30 days automatically</td><td>Secrets Manager</td><td>Built-in rotation for RDS/Redshift/DocumentDB. Lambda integration for custom rotation. Versioning with AWSCURRENT/AWSPREVIOUS/AWSPENDING staging labels.</td></tr>
+</table>
+
+<div class="sec">SSM Run Command — rate control and output</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Rate control parameters</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>MaxConcurrency:</strong> maximum number of instances running the command simultaneously. Can be a count (e.g. 50) or percentage (e.g. 25%). Prevents overloading your monitoring and rollout blast radius.<br><br><strong>MaxErrors:</strong> number (or percentage) of execution failures allowed before the command is stopped across remaining instances. Setting to 0 means any single failure halts the command on remaining instances.<br><br><strong>Exam tip:</strong> "Run a script on 500 instances but stop if more than 5% fail" → MaxErrors=5%.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Output destinations and audit</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>SSM console:</strong> results visible per instance but truncated to 2500 characters.<br><br><strong>S3 bucket:</strong> full output stored as text files per instance/command. Used for compliance audit and post-execution review.<br><br><strong>CloudWatch Logs:</strong> output streamed to a log group. Can set up metric filters and alarms on command output patterns.<br><br><strong>Exam tip:</strong> "Provide a compliance report of which instances succeeded in the Java upgrade" → output to S3 and CloudWatch Logs, then query with Logs Insights or Athena.</div>
+  </div>
+</div>
+
+<div class="sec">Patch Manager — full architecture</div>
+<div class="anat">
+  <div class="ar"><div class="al">Patch baseline</div><div class="av">Defines which patches are approved, rejected, or auto-approved. AWS provides default baselines per OS (AmazonLinux2, RHEL, Windows, Ubuntu, etc.). Custom baselines let you: auto-approve patches after N days, require specific CVE severity levels, reject specific patches.<br><br>Default baselines auto-approve Critical and Important patches 7 days after release.</div></div>
+  <div class="ar"><div class="al">Patch Group</div><div class="av">Tag key <code>Patch Group</code> on EC2 instances associates them with a specific baseline. An instance can belong to only ONE patch group. Used to apply different baselines to different environments (dev vs prod, linux vs windows).<br><br>If no Patch Group tag, the instance uses the default baseline for its OS.</div></div>
+  <div class="ar"><div class="al">Maintenance Window</div><div class="av">Defines the WHEN: schedule (cron), duration, allowed downtime. Tasks registered to the window run when it opens. Multiple tasks can share one window (patching + custom scripts).<br><br>Rate control: MaxConcurrency and MaxErrors also apply to Maintenance Window tasks.</div></div>
+  <div class="ar"><div class="al">Compliance reporting</div><div class="av">After patching, SSM publishes compliance data: which instances are CompliantPatches vs MissingPatches. Viewable in SSM Compliance dashboard. Can be exported to S3 for audit. Query with Athena for cross-account compliance reporting.</div></div>
+  <div class="ar"><div class="al">Scan vs install</div><div class="av"><code>Scan</code> — checks which patches are missing but does NOT install. Use to assess compliance without change risk.<br><code>Install</code> — scans and installs missing patches. May reboot instances (configurable reboot option).</div></div>
+</div>
+
+<div class="sec">Secrets Manager — rotation internals</div>
+<div class="anat">
+  <div class="ar"><div class="al">Rotation flow</div><div class="av">1. Secrets Manager calls the rotation Lambda with the <code>createSecret</code> step → Lambda generates new credentials, stores as AWSPENDING version<br>2. Lambda called with <code>setSecret</code> → Lambda updates the actual database password to the new value<br>3. Lambda called with <code>testSecret</code> → Lambda tests the new credentials can authenticate<br>4. Lambda called with <code>finishSecret</code> → Secrets Manager promotes AWSPENDING to AWSCURRENT, AWSCURRENT to AWSPREVIOUS</div></div>
+  <div class="ar"><div class="al">Version staging</div><div class="av"><code>AWSCURRENT</code> — the current active credentials<br><code>AWSPREVIOUS</code> — the previous credentials (retained for in-flight connections during rotation)<br><code>AWSPENDING</code> — new credentials being set up during rotation<br><br>Applications that cache credentials can still use AWSPREVIOUS during the brief rotation window. This prevents connection errors during rotation.</div></div>
+  <div class="ar"><div class="al">Built-in vs custom</div><div class="av"><strong>Built-in rotation:</strong> RDS (all engines), Amazon Redshift, Amazon DocumentDB. AWS provides and manages the rotation Lambda.<br><br><strong>Custom rotation:</strong> any other secret type. You write the 4-step Lambda function. Templates are provided by AWS as a starting point.</div></div>
+  <div class="ar"><div class="al">Cross-account access</div><div class="av">Resource-based policy on the secret grants access to principals in other accounts. Used when a central secrets account manages secrets consumed by workload accounts.</div></div>
+</div>
+`},
+
+{id:'containers',label:'Containers Deep Dive',c:`
+<div class="sec">ECS task definition — every field that matters</div>
+<div class="anat">
+  <div class="ar"><div class="al">Task role</div><div class="av"><strong>The IAM role assumed by your application code</strong> running inside the container to call AWS services (S3, DynamoDB, SQS, etc.). The container process receives temporary credentials via the ECS credential endpoint (169.254.170.2). This is what your code uses when it calls boto3, AWS SDK, etc.</div></div>
+  <div class="ar"><div class="al">Execution role</div><div class="av"><strong>The IAM role used by ECS/Fargate infrastructure</strong> to: pull the container image from ECR (<code>ecr:GetAuthorizationToken</code>, <code>ecr:BatchGetImage</code>), write container logs to CloudWatch Logs (<code>logs:CreateLogGroup</code>, <code>logs:PutLogEvents</code>), retrieve secrets from Secrets Manager or SSM for environment injection. Nothing your application code does requires the execution role.</div></div>
+  <div class="ar"><div class="al">CPU / memory</div><div class="av">For Fargate: task-level CPU and memory define the VM size. Container-level CPU is a share. Hard limit = container is killed if it exceeds this. Soft limit (reservation) = hint for scheduling. <br><br>Common exam trap: "OutOfMemory" error on Fargate → increase the task-level memory in the task definition, not just the container memory limit.</div></div>
+  <div class="ar"><div class="al">Environment variables</div><div class="av">Set statically in task definition or dynamically injected from: SSM Parameter Store (valueFrom: ssm:///path) or Secrets Manager (valueFrom: arn:aws:secretsmanager:...) at task launch time. The execution role needs the SSM/Secrets Manager read permissions for dynamic injection.</div></div>
+  <div class="ar"><div class="al">Log configuration</div><div class="av">awslogs driver: sends stdout/stderr to CloudWatch Logs. Required configuration: awslogs-group (log group name), awslogs-region, awslogs-stream-prefix. Container Insights additionally collects CPU, memory, network, disk metrics at the container level.</div></div>
+</div>
+<div class="trap"><strong>The most tested ECS concept:</strong> Container gets AccessDenied on AWS API call → fix the TASK ROLE. ECS can't pull image from ECR → fix the EXECUTION ROLE. These two are completely separate IAM roles with completely separate purposes. Never confuse them.</div>
+
+<div class="sec">ECS launch types — comparison</div>
+<div class="cc">
+  <div class="cc-col">
+    <div class="cc-head">EC2 launch type</div>
+    <div class="cc-body">You manage the underlying EC2 instances (the ECS cluster). You must provision, patch, scale, and monitor the instances.<br><br>Benefits: more control, can use GPU instances, can use specific instance types, can use instance store volumes.<br><br>Cost: pay for instances regardless of task utilisation.<br><br>Use when: you need specific hardware, GPU workloads, or want fine-grained placement control.</div>
+  </div>
+  <div class="cc-col">
+    <div class="cc-head">Fargate launch type</div>
+    <div class="cc-body">AWS manages all underlying infrastructure. You define only CPU and memory in the task definition.<br><br>Benefits: no cluster management, pay per task CPU/memory-second, scales to zero.<br><br>No access to underlying host, no instance store, no GPU (except Inferentia).<br><br>Use when: you want to eliminate ops overhead. Exam default answer for "simplest container deployment".</div>
+  </div>
+</div>
+
+<div class="sec">ECS service deployments — rolling vs blue/green</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Rolling update (default)</span><span class="badge bc">Core</span></div>
+    <div class="cb">ECS replaces tasks gradually. Controlled by:<br><br><strong>minimumHealthyPercent:</strong> minimum % of desired tasks that must be running during deployment. E.g. 50% of 10 tasks = 5 tasks always running.<br><br><strong>maximumPercent:</strong> maximum % of desired tasks that can run during deployment (includes old + new). E.g. 200% = can run up to 20 tasks (10 old + 10 new) simultaneously.<br><br><strong>Rollback:</strong> manual — you must re-deploy the previous task definition. No automatic rollback on health check failure (unlike CodeDeploy blue/green).</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Blue/green with CodeDeploy</span><span class="badge bc">Core</span></div>
+    <div class="cb">CodeDeploy creates a new (green) task set alongside the original (blue). The ALB has two target groups: one for blue, one for green.<br><br><strong>Deployment flow:</strong> new task set launches → test listener (optional port 8080) lets you validate → CodeDeploy shifts ALB traffic from blue to green (canary/linear/all-at-once) → on success, original task set is terminated.<br><br><strong>Automatic rollback:</strong> if a CloudWatch alarm fires during deployment, CodeDeploy shifts traffic back to blue immediately. Original tasks were never modified.<br><br><strong>AppSpec.yml for ECS:</strong> specifies TaskDefinition ARN, LoadBalancerInfo (target group ARNs), and optional hooks (BeforeAllowTraffic, AfterAllowTraffic Lambda functions).</div>
+  </div>
+</div>
+
+<div class="sec">ECR lifecycle policies — rule evaluation logic</div>
+<div class="anat">
+  <div class="ar"><div class="al">Rule priority</div><div class="av">Lower number = evaluated first. An image is expired by the FIRST matching rule. Once an image matches a rule, no other rules are evaluated for that image. Design: most specific rules first (lower priority number), fallback rules last.</div></div>
+  <div class="ar"><div class="al">countType options</div><div class="av"><code>imageCountMoreThan</code> — expire images when count exceeds N (keep only the N most recent)<br><code>sinceImagePushed</code> — expire images older than N days/weeks/months</div></div>
+  <div class="ar"><div class="al">tagStatus options</div><div class="av"><code>untagged</code> — matches images with no tags<br><code>tagged</code> — matches images with specific tag prefixes<br><code>any</code> — matches all images</div></div>
+  <div class="ar"><div class="al">Image scanning</div><div class="av"><strong>Basic scanning:</strong> scans on push (or manually). Checks against CVE database. Results in ECR console.<br><strong>Enhanced scanning:</strong> continuous scanning via Amazon Inspector. Also scans OS packages and programming language packages. Findings sent to Inspector and Security Hub.</div></div>
+</div>
+
+<div class="sec">EKS operational knowledge</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">IRSA — IAM roles for service accounts</span><span class="badge bd">Core</span></div>
+    <div class="cb">Maps a Kubernetes service account to an AWS IAM role. Pods that use the service account receive temporary AWS credentials via an OIDC-compatible token.<br><br><strong>Why it matters:</strong> without IRSA, pods would inherit the IAM role of the node they run on (too broad). IRSA provides pod-level, least-privilege AWS access.<br><br><strong>Setup:</strong> create IAM OIDC provider for the EKS cluster → create IAM role with trust policy referencing the cluster OIDC issuer and the Kubernetes service account → annotate the Kubernetes service account with the IAM role ARN.<br><br><strong>Exam tip:</strong> "Pod gets AccessDenied on S3" in EKS → check IRSA configuration (role trust policy, service account annotation).</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Node group types</span><span class="badge bd">Know it</span></div>
+    <div class="cb"><strong>Managed node groups:</strong> AWS manages the lifecycle (launch, update, drain, terminate). Uses EKS-optimised AMIs. Rolling updates on AMI changes. Recommended for most workloads.<br><br><strong>Self-managed nodes:</strong> you manage the EC2 instances, ASG, and AMI updates. More flexibility but more ops burden.<br><br><strong>Fargate profiles:</strong> serverless pods. AWS manages all infrastructure. Define selectors (namespace + labels) to route pods to Fargate. No privileged containers, no DaemonSets (important limitation).<br><br><strong>Container Insights for EKS:</strong> deploy CloudWatch agent as DaemonSet → collects cluster, node, pod, container metrics → viewable in CloudWatch Container Insights.</div>
+  </div>
+</div>
+`},
+
+{id:'deploy',label:'Deployment Strategies',c:`
+<div class="sec">Deployment strategy comparison — every option</div>
+<div class="deploy-grid">
+  <div class="dc" style="border-top:2px solid #A32D2D"><span class="dc-risk" style="background:#FCEBEB;color:#791F1F">highest risk</span><div class="dc-name">All-at-once</div><div class="dc-desc">All instances simultaneously. Brief downtime. No extra cost. Dev/test only.</div></div>
+  <div class="dc" style="border-top:2px solid #854F0B"><span class="dc-risk" style="background:#FAEEDA;color:#633806">moderate risk</span><div class="dc-name">Rolling</div><div class="dc-desc">Batch by batch. Reduced capacity during deploy. Already-updated instances need re-deploy to rollback.</div></div>
+  <div class="dc" style="border-top:2px solid #185FA5"><span class="dc-risk" style="background:#E6F1FB;color:#0C447C">low risk</span><div class="dc-name">Rolling + extra batch</div><div class="dc-desc">Full capacity maintained. Slightly more cost. Beanstalk-specific.</div></div>
+  <div class="dc" style="border-top:2px solid #0F6E56"><span class="dc-risk" style="background:#E1F5EE;color:#085041">very low risk</span><div class="dc-name">Immutable</div><div class="dc-desc">New ASG for new instances. Easy rollback (terminate new ASG). Higher cost during deploy.</div></div>
+  <div class="dc" style="border-top:2px solid #534AB7"><span class="dc-risk" style="background:#EEEDFE;color:#3C3489">lowest risk</span><div class="dc-name">Blue / green</div><div class="dc-desc">Parallel environments. Instant rollback. Double capacity temporarily.</div></div>
+  <div class="dc" style="border-top:2px solid #534AB7"><span class="dc-risk" style="background:#EEEDFE;color:#3C3489">controlled</span><div class="dc-name">Canary</div><div class="dc-desc">Small % to new version, monitor, then shift. Auto-rollback on alarms. Used with Lambda and ECS.</div></div>
+</div>
+
+<div class="sec">CodeDeploy — service-specific deep knowledge</div>
+<div class="g2">
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">CodeDeploy for EC2 — AppSpec and hooks</span><span class="badge bc">Core</span></div>
+    <div class="cb">AppSpec.yml defines where to copy application files and which scripts to run at each lifecycle event:<br><br><code>ApplicationStop</code> → stop the old application<br><code>DownloadBundle</code> → CodeDeploy downloads revision<br><code>BeforeInstall</code> → pre-install tasks (backup configs)<br><code>Install</code> → copy files to destination<br><code>AfterInstall</code> → post-install tasks (set permissions)<br><code>ApplicationStart</code> → start the new application<br><code>ValidateService</code> → verify the new version is working<br><br><strong>Deployment configurations:</strong> CodeDeployDefault.AllAtOnce, HalfAtATime, OneAtATime (safest). Custom: define MinimumHealthyHosts as count or percentage.<br><br><strong>Rollback:</strong> triggered by deployment failure or by CloudWatch alarm. CodeDeploy re-deploys the last successful revision.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">CodeDeploy for Lambda — traffic shifting</span><span class="badge bc">Core</span></div>
+    <div class="cb">Shifts traffic between Lambda function versions using a Lambda alias weighted routing.<br><br><strong>Built-in configurations:</strong><br><code>Canary10Percent5Minutes</code> — 10% for 5 min, then 100%<br><code>Canary10Percent15Minutes</code> — 10% for 15 min, then 100%<br><code>Canary10Percent30Minutes</code> — 10% for 30 min, then 100%<br><code>Linear10PercentEvery1Minute</code> — shift 10% per minute linearly<br><code>Linear10PercentEvery2Minutes</code><br><code>AllAtOnce</code> — instant full shift<br><br><strong>Hooks:</strong> BeforeAllowTraffic and AfterAllowTraffic — Lambda functions for pre/post validation<br><br><strong>Rollback trigger:</strong> configure a CloudWatch alarm on Lambda errors. If alarm enters ALARM during deployment, CodeDeploy automatically shifts 100% back to the previous version.</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">CodeDeploy for ECS — blue/green deep</span><span class="badge bc">Core</span></div>
+    <div class="cb">Creates a new (green) task set while the original (blue) task set continues serving traffic.<br><br><strong>Deployment sequence:</strong><br>1. CodeDeploy creates replacement task set (green)<br>2. Green tasks register in the replacement target group<br>3. Optional: test listener (separate port) routes to green for validation<br>4. Traffic shifts from blue to green (AllAtOnce / Canary / Linear)<br>5. After success, original task set is terminated (configurable delay)<br><br><strong>AppSpec for ECS contains:</strong><br>• <code>TaskDefinition</code> ARN (new task def revision)<br>• <code>LoadBalancerInfo</code> (production and test listener + target group ARNs)<br>• <code>Hooks</code> (optional BeforeAllowTraffic, AfterAllowTraffic Lambda functions)</div>
+  </div>
+  <div class="card">
+    <div class="ch" onclick="tog(this)"><span class="ct">Elastic Beanstalk deployment policies</span><span class="badge bc">Core</span></div>
+    <div class="cb"><strong>All at once:</strong> Fastest, causes brief downtime. Never for production.<br><br><strong>Rolling:</strong> no extra cost, capacity reduction during deploy. Rollback = re-deploy old version.<br><br><strong>Rolling with additional batch:</strong> full capacity maintained throughout. Small extra cost for the additional instances. Rollback = re-deploy.<br><br><strong>Immutable:</strong> new instances in a separate ASG. Safest. Rollback = terminate new ASG instantly. Higher cost.<br><br><strong>Traffic splitting:</strong> Beanstalk's canary equivalent. Send X% to new instances, monitor, shift rest. Rollback = set split to 0%.<br><br><strong>Blue/green in Beanstalk:</strong> clone the environment → deploy to clone → swap environment URLs (DNS swap via Route 53). This is distinct from Traffic splitting — swap is a full environment clone, not a deployment policy.</div>
+  </div>
+</div>
+
+<div class="sec">CI/CD pipeline with CodePipeline — complete</div>
+<div class="flow">
+  <div class="fb" style="background:var(--color-background-secondary);color:var(--color-text-primary)">Source<br><span style="font-size:11px;font-weight:400">CodeCommit, GitHub, S3, ECR image push</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:var(--color-background-secondary);color:var(--color-text-primary)">Build<br><span style="font-size:11px;font-weight:400">CodeBuild: compile, test, create artifact</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:var(--color-background-secondary);color:var(--color-text-primary)">Test<br><span style="font-size:11px;font-weight:400">Integration tests or manual approval</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:var(--color-background-secondary);color:var(--color-text-primary)">Deploy staging<br><span style="font-size:11px;font-weight:400">CodeDeploy / CloudFormation / ECS</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:#EEEDFE;color:#3C3489">Approve<br><span style="font-size:11px;font-weight:400">Manual approval + PutApprovalResult</span></div>
+  <div class="fa">→</div>
+  <div class="fb" style="background:var(--color-background-secondary);color:var(--color-text-primary)">Deploy prod<br><span style="font-size:11px;font-weight:400">Canary or blue/green</span></div>
+</div>
+<div class="tip"><strong>CodePipeline roles:</strong> CodePipeline ORCHESTRATES. CodeBuild BUILDS. CodeDeploy DEPLOYS. CloudFormation can be a deploy action stage. Manual approval action sends SNS notification — the approver must have <code>codepipeline:PutApprovalResult</code> IAM permission to actually approve or reject via console/CLI/API.</div>
+`},
+
+{id:'exam',label:'15 Hard Practice Questions',c:`
+<div class="sec">15 exam-level questions — harder than average, every sub-topic covered</div>
+<div id="score-summary" style="display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+  <div style="font-size:13px;color:var(--color-text-secondary)">Score:</div>
+  <div class="qscore-display" style="margin:0" id="score-display">0 / 0</div>
+  <div style="flex:1"><div class="score-track"><div class="score-fill" id="score-fill" style="width:0%"></div></div></div>
+  <div style="font-size:12px;color:var(--color-text-tertiary)" id="score-pct">0%</div>
+</div>
+${QS.map((q,i)=>`
+<div class="qblock" id="q${i}">
+  <div class="qhead"><span class="qdomain">${q.sub}</span><br>Q${i+1}. ${q.q}</div>
+  <div class="qopts">${q.o.map((o,j)=>`<button class="qopt" id="qo${i}_${j}" onclick="doA(${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}</div>
+  <div class="qex" id="qe${i}"></div>
+</div>`).join('')}
+`},
+
+{id:'cheat',label:'Cheat Sheet',c:`
+<div class="sec">Master quick-reference — Domain 3</div>
+<table class="tbl">
+  <tr><th>Trigger phrase</th><th>Answer</th><th>Key caveat</th></tr>
+  <tr><td>Run script on fleet without SSH</td><td>SSM Run Command</td><td>Set MaxConcurrency + MaxErrors for rate control. Output to S3/CloudWatch for audit.</td></tr>
+  <tr><td>Patch instances on schedule + compliance report</td><td>Patch Manager + Maintenance Window</td><td>Patch baseline (what) + Patch Group tag (which) + Maintenance Window (when).</td></tr>
+  <tr><td>Ensure agent/config always running on all instances</td><td>SSM State Manager association</td><td>Runs on schedule, drift-corrects. Not Run Command (one-time).</td></tr>
+  <tr><td>Multi-step runbook interacting with AWS APIs</td><td>SSM Automation document</td><td>Can include human approval step. Triggered by Config/EventBridge.</td></tr>
+  <tr><td>Deploy CloudFormation to all org accounts</td><td>StackSets, service-managed permissions</td><td>Enable Automatic Deployment for new accounts. Failure tolerance controls blast radius.</td></tr>
+  <tr><td>Preview CFN changes safely before applying</td><td>CloudFormation change set</td><td>Change set only previews — must execute separately. Shows replacement type per resource.</td></tr>
+  <tr><td>Protect production RDS from stack update replacement</td><td>DeletionPolicy: Snapshot AND UpdateReplacePolicy: Snapshot</td><td>Need BOTH. DeletionPolicy = stack deleted. UpdateReplacePolicy = resource replaced during update.</td></tr>
+  <tr><td>Detect manual changes to CFN-managed resources</td><td>CloudFormation drift detection</td><td>Read-only — does not fix drift. Run proactively or after incidents.</td></tr>
+  <tr><td>Create hardened AMIs on a schedule</td><td>EC2 Image Builder pipeline</td><td>Publish AMI ID to SSM Parameter Store. Launch template uses resolve:ssm for auto-reference.</td></tr>
+  <tr><td>Auto-rotate database credentials</td><td>AWS Secrets Manager</td><td>Built-in rotation for RDS/Redshift/DocumentDB. Custom Lambda for other secret types.</td></tr>
+  <tr><td>Store config value cheaply, no rotation</td><td>SSM Parameter Store</td><td>SecureString for encrypted values (uses KMS). Free tier. No auto-rotation ever.</td></tr>
+  <tr><td>Container AccessDenied calling S3/DynamoDB</td><td>Add permission to ECS task role</td><td>NOT the execution role. Task role = app code. Execution role = ECS infrastructure.</td></tr>
+  <tr><td>Scan container images for CVEs continuously</td><td>ECR enhanced scanning via Inspector</td><td>Basic scanning = on push only. Enhanced = continuous, programming language packages too.</td></tr>
+  <tr><td>Zero-downtime Lambda deploy + auto-rollback</td><td>Lambda alias + CodeDeploy canary config + CloudWatch alarm rollback trigger</td><td>Alarm must be in ALARM state during deployment. Configure datapoints-to-alarm=1 for fast detection.</td></tr>
+  <tr><td>Safest Beanstalk deployment, easy rollback</td><td>Immutable deployment policy</td><td>New ASG for new instances. Rollback = terminate new ASG. Original instances untouched.</td></tr>
+  <tr><td>EC2 instances must use latest AMI automatically</td><td>Image Builder → SSM Parameter Store → launch template resolve:ssm</td><td>ASG resolves SSM parameter at launch time — always gets latest AMI without manual updates.</td></tr>
+  <tr><td>Approve CodePipeline deployment</td><td>codepipeline:PutApprovalResult IAM permission + console/CLI/API</td><td>SNS email is notification only. Clicking the link does not approve. Must use console or API.</td></tr>
+</table>
+<div class="sec">Top 8 Domain 3 exam traps</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+  <div class="trap"><strong>Trap 1:</strong> ECS task role vs execution role. Task role = your app code's AWS permissions. Execution role = ECS pulls image from ECR + writes logs to CloudWatch. Container AccessDenied → fix task role. Cannot pull image → fix execution role.</div>
+  <div class="trap"><strong>Trap 2:</strong> DeletionPolicy vs UpdateReplacePolicy. DeletionPolicy triggers when the stack is deleted. UpdateReplacePolicy triggers when a resource is REPLACED during a stack update. Production RDS needs BOTH set to Snapshot for full protection.</div>
+  <div class="trap"><strong>Trap 3:</strong> SSM Run Command (one-time execution) vs State Manager (continuous enforcement). "Ensure X is always configured" → State Manager. "Run this script now" → Run Command.</div>
+  <div class="trap"><strong>Trap 4:</strong> SSM Parameter Store does NOT support auto-rotation. SecureString is encrypted but there is no rotation mechanism. "Auto-rotate credentials" always means Secrets Manager.</div>
+  <div class="trap"><strong>Trap 5:</strong> CloudFormation change sets only PREVIEW — they do not apply changes. Must explicitly execute. Creating a second change set doesn't execute the first.</div>
+  <div class="trap"><strong>Trap 6:</strong> StackSets Automatic Deployment for new accounts only works with service-managed permissions + Organizations. Self-managed StackSets require manual targeting of new accounts.</div>
+  <div class="trap"><strong>Trap 7:</strong> CodeDeploy Lambda rollback alarm must enter ALARM state DURING the deployment window. If alarm evaluation period is too long or datapoints-to-alarm > 1, it may not fire during the canary window. Set datapoints-to-alarm=1 for fastest detection.</div>
+  <div class="trap"><strong>Trap 8:</strong> Beanstalk Immutable vs Blue/Green. Immutable = new ASG in same environment, new instances. Blue/green = clone entire environment, swap URL via Route 53. These are different operations. "Zero-downtime rollback in Beanstalk" can mean either — context matters.</div>
+</div>
+<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+  <button onclick="sendPrompt('Give me 10 more hard practice questions for Domain 3 of SOA-C03 covering SSM edge cases, CloudFormation internals, and ECS deployment scenarios')" style="font-size:13px;padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-info);font-family:var(--font-sans)">10 more hard questions ↗</button>
+  <button onclick="sendPrompt('Teach me Domain 4 of SOA-C03 every nook and corner in depth with 15 hard questions')" style="font-size:13px;padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)">Next: Domain 4 deep dive ↗</button>
+</div>
+`}
+];
+
+let answered={}, correct=0, total=0;
+
+function tog(h){h.nextElementSibling.classList.toggle('on')}
+
+function doA(qi,oi){
+  if(answered[qi]!==undefined)return;
+  const q=QS[qi];
+  answered[qi]=oi;
+  document.querySelectorAll(`#q${qi} .qopt`).forEach((o,j)=>{
+    o.disabled=true;
+    if(j===q.c)o.classList.add('ok2');
+    else if(j===oi&&j!==q.c)o.classList.add('bad');
+  });
+  const ex=document.getElementById('qe'+qi);
+  ex.innerHTML='<strong>'+(oi===q.c?'✓ Correct!':'✗ Incorrect.')+'</strong> '+q.e;
+  ex.classList.add('on');
+  if(oi===q.c)correct++;
+  total++;
+  const pct=Math.round((correct/total)*100);
+  document.getElementById('score-display').textContent=correct+' / '+total;
+  document.getElementById('score-fill').style.width=pct+'%';
+  document.getElementById('score-pct').textContent=pct+'%';
+}
+
+window.tog=tog;window.doA=doA;
+
+let cur=Number(localStorage.getItem('soaDeepDomain3Page') || 0);
+if(!Number.isInteger(cur) || cur < 0 || cur >= PAGES.length) cur = 0;
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  cur=i;
+  localStorage.setItem('soaDeepDomain3Page', String(cur));
+  document.querySelectorAll('.ttab').forEach((t,j)=>t.classList.toggle('on',j===i));
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('on',j===i));
+}
+window.go=go;
+
+const tabsEl=document.getElementById('tabs');
+const pagesEl=document.getElementById('pages');
+PAGES.forEach((p,i)=>{
+  const btn=document.createElement('button');
+  btn.className='ttab'+(i===0?' on':'');
+  btn.textContent=p.label;
+  btn.onclick=()=>go(i);
+  tabsEl.appendChild(btn);
+  const pg=document.createElement('div');
+  pg.className='pg'+(i===0?' on':'');
+  pg.innerHTML=p.c+`
+    <div class="nr">
+      <button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>← Previous</button>
+      <div class="dots">${PAGES.map((_,j)=>`<div class="dot${j===i?' on':''}" onclick="go(${j})"></div>`).join('')}</div>
+      <button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next →</button>
+    </div>`;
+  pagesEl.appendChild(pg);
+});
+go(cur);
+</script>
+

@@ -13,10 +13,22 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://aws-soa-c03.netlify.app/domain1_deep_dive.html</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://aws-soa-c03.netlify.app/domain2_reliability_lesson.html</loc>
     <lastmod>2026-05-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aws-soa-c03.netlify.app/domain2_deep_dive.html</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aws-soa-c03.netlify.app/domain3_deployment_provisioning_lesson.html</loc>
@@ -25,15 +37,33 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://aws-soa-c03.netlify.app/domain3_deep_dive.html</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://aws-soa-c03.netlify.app/domain4_security_compliance_lesson.html</loc>
     <lastmod>2026-05-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://aws-soa-c03.netlify.app/domain4_deep_dive.html</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://aws-soa-c03.netlify.app/domain5_networking_lesson.html</loc>
     <lastmod>2026-05-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aws-soa-c03.netlify.app/domain5_deep_dive.html</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
