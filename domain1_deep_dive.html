@@ -110,12 +110,31 @@ body{font-family:var(--font-sans);color:var(--color-text-primary);font-size:14px
 .compare-body{padding:10px 12px;font-size:13px;color:var(--color-text-secondary);line-height:1.6}
 a.nb{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 .deep-page-polish{display:none} body{max-width:1120px;margin:0 auto;padding:5.25rem clamp(14px,3vw,28px) 1.25rem!important;font-size:17px!important;line-height:1.65!important} h1,h2,h3{line-height:1.15;letter-spacing:0}.top-tabs{position:sticky;top:66px;z-index:20;background:color-mix(in srgb,var(--color-background-primary) 92%,transparent);backdrop-filter:blur(14px);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:8px;margin-bottom:18px}.ttab{min-height:42px}.pg.on{width:100%;max-width:100%}.card,.qblock,.kv,.anatomy,.compare-col{border-radius:14px}.nb{min-height:42px;border-radius:10px}.tbl,table{max-width:100%}img,svg,canvas{max-width:100%;height:auto}.home-link,.share-link,.lesson-link,.theme-toggle{backdrop-filter:blur(14px)} @media (max-width:700px){body{padding:4.85rem 12px 1rem!important}.home-link{left:10px;min-width:auto}.share-link{right:94px}.theme-toggle{right:10px;min-width:74px}.top-tabs{position:static;display:grid;grid-template-columns:1fr}.card,.qblock,.kv{padding-left:12px!important;padding-right:12px!important}.nb{width:100%}}
+
+.compact-icon-controls{display:none}
+.theme-toggle,.share-link{width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;font-size:19px!important;font-weight:800!important;line-height:1}
+.share-link{right:64px!important}
+.theme-toggle{right:14px!important}
+.theme-toggle span,.share-link{display:flex;align-items:center;justify-content:center}
+.topbar .theme-toggle,.topbar .share-btn{width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;font-size:19px!important;line-height:1}
+@media (max-width:700px){.share-link{right:62px!important}.theme-toggle{right:10px!important}}
+
+
+.deep-readable-upgrade{display:none}
+body{font-size:18px!important;line-height:1.72!important;scroll-padding-top:150px}
+.pg.on{font-size:18px;line-height:1.72}
+.card-body,.qtext,.qopt,.kv,.compare-body,.anat-desc,.qex,.tip,.warn,.trap-box,.b-core,.b-imp,.b-trap,.b-deep,.b-tip{font-size:16px!important;line-height:1.68!important}
+.card-title,.qtitle,.section-title{font-size:clamp(1.08rem,2vw,1.35rem)!important}
+.top-tabs{position:relative!important;top:auto!important;z-index:1!important;margin-bottom:26px!important}
+.top-tabs:after{display:none}
+@media (max-width:700px){body{font-size:17px!important;scroll-padding-top:90px}.pg.on{font-size:17px}.top-tabs{position:static!important;margin-bottom:18px!important}.top-tabs:after{display:none}}
+
 </style>
 
 <a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
 <a class="lesson-link" href="domain1_monitoring_lesson.html" aria-label="Back to domain lesson">Lesson</a>
-<button class="share-link" type="button" onclick="shareDeepDive()" aria-label="Share full deep dive">Share</button>
-<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">Light</span><span class="theme-moon">Dark</span></button>
+<button class="share-link" type="button" onclick="shareDeepDive()" aria-label="Share full deep dive">&#128640;</button>
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">&#9728;</span><span class="theme-moon">&#9790;</span></button>
 <div class="deep-hero"><div class="deep-eyebrow">Full deep dive</div><div class="deep-title">Domain 1: Monitoring and Logging</div><div class="deep-sub">Expanded reference notes, advanced traps, service internals, and harder practice questions.</div></div><h2 class="sr-only">Domain 1 deep-dive study notes for AWS SOA-C03: CloudWatch, logging, tracing, and automated remediation</h2>
 
 <div style="padding:1rem 0">
