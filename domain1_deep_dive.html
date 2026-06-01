@@ -943,7 +943,6 @@ function go(i){
   localStorage.setItem('soaDeepDomain1Page', String(cur));
   document.querySelectorAll('.ttab').forEach((t,j)=>t.classList.toggle('on',j===i));
   document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
-  document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('on',j===i));
 }
 window.go=go;
 
@@ -961,12 +960,10 @@ PAGES.forEach((p,i)=>{
   pg.innerHTML=p.content+`
     <div class="nr">
       <button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>Previous</button>
-      <div class="dots">${PAGES.map((_,j)=>`<button type="button" class="dot${j===i?' on':''}" data-page="${j}" aria-label="Go to page ${j+1}"></button>`).join('')}</div>
       <button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next</button>
     </div>`;
   pagesEl.appendChild(pg);
 });
-document.addEventListener('click',e=>{const dot=e.target.closest('.dot[data-page]');if(dot){go(Number(dot.dataset.page));}});
 go(cur);
 </script>
 

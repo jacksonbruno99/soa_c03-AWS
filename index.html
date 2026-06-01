@@ -554,7 +554,7 @@ function renderDomain(){
       <button class="nav-btn" onclick="go(${current-1})" ${current===0?'disabled':''}>Previous domain</button>
       ${deepControl}
       <a class="deep-btn" href="${d.deepDive}">Full deep dive</a>
-      <button class="share-btn" onclick="shareDomain()" aria-label="Share this domain"><img class="share-icon" src="share.png" alt="" aria-hidden="true"> Share this domain</button>
+      <button class="share-btn" onclick="shareDomain()" aria-label="Share this domain">Share this domain</button>
       <button class="nav-btn" onclick="go(${current+1})" ${current===domains.length-1?'disabled':''}>Next domain</button>
     </div>
   `;

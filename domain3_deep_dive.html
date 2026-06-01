@@ -155,6 +155,12 @@ body{font-size:18px!important;line-height:1.75!important}
 .pg.on .score-row [style*="font-size"],.pg.on #score-pct{font-size:14px!important}
 @media (max-width:700px){body{font-size:17px!important}.pg.on{font-size:17px!important}.pg.on p,.pg.on li,.pg.on td,.pg.on th,.pg.on .card-body,.pg.on .cb,.pg.on .cc-body,.pg.on .compare-body,.pg.on .anat-val,.pg.on .av,.pg.on .kv-val,.pg.on .dc-desc,.pg.on .dr-stats,.pg.on .tip,.pg.on .warn,.pg.on .trap,.pg.on .trap-box,.pg.on .ok,.pg.on .qhead,.pg.on .qopt,.pg.on .qex,.pg.on .mnemo,.pg.on .fbox{font-size:16px!important}.pg.on .tbl th,.pg.on .tbl td{font-size:15.5px!important}.pg.on .card-title,.pg.on .ct,.pg.on .compare-head,.pg.on .cc-head,.pg.on .dc-name,.pg.on .dr-name,.pg.on .qtitle,.pg.on .ch{font-size:17px!important}}
 
+.domain3-overflow-fix-v1{display:none}
+.pg.on .ar{display:grid!important;grid-template-columns:minmax(170px,24%) minmax(0,1fr)!important;align-items:stretch!important}
+.pg.on .al,.pg.on .av{min-width:0!important;overflow-wrap:anywhere!important;word-break:normal!important}
+.pg.on .al{width:auto!important;hyphens:auto!important}
+@media (max-width:760px){.pg.on .ar{grid-template-columns:1fr!important}.pg.on .al{border-bottom:1px solid var(--color-border-tertiary)!important}}
+
 </style>
 
 <a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
@@ -568,7 +574,6 @@ function go(i){
   localStorage.setItem('soaDeepDomain3Page', String(cur));
   document.querySelectorAll('.ttab').forEach((t,j)=>t.classList.toggle('on',j===i));
   document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
-  document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('on',j===i));
 }
 window.go=go;
 
@@ -585,12 +590,10 @@ PAGES.forEach((p,i)=>{
   pg.innerHTML=p.c+`
     <div class="nr">
       <button class="nb" onclick="go(${i-1})" ${i===0?'disabled':''}>Previous</button>
-      <div class="dots">${PAGES.map((_,j)=>`<button type="button" class="dot${j===i?' on':''}" data-page="${j}" aria-label="Go to page ${j+1}"></button>`).join('')}</div>
       <button class="nb" onclick="go(${i+1})" ${i===PAGES.length-1?'disabled':''}>Next</button>
     </div>`;
   pagesEl.appendChild(pg);
 });
-document.addEventListener('click',e=>{const dot=e.target.closest('.dot[data-page]');if(dot){go(Number(dot.dataset.page));}});
 go(cur);
 </script>
 
