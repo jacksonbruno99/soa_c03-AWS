@@ -169,12 +169,12 @@ button,a{max-width:100%;white-space:normal}
 .skill-item,.svc-pill,.hero-chip{transition:transform .18s ease,box-shadow .18s ease}
 .skill-item:hover,.svc-pill:hover,.hero-chip:hover{transform:translateX(3px)}
 .task-body.open{animation:softReveal .24s ease both}
-.theme-toggle{animation:floatButton 3.4s ease-in-out infinite}
+.theme-toggle{animation:none!important}
 .hero-primary{animation:softPulse 2.8s ease-in-out infinite}
 @keyframes riseIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes softReveal{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes barFlow{from{filter:saturate(1)}50%{filter:saturate(1.35) brightness(1.12)}to{filter:saturate(1)}}
-@keyframes floatButton{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
 @keyframes softPulse{0%,100%{box-shadow:0 12px 30px rgba(37,99,235,.28)}50%{box-shadow:0 18px 42px rgba(37,99,235,.45)}}
 @media (prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
@@ -188,6 +188,11 @@ button,a{max-width:100%;white-space:normal}
 .topbar .theme-toggle,.topbar .share-btn{width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;font-size:19px!important;line-height:1}
 @media (max-width:700px){.share-link{right:62px!important}.theme-toggle{right:10px!important}}
 
+
+.share-image-controls-v2{display:none}
+.theme-toggle{animation:none!important}
+.share-icon{width:23px;height:23px;display:block;object-fit:contain}
+.share-link,.share-btn{overflow:hidden}
 </style>
 
 <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">&#9728;</span><span class="theme-moon">&#9790;</span></button>
@@ -549,7 +554,7 @@ function renderDomain(){
       <button class="nav-btn" onclick="go(${current-1})" ${current===0?'disabled':''}>Previous domain</button>
       ${deepControl}
       <a class="deep-btn" href="${d.deepDive}">Full deep dive</a>
-      <button class="share-btn" onclick="shareDomain()">Share this domain</button>
+      <button class="share-btn" onclick="shareDomain()" aria-label="Share this domain"><img class="share-icon" src="share.png" alt="" aria-hidden="true"> Share this domain</button>
       <button class="nav-btn" onclick="go(${current+1})" ${current===domains.length-1?'disabled':''}>Next domain</button>
     </div>
   `;

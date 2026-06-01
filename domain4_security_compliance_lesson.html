@@ -154,11 +154,11 @@ code{white-space:normal;overflow-wrap:anywhere}
 .layer:hover:before{transform:scaleY(1)}
 .dot{transition:transform .18s ease,background .18s ease}
 .dot:hover,.dot.on{transform:scale(1.3)}
-.theme-toggle{animation:floatButton 3.4s ease-in-out infinite}
+.theme-toggle{animation:none!important}
 .home-link{animation:riseIn .5s ease both}
 @keyframes riseIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes softReveal{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-@keyframes floatButton{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
 @media (prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
@@ -172,10 +172,15 @@ a.nb{display:inline-flex;align-items:center;justify-content:center;text-decorati
 .topbar .theme-toggle,.topbar .share-btn{width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;font-size:19px!important;line-height:1}
 @media (max-width:700px){.share-link{right:62px!important}.theme-toggle{right:10px!important}}
 
+
+.share-image-controls-v2{display:none}
+.theme-toggle{animation:none!important}
+.share-icon{width:23px;height:23px;display:block;object-fit:contain}
+.share-link,.share-btn{overflow:hidden}
 </style>
 
 <a class="home-link" href="index.html" aria-label="Back to main page">Main page</a>
-<button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 4 lesson">&#128640;</button>
+<button class="share-link" type="button" onclick="shareLesson()" aria-label="Share Domain 4 lesson"><img class="share-icon" src="share.png" alt="" aria-hidden="true"></button>
 <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">&#9728;</span><span class="theme-moon">&#9790;</span></button>
 <h2 class="sr-only">Domain 4 SOA-C03 lesson: Security and Compliance — IAM, detective controls, encryption, and multi-account governance</h2>
 <div id="pills" style="margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)"></div>
