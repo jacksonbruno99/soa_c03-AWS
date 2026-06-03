@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS SOA-C03 Glossary Cheat Sheet</title>
+<link rel="canonical" href="https://aws-soa-c03.netlify.app/soa_c03_glossary_cheatsheet.html">
+<meta name="description" content="Searchable AWS SOA-C03 Cloud Ops glossary cheat sheet with key exam numbers, acronyms, service definitions, and must-know distinctions.">
+<meta property="og:title" content="AWS SOA-C03 Glossary Cheat Sheet">
+<meta property="og:description" content="A readable searchable glossary and last-minute cheat sheet for AWS SOA-C03 Cloud Ops preparation.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aws-soa-c03.netlify.app/soa_c03_glossary_cheatsheet.html">
+<meta property="og:site_name" content="AWS SOA-C03 Blueprint">
+<meta property="og:image" content="https://dummyimage.com/1200x630/111827/93c5fd&text=AWS+SOA-C03+Glossary">
+<style>
+:root{--font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-mono:"SFMono-Regular",Consolas,monospace;--color-background-primary:#0b1120;--color-background-secondary:#111827;--color-background-tertiary:#1f2937;--color-text-primary:#f8fafc;--color-text-secondary:#cbd5e1;--color-text-tertiary:#94a3b8;--color-text-info:#93c5fd;--color-border-primary:#60a5fa;--color-border-secondary:rgba(148,163,184,.28);--color-border-tertiary:rgba(148,163,184,.18);--border-radius-md:10px;--border-radius-lg:16px}
+body[data-theme="light"]{--color-background-primary:#f7fafc;--color-background-secondary:#eef4fb;--color-background-tertiary:#e2e8f0;--color-text-primary:#111827;--color-text-secondary:#475569;--color-text-tertiary:#64748b;--color-text-info:#185fa5;--color-border-primary:#185fa5;--color-border-secondary:rgba(15,23,42,.16);--color-border-tertiary:rgba(15,23,42,.1)}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);font-size:14px}
+.top{padding:1rem 0 .5rem}
+.title-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:.75rem}
+.title{font-size:16px;font-weight:500}
+.stats{font-size:12px;color:var(--color-text-tertiary);font-family:var(--font-mono)}
+.search-wrap{position:relative;margin-bottom:.75rem}
+.search{width:100%;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary);font-family:var(--font-sans);font-size:13px;padding:8px 12px 8px 32px;border-radius:var(--border-radius-md);outline:none;transition:border-color .15s}
+.search:focus{border-color:var(--color-border-primary)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-text-tertiary);pointer-events:none}
+.cats{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem}
+.cat{background:none;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);font-family:var(--font-sans);font-size:12px;padding:4px 10px;border-radius:99px;cursor:pointer;transition:all .12s}
+.cat:hover{background:var(--color-background-secondary)}
+.cat.on{font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
+.card-top{padding:10px 12px 0}
+.card-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.card-full{font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono);margin-bottom:6px}
+.card-tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500;display:inline-block;margin-bottom:6px}
+.card-def{font-size:12px;color:var(--color-text-secondary);line-height:1.5;padding:0 12px 8px;border-top:0.5px solid var(--color-border-tertiary);margin-top:6px;padding-top:6px}
+.card-def code{font-family:var(--font-mono);font-size:11px;background:var(--color-background-secondary);padding:1px 4px;border-radius:3px;color:var(--color-text-info)}
+.nums-section{margin-bottom:1rem}
+.nums-title{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text-tertiary);font-family:var(--font-mono);margin-bottom:.5rem;display:flex;align-items:center;gap:8px}
+.nums-title::after{content:'';flex:1;height:1px;background:var(--color-border-tertiary)}
+.nums-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.num-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;display:flex;flex-direction:column;gap:2px}
+.num-val{font-family:var(--font-mono);font-size:16px;font-weight:500}
+.num-label{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+.empty{text-align:center;padding:2rem;font-size:13px;color:var(--color-text-tertiary);grid-column:1/-1}
+.tab-row{display:flex;gap:4px;margin-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tab{background:none;border:none;font-family:var(--font-sans);font-size:13px;color:var(--color-text-secondary);padding:7px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s}
+.tab:hover{color:var(--color-text-primary)}
+.tab.on{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);font-weight:500}
+.view{display:none}
+.view.on{display:block}
+.distinctions{display:flex;flex-direction:column;gap:8px}
+.dist{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:11px 13px}
+.dist-q{font-size:13px;font-weight:500;margin-bottom:5px}
+.dist-a{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.dist-a strong{color:var(--color-text-primary)}
+.numbers-full{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.nf{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:11px 13px}
+.nf-cat{font-size:10px;font-family:var(--font-mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+.nf-row{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px}
+.nf-row:last-child{border-bottom:none}
+.nf-k{color:var(--color-text-secondary)}
+.nf-v{font-family:var(--font-mono);font-weight:500;font-size:12px}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 18% 12%,rgba(96,165,250,.22),transparent 28%),radial-gradient(circle at 82% 0,rgba(52,211,153,.15),transparent 24%),var(--color-background-primary)!important;padding:0!important;font-size:18px!important;line-height:1.72!important}
+.topbar{position:fixed;inset:14px 14px auto;z-index:50;display:flex;justify-content:space-between;pointer-events:none}.top-left,.top-right{display:flex;gap:8px;pointer-events:auto}.nav-pill,.theme-toggle,.share-btn{min-height:42px;border:1px solid var(--color-border-secondary);border-radius:999px;background:rgba(17,24,39,.78);color:var(--color-text-primary);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(14px);font-weight:800;box-shadow:0 12px 30px rgba(0,0,0,.2)}body[data-theme="light"] .nav-pill,body[data-theme="light"] .theme-toggle,body[data-theme="light"] .share-btn{background:rgba(255,255,255,.82)}.nav-pill{padding:0 14px;font-size:14px}.theme-toggle,.share-btn{width:42px;min-width:42px;height:42px;padding:0;font-size:19px}.share-icon{width:23px;height:23px;display:block;object-fit:contain}body:not([data-theme="light"]) .theme-sun{display:none}body[data-theme="light"] .theme-moon{display:none}
+.glossary-shell{width:min(1180px,100%);margin:0 auto;padding:5.7rem clamp(14px,3vw,28px) 2.25rem}.glossary-hero{border:1px solid var(--color-border-tertiary);border-radius:20px;padding:clamp(20px,4vw,40px);background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(52,211,153,.12),rgba(167,139,250,.14));box-shadow:0 28px 90px rgba(0,0,0,.3);position:relative;overflow:hidden;animation:riseIn .45s ease both}.glossary-hero:before{content:"";position:absolute;inset:-45%;background:conic-gradient(from 180deg,transparent,rgba(96,165,250,.22),transparent,rgba(52,211,153,.18),transparent);animation:spinGlow 20s linear infinite}.glossary-hero>*{position:relative}.glossary-kicker{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--color-border-secondary);border-radius:999px;padding:6px 12px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.glossary-dot{width:8px;height:8px;border-radius:50%;background:#60a5fa;box-shadow:0 0 18px #60a5fa}.glossary-title{font-size:clamp(2.1rem,5.8vw,4.8rem);line-height:1;margin:12px 0 10px;font-weight:900;background:linear-gradient(90deg,#f8fafc,#93c5fd,#a7f3d0,#ddd6fe);-webkit-background-clip:text;background-clip:text;color:transparent}body[data-theme="light"] .glossary-title{background:linear-gradient(90deg,#111827,#185fa5,#0f6e56,#534ab7);-webkit-background-clip:text;background-clip:text;color:transparent}.glossary-sub{max-width:820px;color:var(--color-text-secondary);font-size:18px;line-height:1.65}.glossary-content{margin-top:1.2rem;animation:riseIn .52s ease both}
+.title{font-size:24px!important;font-weight:800!important}.stats{font-size:14px!important}.tab-row{gap:8px!important;overflow-x:auto;padding-bottom:1px}.tab{font-size:16px!important;padding:10px 16px!important;white-space:nowrap}.search{font-size:17px!important;padding:13px 14px 13px 40px!important}.search-icon{left:14px!important;font-size:16px!important}.cat{font-size:15px!important;padding:8px 12px!important}.grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr))!important;gap:12px!important}.card,.dist,.nf,.num-card{background:color-mix(in srgb,var(--color-background-secondary) 72%,transparent)!important;backdrop-filter:blur(10px);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.card:hover,.dist:hover,.nf:hover,.num-card:hover{transform:translateY(-3px);border-color:var(--color-border-primary);box-shadow:0 16px 34px rgba(0,0,0,.18)}.card-top{padding:14px 16px 0!important}.card-name{font-size:20px!important;font-weight:850!important;line-height:1.25!important}.card-full{font-size:14px!important;line-height:1.45!important}.card-tag{font-size:12px!important;padding:4px 9px!important}.card-def{font-size:16.5px!important;line-height:1.7!important;padding:10px 16px 14px!important}.card-def code{font-size:.92em!important}.numbers-full{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))!important;gap:12px!important}.nf{padding:15px 16px!important}.nf-cat{font-size:13px!important;font-weight:900!important}.nf-row{font-size:15.5px!important;gap:10px}.nf-v{font-size:15px!important;text-align:right}.distinctions{gap:12px!important}.dist{padding:16px 18px!important}.dist-q{font-size:18px!important;font-weight:850!important;line-height:1.35!important}.dist-a{font-size:16.5px!important;line-height:1.72!important}.empty{font-size:16px!important}.top{padding-top:1.2rem!important}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes spinGlow{to{transform:rotate(1turn)}}@media(max-width:700px){.topbar{inset:10px 10px auto}.glossary-shell{padding:5.4rem 12px 1.25rem}.glossary-title{font-size:2.35rem}.glossary-sub{font-size:16px}.title-row{display:grid!important;grid-template-columns:1fr}.tab-row{display:flex!important}.grid,.numbers-full{grid-template-columns:1fr!important}.card-name{font-size:19px!important}.card-def,.dist-a{font-size:16px!important}.nav-pill{font-size:13px;padding:0 12px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="top-left"><a class="nav-pill" href="index.html">Main page</a><a class="nav-pill" href="quiz_mode.html">Quiz</a></div><div class="top-right"><button class="share-btn" type="button" onclick="shareGlossary()" aria-label="Share glossary"><img class="share-icon" src="share.png" alt="" aria-hidden="true"></button><button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme"><span class="theme-sun">&#9728;</span><span class="theme-moon">&#9790;</span></button></div></div>
+<main class="glossary-shell">
+<section class="glossary-hero"><div class="glossary-kicker"><span class="glossary-dot"></span>Last-minute reference</div><h1 class="glossary-title">AWS SOA-C03 Glossary Cheat Sheet</h1><p class="glossary-sub">Search acronyms, service meanings, exam numbers, and tricky comparison points in one readable Cloud Ops reference.</p></section>
+<section class="glossary-content">
+<h2 class="sr-only">AWS SOA-C03 CloudOps Engineer exam glossary and cheat sheet — searchable term reference, key numbers, and critical distinctions</h2>
+
+<div class="top">
+<div class="title-row">
+  <div class="title">SOA-C03 Glossary & Last-Minute Cheat Sheet</div>
+  <div class="stats" id="stats">Loading...</div>
+</div>
+<div class="tab-row">
+  <button class="tab on" onclick="setTab('glossary')">Glossary</button>
+  <button class="tab" onclick="setTab('numbers')">Key Numbers</button>
+  <button class="tab" onclick="setTab('distinctions')">Must-Know Distinctions</button>
+</div>
+
+<div class="view on" id="view-glossary">
+  <div class="search-wrap">
+    <i class="ti ti-search search-icon" aria-hidden="true"></i>
+    <input class="search" type="text" placeholder="Search terms, acronyms, descriptions…" id="searchInput" oninput="renderGlossary()">
+  </div>
+  <div class="cats" id="catRow"></div>
+  <div class="grid" id="glossaryGrid"></div>
+</div>
+
+<div class="view" id="view-numbers">
+  <div class="numbers-full" id="numbersGrid"></div>
+</div>
+
+<div class="view" id="view-distinctions">
+  <div class="distinctions" id="distinctions"></div>
+</div>
+</div>
+
+<script>
+const CATS=[
+  {id:'vpc',label:'VPC & Networking',color:'#FAEEDA',tc:'#633806'},
+  {id:'compute',label:'Compute',color:'#E6F1FB',tc:'#0C447C'},
+  {id:'storage',label:'Storage',color:'#E1F5EE',tc:'#085041'},
+  {id:'database',label:'Database',color:'#EEEDFE',tc:'#3C3489'},
+  {id:'monitoring',label:'Monitoring',color:'#FCEBEB',tc:'#791F1F'},
+  {id:'security',label:'Security',color:'#FAECE7',tc:'#712B13'},
+  {id:'deployment',label:'Deployment & IaC',color:'#EAF3DE',tc:'#27500A'},
+  {id:'cdn',label:'CDN & DNS',color:'#FEF0F0',tc:'#7B2D2D'},
+  {id:'dr',label:'DR & HA Concepts',color:'#F0F0FE',tc:'#3434A0'},
+];
+
+const TERMS=[
+  {n:'AMI',full:'Amazon Machine Image',c:'compute',d:'A pre-configured template containing the OS, application server, and apps used to launch EC2 instances. Includes: root volume snapshot, launch permissions, block device mapping. <strong>Region-specific</strong> — copy to other regions for multi-region use. EC2 Image Builder automates AMI creation, patching, and distribution.'},
+  {n:'ASG',full:'Auto Scaling Group',c:'compute',d:'Automatically adjusts EC2 fleet size. Policies: <strong>target tracking</strong> (best default — like a thermostat), <strong>step</strong> (proportional response), <strong>scheduled</strong> (known patterns), <strong>predictive</strong> (ML forecast). Key settings: min/max/desired, health check grace period, instance warm-up, cooldown (simple scaling only).'},
+  {n:'Launch Template',full:'EC2 Launch Template',c:'compute',d:'Defines instance configuration: AMI ID, instance type, key pair, SGs, IAM profile, user data. Versioned — can reference SSM Parameter Store for dynamic AMI IDs using <code>resolve:ssm:/path</code>. Replaces Launch Configurations (legacy, no versioning).'},
+  {n:'EIP',full:'Elastic IP Address',c:'compute',d:'Static public IPv4 address associated with your account. Remains the same even if you stop/start an instance. Required for NAT Gateway. Limit: 5 per region (soft). Cost: free when associated and running; charged when allocated but not associated.'},
+  {n:'Placement Group',full:'EC2 Placement Group',c:'compute',d:'Controls EC2 instance physical placement. <strong>Cluster:</strong> same rack, ultra-low latency (HPC). <strong>Spread:</strong> different racks, max 7 per AZ (critical HA). <strong>Partition:</strong> separate racks per partition (Kafka, Cassandra, HDFS).'},
+  {n:'Instance Warm-up',full:'ASG Instance Warm-up',c:'compute',d:'Time to wait before a newly launched instance is counted in ASG aggregate metrics. Prevents bootstrapping CPU from inflating metrics and triggering premature scale-out. Used with target tracking and step scaling. Different from cooldown (simple scaling pause).'},
+  {n:'Lifecycle Hook',full:'ASG Lifecycle Hook',c:'compute',d:'Pauses an instance at PENDING (launching) or TERMINATING states. Default wait: 1 hour. Use: install software before traffic, drain sessions before termination. Send heartbeat to extend, or CompleteLifecycleAction to continue.'},
+
+  {n:'VPC',full:'Virtual Private Cloud',c:'vpc',d:'Logically isolated private network in AWS. CIDR range defined at creation (cannot change — can add secondary CIDRs). Contains subnets, route tables, IGW, NACLs, SGs. <strong>DNS settings:</strong> enableDnsSupport (Route 53 Resolver at VPC+2) and enableDnsHostnames (assigns DNS names to instances) — both must be ON for private hosted zone resolution.'},
+  {n:'Subnet',full:'VPC Subnet',c:'vpc',d:'Segment of a VPC in ONE AZ. <strong>Public subnet:</strong> route table has 0.0.0.0/0 → IGW. <strong>Private subnet:</strong> route table has 0.0.0.0/0 → NAT GW. <strong>Isolated:</strong> no internet route. AWS reserves 5 IPs per subnet (first 4 + last).'},
+  {n:'Route Table',full:'VPC Route Table',c:'vpc',d:'Rules that determine where network traffic is directed. Every VPC has an immutable <strong>local route</strong> (VPC CIDR → local) covering all intra-VPC routing. Subnets can only be associated with one route table. Routes evaluated by most-specific prefix first.'},
+  {n:'IGW',full:'Internet Gateway',c:'vpc',d:'Horizontally scaled, redundant gateway attached to a VPC enabling internet communication. Required for instances to have internet access. <strong>One IGW per VPC.</strong> Provides NAT for instances with public IPs. Does NOT route IPv6 outbound-only traffic (use Egress-Only IGW for that).'},
+  {n:'NAT Gateway',full:'Network Address Translation Gateway',c:'vpc',d:'Managed service in a PUBLIC subnet that allows PRIVATE subnet instances to initiate outbound internet connections without being directly reachable. Requires an EIP. Scales to 45 Gbps. Deploy one per AZ for HA. <strong>Does NOT support IPv6</strong> — use Egress-Only IGW instead.'},
+  {n:'NACL',full:'Network Access Control List',c:'vpc',d:'<strong>Stateless</strong> subnet-level firewall. Rules evaluated in number order (lowest first, stops at first match). Supports both ALLOW and DENY rules. <strong>Must allow BOTH inbound AND outbound</strong> including ephemeral return ports (1024-65535). Default NACL: allows all. Custom NACL: denies all by default.'},
+  {n:'Security Group',full:'EC2 Security Group',c:'vpc',d:'<strong>Stateful</strong> ENI-level firewall. Allow rules only (no Deny). Return traffic automatically allowed. All rules evaluated together (most permissive wins). Can reference other SG IDs dynamically. Default SG: allows all within same SG. Custom SG: denies all inbound, allows all outbound.'},
+  {n:'VPC Peering',full:'VPC Peering Connection',c:'vpc',d:'Point-to-point connection between two VPCs. <strong>Non-transitive</strong> — A↔B and B↔C does NOT mean A can reach C. No overlapping CIDRs. Route tables in BOTH VPCs must be manually updated after peering is established. Works cross-account and cross-region.'},
+  {n:'TGW',full:'Transit Gateway',c:'vpc',d:'Hub-and-spoke network router connecting multiple VPCs, VPNs, and Direct Connect. Supports <strong>transitive routing</strong>. Multiple route tables for traffic isolation. ECMP for VPN load balancing (needs TGW, not VGW). Attachments: VPC, VPN, DX Gateway, peering, Connect.'},
+  {n:'PrivateLink',full:'AWS PrivateLink / VPC Endpoint Service',c:'vpc',d:'Expose a service (ALB/NLB-backed) privately to other VPCs/accounts via ENIs. No VPC peering needed. Solves CIDR overlap. Provider creates Endpoint Service. Consumer creates Interface VPC Endpoint. Traffic stays on AWS network. Used for multi-customer SaaS, AWS service access.'},
+  {n:'VPC Endpoint',full:'VPC Endpoint',c:'vpc',d:'<strong>Gateway endpoint (free):</strong> S3 and DynamoDB only. Adds route to route table. <strong>Interface endpoint (paid):</strong> Most AWS services + third-party SaaS. Creates ENI with private IP. Enables on-premises access via VPN/DX. Private DNS resolves service name to ENI IP within VPC.'},
+  {n:'Flow Logs',full:'VPC Flow Logs',c:'vpc',d:'Captures network traffic metadata (IP, port, protocol, bytes, ACCEPT/REJECT) per ENI/subnet/VPC. Published to CloudWatch Logs or S3. <strong>Does NOT capture:</strong> DNS to 169.254.169.253, DHCP, instance metadata (169.254.169.254), Time Sync. Use Route 53 Resolver Query Logs for DNS visibility.'},
+  {n:'DX',full:'AWS Direct Connect',c:'vpc',d:'Dedicated private physical network connection from on-premises to AWS. Consistent bandwidth (1/10/100 Gbps), predictable low latency, bypasses internet. <strong>VIF types:</strong> Private VIF (VPC access), Public VIF (AWS public services like S3), Transit VIF (Transit Gateway). Takes weeks to provision.'},
+  {n:'VPN',full:'Site-to-Site VPN',c:'vpc',d:'IPsec encrypted tunnel over public internet. Two tunnels per connection (active/standby with VGW; active-active with TGW + ECMP). Quick setup (minutes-hours). Bandwidth up to ~1.25 Gbps per tunnel. Use as backup to Direct Connect. Accelerated VPN uses Global Accelerator backbone.'},
+  {n:'ENI',full:'Elastic Network Interface',c:'vpc',d:'Virtual network card attached to EC2 instances. Each instance has a primary ENI. Additional ENIs can be attached/detached. Attributes: private IPs, EIP, SGs, MAC address. Security groups are applied at the ENI level, not the instance level.'},
+  {n:'EIGW',full:'Egress-Only Internet Gateway',c:'vpc',d:'IPv6-only gateway that allows outbound internet connections from private subnets but blocks inbound IPv6 connections. IPv6 equivalent of NAT Gateway. IPv6 addresses are globally unique (no private IPv6 by default), so a standard IGW would allow inbound — EIGW provides outbound-only privacy.'},
+
+  {n:'S3',full:'Amazon Simple Storage Service',c:'storage',d:'Object storage. 11 9s durability (99.999999999%). Unlimited storage. Storage classes: Standard, Standard-IA, One Zone-IA, Glacier Instant, Glacier Flexible, Glacier Deep Archive. <strong>Versioning:</strong> required for CRR. Delete = delete marker. <strong>Block Public Access:</strong> account-level override of all bucket/object policies.'},
+  {n:'CRR',full:'S3 Cross-Region Replication',c:'storage',d:'Asynchronously replicates objects to a bucket in another region. Requires versioning on BOTH source and destination. Only replicates <strong>new objects</strong> after configuration — use S3 Batch Replication for existing objects. Add RTC (Replication Time Control) for a 15-minute SLA with CloudWatch metrics.'},
+  {n:'RTC',full:'S3 Replication Time Control',c:'storage',d:'SLA guarantee that 99.99% of objects replicate within 15 minutes. Enables CloudWatch replication metrics (ReplicationLatency, BytesPendingReplication). Extra cost. Use when you have a strict RPO requirement for S3 data.'},
+  {n:'EBS',full:'Elastic Block Store',c:'storage',d:'Block storage volumes for EC2. Types: gp3 (general purpose, baseline 3000 IOPS), io2 Block Express (high performance), st1 (throughput HDD), sc1 (cold HDD). Snapshots are incremental, stored in S3 (managed). <strong>Cannot encrypt existing volume in-place</strong> — snapshot → copy with encryption → new volume.'},
+  {n:'EFS',full:'Elastic File System',c:'storage',d:'Managed NFS (Network File System) that mounts across multiple EC2 instances and AZs. Automatically scales. Performance modes: General Purpose (default, low latency) and Max I/O (parallel HPC). Storage classes: Standard and EFS-IA (92% cheaper). Lifecycle policy moves infrequently accessed files to IA automatically.'},
+  {n:'FSx',full:'Amazon FSx',c:'storage',d:'Managed file systems. <strong>FSx for Windows:</strong> SMB protocol, Active Directory integration, Windows ACLs — lift-and-shift Windows file shares. <strong>FSx for Lustre:</strong> high-performance parallel filesystem, native S3 integration — ML training, HPC, media processing.'},
+  {n:'S3 Object Lock',full:'S3 Object Lock',c:'storage',d:'WORM (Write Once Read Many) protection. <strong>Governance mode:</strong> users with s3:BypassGovernanceRetention can override. <strong>Compliance mode:</strong> nobody can delete — not root, not AWS Support. Used with AWS Backup vault lock for immutable backup storage.'},
+  {n:'DLM',full:'Data Lifecycle Manager',c:'storage',d:'Automates EBS snapshot creation and deletion policies. Define: schedule (e.g., daily), retention (e.g., 7 snapshots), cross-region copy, tags. Reduces manual snapshot management. Policies target EBS volumes or EC2 instances by tag.'},
+
+  {n:'RDS',full:'Amazon Relational Database Service',c:'database',d:'Managed relational DB. Engines: MySQL, PostgreSQL, Oracle, SQL Server, MariaDB. <strong>Multi-AZ:</strong> synchronous standby, auto-failover in 60-120s, NOT readable. <strong>Read Replica:</strong> async replication, readable, manual promotion. Restore always creates NEW instance with new endpoint.'},
+  {n:'Aurora',full:'Amazon Aurora',c:'database',d:'MySQL/PostgreSQL-compatible DB with 6-way replication across 3 AZs, shared storage up to 128 TB. Failover in ~30s. Endpoints: <strong>cluster/writer</strong> (always primary), <strong>reader</strong> (load-balances replicas), <strong>custom</strong> (subset of instances). Aurora Global Database: <1s cross-region lag, managed failover <1 min.'},
+  {n:'DynamoDB',full:'Amazon DynamoDB',c:'database',d:'Serverless NoSQL key-value/document store. Single-digit millisecond performance. <strong>On-demand:</strong> pay per request, no planning, good for unpredictable traffic. <strong>Provisioned + auto scaling:</strong> cost control. <strong>PITR:</strong> restore to any second in last 35 days (creates new table). Global Tables: multi-region active-active.'},
+  {n:'ElastiCache',full:'Amazon ElastiCache',c:'database',d:'Managed in-memory cache. <strong>Redis:</strong> persistence, replication, Multi-AZ failover, rich data structures (sorted sets, streams), pub/sub. <strong>Memcached:</strong> simple key-value, horizontal sharding, no persistence, no replication. Use Redis for session storage, leaderboards, any HA requirement.'},
+  {n:'PITR',full:'Point-in-Time Recovery',c:'database',d:'Continuous backup enabling restore to any second within the retention window. <strong>DynamoDB PITR:</strong> 35-day window, enabled per table, zero performance impact, always restores to new table. <strong>RDS PITR:</strong> 1-35 days (automated backup window), enabled by default, restores to new instance.'},
+  {n:'Aurora Serverless',full:'Aurora Serverless v2',c:'database',d:'Automatically scales Aurora capacity in fine-grained increments (0.5 to 128 ACUs). Scales instantly without pause/resume. Supports Multi-AZ, read replicas, Global Database. Use for unpredictable or highly variable workloads.'},
+
+  {n:'CloudWatch',full:'Amazon CloudWatch',c:'monitoring',d:'Metrics, alarms, dashboards, composite alarms for all AWS resources. <strong>Standard EC2:</strong> 5-min intervals (free). <strong>Detailed:</strong> 1-min (paid, must enable). <strong>Custom metrics:</strong> via PutMetricData API, 40 TPS limit. <strong>High-resolution:</strong> StorageResolution=1 for 1-second granularity, alarms every 10s.'},
+  {n:'CW Alarm',full:'CloudWatch Alarm',c:'monitoring',d:'Threshold-based state machine. States: OK, ALARM, INSUFFICIENT_DATA. Key settings: period, evaluation periods (N), datapoints to alarm (M-of-N), treat missing data. Actions: SNS, ASG scaling, EC2 actions, SSM OpsItem. <strong>Composite alarm:</strong> AND/OR logic across child alarms for noise reduction.'},
+  {n:'Metric Filter',full:'CloudWatch Logs Metric Filter',c:'monitoring',d:'Converts log patterns into CloudWatch metrics. <strong>Only captures NEW log events</strong> — does not backfill. Pattern types: text, space-delimited, JSON ({$.field="value"}). Publishes count (or extracted value) to a custom metric. Limit: 3 filters per log group (soft).'},
+  {n:'CloudTrail',full:'AWS CloudTrail',c:'monitoring',d:'Records ALL AWS API calls. <strong>Event History:</strong> 90 days, free, management events only, console-only. <strong>Trail:</strong> delivers to S3 (long-term), CloudWatch Logs, SNS. Event types: Management (default), Data (S3 object-level, Lambda — extra cost), Insights (unusual API volume). <strong>Log file validation:</strong> SHA-256 integrity verification.'},
+  {n:'X-Ray',full:'AWS X-Ray',c:'monitoring',d:'Distributed tracing. Trace → Segment → Subsegment. Sampling: default 5% + 1 req/sec (reservoir). Custom sampling rules by priority. <strong>Annotations:</strong> indexed, filterable. <strong>Metadata:</strong> non-indexed. Service map shows latency and error rate per connection. Active tracing required on Lambda/API GW.'},
+  {n:'AWS Config',full:'AWS Config',c:'monitoring',d:'Continuously records resource configuration changes and evaluates compliance against rules. Managed rules (200+), custom Lambda rules, custom policy rules. <strong>Auto-remediation:</strong> trigger SSM Automation on NON_COMPLIANT. Configuration timeline: see every resource change over time. Aggregator for multi-account compliance view.'},
+  {n:'CI',full:'Contributor Insights',c:'monitoring',d:'Continuously analyzes CloudWatch log data to identify top-N contributors (IPs, user IDs) for high-cardinality data. Runs continuously (unlike Logs Insights which is on-demand). Works with CW Logs, DynamoDB, VPC Flow Logs, API Gateway. Use for "which IPs cause the most errors?"'},
+  {n:'Logs Insights',full:'CloudWatch Logs Insights',c:'monitoring',d:'Ad-hoc SQL-like query engine for CloudWatch log groups. Key commands: <code>fields</code>, <code>filter</code>, <code>stats</code>, <code>sort</code>, <code>limit</code>, <code>parse</code>. Up to 50 log groups per query. Max 10,000 result rows. Built-in fields: @timestamp, @message, @logStream, @log. Use for investigation, not ongoing alerting.'},
+  {n:'Compute Optimizer',full:'AWS Compute Optimizer',c:'monitoring',d:'ML-based right-sizing recommendations for EC2, EBS, Lambda, ECS on Fargate, ASG. Analyses CloudWatch metrics. Requires <strong>14+ days of data</strong> and explicit opt-in. Gives specific resize recommendations with estimated savings. Different from Trusted Advisor (broader, less specific).'},
+  {n:'Trusted Advisor',full:'AWS Trusted Advisor',c:'monitoring',d:'Best-practice checks across: cost optimisation, performance, security, fault tolerance, service limits. <strong>Basic/Developer:</strong> 7 checks only. <strong>Business/Enterprise:</strong> all checks + API access. Use for broad health checks. Less specific than Compute Optimizer for right-sizing.'},
+  {n:'EventBridge',full:'Amazon EventBridge',c:'monitoring',d:'Serverless event bus. Routes AWS service events, scheduled events, and custom application events to targets. Targets: Lambda, SSM Automation, Step Functions, SNS, SQS, CodePipeline. Input transformers reshape event payloads. DLQ for failed deliveries. Retry up to 24 hours.'},
+
+  {n:'IAM',full:'Identity and Access Management',c:'security',d:'Controls who can do what in AWS. Policy evaluation order: <strong>1. Explicit Deny</strong> (any policy) → <strong>2. SCP</strong> → <strong>3. Resource policy</strong> → <strong>4. Permission boundary</strong> → <strong>5. Session policy</strong> → <strong>6. Identity policy</strong>. Implicit deny if no explicit Allow. Roles over users. MFA for privileged access.'},
+  {n:'SCP',full:'Service Control Policy',c:'security',d:'Org-level max permissions. Applies to ALL principals in member accounts including root. <strong>Does NOT apply to management account.</strong> Does NOT grant permissions — only restricts. Can affect service-linked roles (use aws:PrincipalARN conditions to exclude them). Deny-list strategy (default): FullAWSAccess SCP + specific Deny SCPs.'},
+  {n:'Permission Boundary',full:'IAM Permission Boundary',c:'security',d:'Caps the maximum permissions an IAM user or role can have. <strong>Does NOT grant permissions.</strong> Effective = identity policy AND boundary (intersection). Primary use: delegated admin — junior admins create roles but cannot grant more than the boundary allows. Prevents privilege escalation.'},
+  {n:'KMS',full:'AWS Key Management Service',c:'security',d:'Managed encryption key service. Key types: <strong>AWS managed</strong> (free, aws/s3 etc.), <strong>Customer managed (CMK)</strong> (paid, you control policy), <strong>AWS owned</strong> (invisible). Key policy + IAM policy BOTH required for CMK. <strong>Envelope encryption:</strong> GenerateDataKey → encrypt data locally → store encrypted data key. Auto-rotation annual (CMKs only).'},
+  {n:'GuardDuty',full:'Amazon GuardDuty',c:'security',d:'ML-based threat detection. Data sources: CloudTrail, VPC Flow Logs, DNS logs (+ optional: EKS, RDS, Lambda, Malware Protection). Finding types: UnauthorizedAccess, Recon, CryptoCurrency, Trojan, CredentialAccess, Exfiltration. Multi-account via Organizations administrator. Just enable — no infrastructure to manage.'},
+  {n:'Security Hub',full:'AWS Security Hub',c:'security',d:'Aggregates and normalises findings from GuardDuty, Inspector, Macie, Config, Access Analyzer + 3rd party. ASFF (Amazon Security Finding Format). Security standards: CIS, FSBP, NIST, PCI DSS. Multi-account: designate administrator account. Finding aggregation region for multi-region view. EventBridge integration for automated response.'},
+  {n:'Inspector',full:'Amazon Inspector',c:'security',d:'Automated CVE/vulnerability scanning. Scans: EC2 (OS packages via SSM Agent), Lambda (function code + dependencies), ECR container images (on push + continuously). Findings go to Security Hub. Different from GuardDuty (active threats vs software vulnerabilities).'},
+  {n:'Macie',full:'Amazon Macie',c:'security',d:'ML-powered sensitive data discovery in S3. Detects: PII (names, SSNs, emails, passports), financial data (credit cards), credentials, health data. Custom data identifiers available. Creates discovery jobs on S3 buckets. Findings include bucket public accessibility status. Output to Security Hub.'},
+  {n:'Access Analyzer',full:'IAM Access Analyzer',c:'security',d:'Finds resources accessible from outside the zone of trust (account or Organization). Covers: S3, IAM roles, KMS keys, Lambda, SQS, Secrets Manager. Continuous monitoring — generates findings when new external access is granted. Also validates IAM policies for best practices and identifies unused access.'},
+  {n:'ACM',full:'AWS Certificate Manager',c:'security',d:'Provisions and auto-renews free TLS certificates for ALB, CloudFront, API Gateway. <strong>CloudFront certs MUST be in us-east-1</strong> regardless of origin/user region. Cannot export certificates (private key stays in AWS). For EC2 instances: use your own certificate (ACM cannot install on EC2).'},
+  {n:'WAF',full:'AWS Web Application Firewall',c:'security',d:'Layer 7 HTTP/HTTPS filtering. Attaches to: ALB, CloudFront, API Gateway, AppSync. Rules: IP sets, geo-match, rate-based, regex, SQLi/XSS detection. AWS Managed Rules for quick coverage. Rule priority matters — first match wins. Evaluated in ascending priority order.'},
+  {n:'Shield',full:'AWS Shield',c:'security',d:'DDoS protection. <strong>Standard (free):</strong> automatic L3/L4 protection (SYN floods, UDP reflection). <strong>Advanced (paid ~$3k/mo):</strong> L3-7, DRT (DDoS Response Team) access, cost protection (credits DDoS-related scaling costs), near-real-time visibility. Protects: EC2, ELB, CloudFront, Route 53, Global Accelerator.'},
+  {n:'Secrets Manager',full:'AWS Secrets Manager',c:'security',d:'Stores and auto-rotates credentials. Built-in rotation: RDS, Redshift, DocumentDB. Custom Lambda rotation for anything else. Versioning: AWSCURRENT, AWSPREVIOUS (retained for in-flight connections), AWSPENDING. Cross-account via resource-based policy. Different from SSM Parameter Store: Parameter Store = no auto-rotation, cheaper.'},
+  {n:'Control Tower',full:'AWS Control Tower',c:'security',d:'Automated multi-account landing zone. Sets up: Management, Log Archive, Audit accounts. Guardrail types: <strong>Preventive</strong> (SCP), <strong>Detective</strong> (Config rule), <strong>Proactive</strong> (CloudFormation hook). Account Factory for self-service account provisioning. Mandatory guardrails cannot be disabled.'},
+  {n:'Identity Center',full:'IAM Identity Center (SSO)',c:'security',d:'Centralised multi-account SSO. Identity sources: built-in directory, AWS Managed AD, external IdP (SAML 2.0: Okta, Azure AD). Permission sets = temporary IAM roles. Account assignments = group + permission set + account (ALL THREE required). SCIM for automatic user sync from IdP.'},
+
+  {n:'CloudFormation',full:'AWS CloudFormation',c:'deployment',d:'Infrastructure as Code. Stack lifecycle states: CREATE/UPDATE/DELETE_IN_PROGRESS/COMPLETE/FAILED/ROLLBACK. <strong>Change set:</strong> preview only — must execute separately. <strong>DeletionPolicy:</strong> Delete/Retain/Snapshot (on stack delete). <strong>UpdateReplacePolicy:</strong> Delete/Retain/Snapshot (on resource replacement during update). <strong>Termination Protection:</strong> prevents accidental stack deletion.'},
+  {n:'StackSets',full:'CloudFormation StackSets',c:'deployment',d:'Deploys CFN stacks to multiple accounts/regions. <strong>Self-managed:</strong> manual IAM roles in each account. <strong>Service-managed (use this):</strong> integrates with Organizations, no manual IAM, auto-deploys to new accounts in OU when Automatic Deployment is enabled. Failure tolerance + max concurrency control blast radius.'},
+  {n:'CDK',full:'AWS Cloud Development Kit',c:'deployment',d:'Define infrastructure in TypeScript, Python, Java, Go. Synthesises to CloudFormation templates (<code>cdk synth</code>). <code>cdk deploy</code> = synth + call CloudFormation APIs. Constructs: L1 (raw CFN resource), L2 (opinionated AWS resource), L3 (pattern/solution). Never calls AWS service APIs directly — always via CloudFormation.'},
+  {n:'SSM',full:'AWS Systems Manager',c:'deployment',d:'Suite for managing EC2 and on-premises without SSH. Key capabilities: <strong>Run Command</strong> (one-time scripts, no SSH), <strong>Patch Manager</strong> (OS patching with compliance), <strong>Automation</strong> (multi-step runbooks), <strong>State Manager</strong> (continuous configuration enforcement), <strong>Parameter Store</strong> (config values, SecureString), <strong>Session Manager</strong> (browser-based shell, no port 22).'},
+  {n:'Image Builder',full:'EC2 Image Builder',c:'deployment',d:'Automates AMI creation, testing, and distribution. Pipeline: base image → build component (install software) → test component (automated tests) → distribution (regions/accounts). Publishes latest AMI ID to SSM Parameter Store. Launch templates can use <code>resolve:ssm</code> for automatic AMI tracking.'},
+  {n:'CodeDeploy',full:'AWS CodeDeploy',c:'deployment',d:'Automated deployments to EC2, Lambda, ECS. <strong>EC2:</strong> appspec.yml hooks (BeforeInstall, AfterInstall, ApplicationStart, ValidateService). <strong>Lambda:</strong> canary/linear traffic shifting via aliases (Canary10Percent5Minutes, Linear10PercentEvery1Minute). <strong>ECS:</strong> blue/green via ALB target groups. Alarm-based auto-rollback.'},
+  {n:'CodePipeline',full:'AWS CodePipeline',c:'deployment',d:'CI/CD orchestration: Source → Build → Test → Deploy. Orchestrates — does NOT build or deploy itself. Manual approval action: SNS notifies, but <strong>codepipeline:PutApprovalResult</strong> IAM permission required to actually approve via console/CLI/API. Cross-account deployment via cross-account roles.'},
+  {n:'ECS',full:'Amazon Elastic Container Service',c:'deployment',d:'Container orchestration. Task definition: image, CPU/memory, <strong>task role</strong> (app calls AWS services), <strong>execution role</strong> (ECS pulls image from ECR + writes logs). Launch types: <strong>Fargate</strong> (serverless, no cluster management) or <strong>EC2</strong> (you manage nodes). Service deployments: rolling update or blue/green via CodeDeploy.'},
+  {n:'EKS',full:'Amazon Elastic Kubernetes Service',c:'deployment',d:'Managed Kubernetes control plane. Node groups: managed (AWS handles lifecycle), self-managed, Fargate profiles. <strong>IRSA</strong> (IAM Roles for Service Accounts): maps K8s service account to IAM role for pod-level AWS access. Update kubeconfig: <code>aws eks update-kubeconfig</code>. Container Insights via CloudWatch agent DaemonSet.'},
+  {n:'ECR',full:'Amazon Elastic Container Registry',c:'deployment',d:'Managed Docker container image registry. <strong>Image scanning:</strong> basic (on push) or enhanced (continuous via Inspector). <strong>Lifecycle policies:</strong> expire old/untagged images automatically to control costs. Rule priority: lower number = evaluated first. Cross-region and cross-account replication. Private by default.'},
+  {n:'Beanstalk',full:'AWS Elastic Beanstalk',c:'deployment',d:'PaaS layer on top of EC2/ALB/ASG. Deployment policies: <strong>All at once</strong> (downtime), <strong>Rolling</strong> (reduced capacity), <strong>Rolling + extra batch</strong> (full capacity), <strong>Immutable</strong> (new ASG, safest, easy rollback), <strong>Traffic splitting</strong> (canary). Blue/green = clone environment + swap URLs.'},
+
+  {n:'Route 53',full:'Amazon Route 53',c:'cdn',d:'Scalable DNS with health checks and routing policies. <strong>Failover:</strong> active-passive DR. <strong>Weighted:</strong> blue/green, A/B. <strong>Latency:</strong> lowest measured latency (NOT geographic). <strong>Geolocation:</strong> country/continent — MUST have default record. <strong>Multivalue:</strong> up to 8 healthy records. <strong>Alias:</strong> for apex domains pointing to ALB/CF/S3.'},
+  {n:'R53 Resolver',full:'Route 53 Resolver',c:'cdn',d:'Handles VPC DNS + hybrid DNS. Default at VPC+2 IP (e.g., 10.0.0.2). <strong>Inbound endpoint:</strong> on-premises DNS forwards queries to Route 53 private hosted zones. <strong>Outbound endpoint + forwarding rules:</strong> VPC instances resolve on-premises domains via on-premises DNS. <strong>DNS Firewall:</strong> blocks DNS queries to malicious domains.'},
+  {n:'CloudFront',full:'Amazon CloudFront',c:'cdn',d:'Global CDN. 400+ edge locations. Origins: S3 (with OAC), ALB, EC2, custom HTTP. Cache behaviours: rules per URL path pattern. <strong>OAC</strong> (Origin Access Control): restricts S3 to CloudFront only (replaces OAI, supports SSE-KMS). <strong>ACM cert MUST be in us-east-1.</strong> Lambda@Edge (complex logic) vs CloudFront Functions (lightweight JS).'},
+  {n:'Global Accelerator',full:'AWS Global Accelerator',c:'cdn',d:'Routes TCP/UDP traffic via AWS backbone. <strong>Two static Anycast IPs</strong> (can be whitelisted in firewalls). Does NOT cache. Instant IP-level failover (<30s, no DNS TTL). Supports non-HTTP protocols (gaming, VoIP, IoT). Use when you need: static IPs, non-HTTP protocols, instant failover, or consistent low-latency routing.'},
+  {n:'OAC',full:'Origin Access Control',c:'cdn',d:'Modern CloudFront mechanism to restrict S3 bucket access to only CloudFront. Uses SigV4 signing. Supports SSE-KMS encrypted buckets (unlike legacy OAI). Setup: S3 bucket policy allows cloudfront.amazonaws.com with distribution ARN condition. S3 Block Public Access must be enabled to prevent direct S3 access bypass.'},
+
+  {n:'RTO',full:'Recovery Time Objective',c:'dr',d:'Maximum acceptable downtime — how long the business can survive without the system. Drives pre-provisioned DR infrastructure. <strong>Near-zero → multi-site active-active. Minutes → warm standby. Hours → pilot light. Hours/days → backup and restore.</strong> Lower RTO = more pre-provisioned = higher cost.'},
+  {n:'RPO',full:'Recovery Point Objective',c:'dr',d:'Maximum acceptable data loss measured in time. Drives backup frequency and replication strategy. <strong>Near-zero → synchronous replication (Multi-AZ, Aurora Global DB). Minutes → async replication (cross-region read replica, S3 CRR). Hours → backup frequency.</strong> Lower RPO = more frequent backups = higher cost.'},
+  {n:'Pilot Light',full:'Pilot Light DR Strategy',c:'dr',d:'ONLY the database/core infrastructure runs continuously in DR. All other tiers (web, app servers) are defined in CloudFormation/AMIs and launched on failover. <strong>Differs from warm standby:</strong> pilot light = compute is cold, warm standby = complete (all tiers) stack runs at reduced scale. RTO: hours. RPO: minutes.'},
+  {n:'Warm Standby',full:'Warm Standby DR Strategy',c:'dr',d:'Complete but scaled-down application stack runs continuously in DR region. ALL tiers running (web + app + DB) at reduced capacity. On failover: scale up existing fleet and redirect DNS. RTO: minutes. RPO: minutes. More expensive than pilot light (full stack running). Cheaper than active-active (scaled down).'},
+  {n:'Multi-AZ',full:'Multi-AZ Deployment',c:'dr',d:'AWS pattern for AZ-level HA (not regional DR). <strong>RDS Multi-AZ:</strong> synchronous standby in different AZ, auto-failover in 60-120s, NOT readable. <strong>EC2 Multi-AZ:</strong> ALB + ASG instances across 2+ AZs. <strong>Aurora:</strong> 6-way replication across 3 AZs inherently. Does NOT protect against full region failure.'},
+  {n:'AWS Backup',full:'AWS Backup',c:'dr',d:'Centralised backup service for EC2, EBS, RDS, Aurora, DynamoDB, EFS, FSx, S3, Storage Gateway. Backup plans: frequency + retention + lifecycle. Vault lock: <strong>Governance</strong> (admin can manage), <strong>Compliance</strong> (truly immutable — NOBODY can delete, not even root or AWS Support). Cross-region and cross-account copy.'},
+  {n:'DRS',full:'AWS Elastic Disaster Recovery',c:'dr',d:'Continuously replicates on-premises or cloud servers to AWS via block-level replication agent. Staged EBS volumes always current. RPO: seconds. RTO: minutes (launch recovery instances). Supports non-disruptive DR drills. Successor to CloudEndure. Use when: on-premises + low RTO/RPO + replicate to AWS.'},
+];
+
+const NUMBERS=[
+  {cat:'CloudTrail',color:'#FCEBEB',tc:'#791F1F',items:[
+    ['Event History retention','90 days'],['Trail → S3 retention','You configure'],['Log file validation','SHA-256 digest files'],['Multi-region trail','Single trail, all regions'],
+  ]},
+  {cat:'CloudWatch',color:'#E6F1FB',tc:'#0C447C',items:[
+    ['Standard EC2 monitoring','5-min intervals'],['Detailed monitoring','1-min intervals'],['High-resolution metrics','1-second (StorageResolution=1)'],['High-res alarm minimum','10 or 30 seconds'],['PutMetricData quota','40 TPS per account/region'],['Metric data retention (1s)','3 hours'],['Metric data retention (60s)','15 days'],['Metric data retention (5m)','63 days'],['Metric data retention (1h)','15 months'],['Subscription filters per log group','2 (soft limit)'],
+  ]},
+  {cat:'Auto Scaling',color:'#E1F5EE',tc:'#085041',items:[
+    ['Default cooldown (simple scaling)','300 seconds'],['Max instance warm-up','N/A (you define)'],['Min healthy % (instance refresh)','You configure'],['Lifecycle hook timeout','3600 seconds (1 hour)'],
+  ]},
+  {cat:'RDS / Aurora',color:'#EEEDFE',tc:'#3C3489',items:[
+    ['Multi-AZ failover time','60-120 seconds'],['Aurora failover time','~30 seconds'],['Automated backup retention','1-35 days (default 7)'],['RDS endpoint TTL','5 seconds'],['MySQL read replicas','Up to 5'],['Aurora replicas','Up to 15'],['Aurora storage auto-scale','Up to 128 TB'],['Aurora Global DB lag','<1 second'],['Aurora Global DB failover','<1 minute'],
+  ]},
+  {cat:'DynamoDB',color:'#FAEEDA',tc:'#633806',items:[
+    ['PITR retention window','35 days'],['PITR granularity','Per second'],['Global Tables replication','<1 second'],['On-demand: switch back to provisioned','Must wait 24 hours'],
+  ]},
+  {cat:'S3',color:'#EAF3DE',tc:'#27500A',items:[
+    ['S3 durability','11 nines (99.999999999%)'],['S3 Standard availability','99.99%'],['CRR replication target (no RTC)','Asynchronous, no SLA'],['CRR with RTC guarantee','99.99% within 15 minutes'],['S3 Glacier Instant retrieval','Milliseconds'],['S3 Glacier Flexible retrieval','3-5 hours (standard)'],['S3 Glacier Deep Archive','12-48 hours'],['Multipart upload part size','5 MB min, 5 GB max'],
+  ]},
+  {cat:'IAM / Security',color:'#FAECE7',tc:'#712B13',items:[
+    ['KMS CMK auto-rotation','Every year'],['KMS key deletion min wait','7 days (default 30 days)'],['Secrets Manager rotation (RDS)','Built-in, any schedule'],['Session token validity (AssumeRole)','1-12 hours'],['IAM role max session','12 hours'],['SCP applies to mgmt account','NO'],
+  ]},
+  {cat:'Lambda',color:'#F0F0FE',tc:'#3434A0',items:[
+    ['Default account concurrency','1000 per region (soft)'],['Max timeout','15 minutes'],['Max memory','10,240 MB'],['Deployment package (zip)','50 MB (direct), 250 MB unzipped'],['Env variables encryption','Lambda managed key or CMK'],['Provisioned concurrency','Eliminates cold starts'],
+  ]},
+  {cat:'Networking',color:'#FAEEDA',tc:'#633806',items:[
+    ['NAT Gateway AZ scope','One per AZ (for HA)'],['NAT Gateway max bandwidth','45 Gbps'],['VPN tunnels per connection','2 (active/standby with VGW)'],['VPN max throughput (per tunnel)','~1.25 Gbps'],['DX connection sizes','1 / 10 / 100 Gbps'],['VPC peering max (per VPC)','125 (soft limit)'],['VPC CIDR min size','/28 (16 IPs)'],['VPC CIDR max size','/16 (65,536 IPs)'],['Reserved IPs per subnet','5 (first 4 + last)'],
+  ]},
+  {cat:'Route 53 / CDN',color:'#FCEBEB',tc:'#791F1F',items:[
+    ['R53 health check intervals','10s or 30s'],['R53 health check threshold','3 consecutive failures (default)'],['CloudFront ACM cert region','us-east-1 ONLY'],['CloudFront invalidation (free)','First 1000 paths/month'],['Global Accelerator IPs','2 static Anycast IPs'],['CloudFront edge locations','400+'],
+  ]},
+  {cat:'ECS / EKS / ECR',color:'#E1F5EE',tc:'#085041',items:[
+    ['Fargate CPU range','256 - 16,384 CPU units'],['ECS task role scope','Application code AWS calls'],['ECS execution role scope','Pull image, write logs'],['ECR lifecycle rule priority','Lower number = evaluated first'],['EKS node group types','Managed / Self-managed / Fargate'],
+  ]},
+];
+
+const DISTINCTIONS=[
+  {q:"CloudTrail vs VPC Flow Logs — which answers which question?",a:"<strong>CloudTrail:</strong> 'Who made this AWS API call?' — control plane activity, IAM events, management operations. <strong>VPC Flow Logs:</strong> 'Why is network traffic being ACCEPT/REJECTed?' — Layer 3/4 metadata only. Flow logs DON'T capture DNS, DHCP, or metadata service traffic."},
+  {q:"Logs Insights vs Contributor Insights vs Metric Filters",a:"<strong>Logs Insights:</strong> ad-hoc interactive queries on historical log data. <strong>Contributor Insights:</strong> continuous real-time top-N ranking (which IPs/users cause the most). <strong>Metric Filters:</strong> convert log patterns into CloudWatch metrics for ongoing alarms. Choosing wrong one loses marks."},
+  {q:"RDS Multi-AZ vs Read Replica",a:"<strong>Multi-AZ:</strong> synchronous replication, standby NOT readable, automatic failover in 60-120s, zero data loss. For HA. <strong>Read Replica:</strong> asynchronous replication, readable, manual promotion ONLY, possible data loss. For read scaling. 'Automatic failover' = always Multi-AZ."},
+  {q:"Pilot light vs warm standby",a:"<strong>Pilot light:</strong> ONLY the database runs in DR. Compute is cold (launched on failover from AMIs/CloudFormation). RTO: hours. <strong>Warm standby:</strong> COMPLETE application (all tiers) runs at reduced scale in DR. Scale up on failover. RTO: minutes. 'All components already running' = warm standby."},
+  {q:"SCP vs permission boundary vs resource policy",a:"<strong>SCP:</strong> org-level ceiling (restricts all principals in member accounts). Does NOT apply to management account. <strong>Permission boundary:</strong> caps max permissions for a specific IAM user or role. Does NOT grant permissions. <strong>Resource policy:</strong> attached to a resource — can grant cross-account access without AssumeRole (within same account)."},
+  {q:"GuardDuty vs Inspector vs Macie vs IAM Access Analyzer",a:"<strong>GuardDuty:</strong> runtime threats, compromised creds, crypto mining. <strong>Inspector:</strong> CVEs in EC2/Lambda/containers. <strong>Macie:</strong> PII and sensitive data in S3. <strong>Access Analyzer:</strong> resources shared outside account/org (policy analysis). Four distinct tools — never substitute one for another."},
+  {q:"SSM Run Command vs State Manager vs Automation",a:"<strong>Run Command:</strong> one-time script execution on a fleet, no SSH. <strong>State Manager:</strong> continuous configuration enforcement — re-applies document on schedule, drift-corrects. <strong>Automation:</strong> multi-step runbook that can interact with AWS APIs (not just OS), triggered by Config/EventBridge."},
+  {q:"Parameter Store vs Secrets Manager",a:"<strong>Parameter Store:</strong> config values, AMI IDs, non-rotating secrets. Free tier (Standard). SecureString uses KMS. NO auto-rotation ever. <strong>Secrets Manager:</strong> auto-rotates credentials for RDS/Redshift/DocumentDB (built-in) or any secret (custom Lambda). Paid per secret. 'Auto-rotate' = always Secrets Manager."},
+  {q:"CloudFront vs Global Accelerator",a:"<strong>CloudFront:</strong> caches content at edge locations, HTTP/HTTPS only, DNS-based routing, changes IPs. <strong>Global Accelerator:</strong> does NOT cache, routes via AWS backbone, TCP/UDP support, two STATIC Anycast IPs (whitelistable), instant IP-level failover. 'Non-HTTP/static IPs/instant failover' = Global Accelerator."},
+  {q:"Gateway Endpoint vs Interface Endpoint (PrivateLink)",a:"<strong>Gateway Endpoint (free):</strong> S3 and DynamoDB only. Adds prefix list route to route table. No ENI. Only works from within VPC. <strong>Interface Endpoint (paid):</strong> all other AWS services. Creates ENI in your subnet. Works from on-premises via VPN/DX. Private DNS resolves service URL to private IP."},
+  {q:"NAT Gateway vs Egress-Only Internet Gateway",a:"<strong>NAT Gateway:</strong> IPv4 only. Allows private subnet instances to initiate outbound internet connections. Must be in a public subnet with EIP. Deploy one per AZ. <strong>Egress-Only IGW:</strong> IPv6 only. Allows IPv6 instances to initiate outbound internet connections while blocking inbound. No EIP needed (IPv6 is globally unique)."},
+  {q:"DeletionPolicy vs UpdateReplacePolicy (CloudFormation)",a:"<strong>DeletionPolicy:</strong> what happens to the resource when the STACK IS DELETED. <strong>UpdateReplacePolicy:</strong> what happens to the OLD resource when it's REPLACED during a stack UPDATE. Production RDS needs BOTH set to Snapshot. Forgetting UpdateReplacePolicy means data loss when a property change forces resource replacement."},
+  {q:"ECS task role vs execution role",a:"<strong>Task role:</strong> IAM role assumed by YOUR APPLICATION CODE to call AWS services (S3, DynamoDB, SQS). <strong>Execution role:</strong> used by ECS/FARGATE INFRASTRUCTURE to pull the container image from ECR and write logs to CloudWatch. AccessDenied on S3 in container → fix task role. Cannot pull image from ECR → fix execution role."},
+  {q:"Reachability Analyzer vs Network Access Analyzer",a:"<strong>Reachability Analyzer:</strong> 'Can specific source A reach specific destination B on port X?' — point-to-point analysis, identifies exact blocking component. <strong>Network Access Analyzer:</strong> 'What can reach my EC2 instances from the internet?' — broad exposure audit across all resources. Debug specific failure → Reachability. Security audit → Network Access."},
+  {q:"Standard monitoring vs Detailed monitoring vs High-resolution",a:"<strong>Standard:</strong> 5-minute EC2 metrics, free, alarm minimum period 300s. <strong>Detailed:</strong> 1-minute metrics, paid, alarm minimum period 60s, must explicitly enable on EC2. <strong>High-resolution:</strong> 1-second custom metrics (StorageResolution=1), alarms every 10 or 30 seconds. 'React within 2 minutes' = Detailed Monitoring."},
+  {q:"CreateExportTask vs Subscription Filter for log export",a:"<strong>CreateExportTask:</strong> one-time batch export to S3, takes up to 12 HOURS, not real-time. One export at a time per account. <strong>Subscription Filter → Kinesis Firehose → S3:</strong> near-real-time streaming (60-900 second Firehose buffer). Max 2 subscription filters per log group. 'Near-real-time streaming to S3' = Subscription Filter + Firehose."},
+  {q:"Treat missing data options for CloudWatch Alarms",a:"<strong>missing:</strong> alarm maintains current state (safe default). <strong>notBreaching:</strong> treated as within threshold — alarm won't fire when data is absent. <strong>breaching:</strong> treated as threshold violation — alarm fires immediately when data disappears. NEW metric filter with no data + treat missing = breaching → alarm fires immediately at creation."},
+  {q:"SCP does not apply to the management account — what does?",a:"SCPs applied at root OU or any OU have NO EFFECT on the management account. To govern the management account: use IAM policies directly, enable CloudTrail, use IAM Access Analyzer, and minimise usage of the management account. This is a critical security design point — management account must be protected through direct controls."},
+  {q:"Automated RDS backups vs manual snapshots — which survives instance deletion?",a:"<strong>Automated backups:</strong> DELETED when the RDS instance is deleted. They do NOT survive instance deletion. <strong>Manual snapshots:</strong> persist indefinitely even after instance deletion. Always take a final manual snapshot before deleting a production RDS instance."},
+  {q:"KMS key policy root entry — what does it mean?",a:"A KMS key policy with Principal: {AWS: 'arn:aws:iam::ACCOUNT:root'} is a DELEGATION STATEMENT. It means: IAM policies in this account can control access to the key. It is NOT direct access for the root user. Without this entry, only explicitly listed principals in the key policy can use the key — IAM policies alone are insufficient."},
+];
+
+let activeCat='all';
+let activeTab='glossary';
+
+function setTab(t){
+  activeTab=t;
+  ['glossary','numbers','distinctions'].forEach(x=>{
+    document.getElementById('view-'+x).classList.toggle('on',x===t);
+    document.querySelectorAll('.tab').forEach((b,i)=>{
+      if(['glossary','numbers','distinctions'][i]===t)b.classList.add('on');
+      else b.classList.remove('on');
+    });
+  });
+  if(t==='numbers')renderNumbers();
+  if(t==='distinctions')renderDist();
+}
+
+function renderCats(){
+  const r=document.getElementById('catRow');
+  r.innerHTML='';
+  const all=document.createElement('button');
+  all.className='cat'+(activeCat==='all'?' on':'');
+  all.textContent='All';
+  all.style.cssText=activeCat==='all'?'background:var(--color-background-secondary);color:var(--color-text-primary);':'';
+  all.onclick=()=>{activeCat='all';renderGlossary();};
+  r.appendChild(all);
+  CATS.forEach(cat=>{
+    const b=document.createElement('button');
+    b.className='cat'+(activeCat===cat.id?' on':'');
+    if(activeCat===cat.id){b.style.cssText=`background:${cat.color};color:${cat.tc};border-color:${cat.tc}55;`;}
+    b.textContent=cat.label;
+    b.onclick=()=>{activeCat=cat.id;renderGlossary();};
+    r.appendChild(b);
+  });
+}
+
+function renderGlossary(){
+  renderCats();
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const grid=document.getElementById('glossaryGrid');
+  const filtered=TERMS.filter(t=>{
+    const matchCat=activeCat==='all'||t.c===activeCat;
+    const matchQ=!q||(t.n.toLowerCase().includes(q)||t.full.toLowerCase().includes(q)||t.d.toLowerCase().includes(q));
+    return matchCat&&matchQ;
+  });
+  document.getElementById('stats').textContent=filtered.length+' / '+TERMS.length+' terms';
+  grid.innerHTML='';
+  if(!filtered.length){grid.innerHTML='<div class="empty">No terms match.</div>';return;}
+  filtered.forEach(t=>{
+    const cat=CATS.find(c=>c.id===t.c)||CATS[0];
+    const div=document.createElement('div');
+    div.className='card';
+    div.innerHTML=`<div class="card-top">
+      <div class="card-name">${t.n}</div>
+      <div class="card-full">${t.full}</div>
+      <span class="card-tag" style="background:${cat.color};color:${cat.tc}">${cat.label}</span>
+    </div>
+    <div class="card-def">${t.d}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function renderNumbers(){
+  const g=document.getElementById('numbersGrid');
+  g.innerHTML='';
+  NUMBERS.forEach(cat=>{
+    const div=document.createElement('div');
+    div.className='nf';
+    div.innerHTML=`<div class="nf-cat" style="color:${cat.tc}">${cat.cat}</div>`+cat.items.map(([k,v])=>`<div class="nf-row"><span class="nf-k">${k}</span><span class="nf-v">${v}</span></div>`).join('');
+    g.appendChild(div);
+  });
+}
+
+function renderDist(){
+  const d=document.getElementById('distinctions');
+  d.innerHTML=DISTINCTIONS.map(x=>`<div class="dist"><div class="dist-q">${x.q}</div><div class="dist-a">${x.a}</div></div>`).join('');
+}
+
+renderGlossary();
+</script>
+</section>
+<script>
+(function(){const savedTheme=localStorage.getItem('soaTheme')||'dark';document.body.dataset.theme=savedTheme;window.toggleTheme=function(){const nextTheme=document.body.dataset.theme==='light'?'dark':'light';document.body.dataset.theme=nextTheme;localStorage.setItem('soaTheme',nextTheme);};})();
+async function shareGlossary(){const url=window.location.href;try{const payload={title:'AWS SOA-C03 Glossary Cheat Sheet',text:'Searchable SOA-C03 glossary, key numbers, and must-know distinctions.',url};if(navigator.share)await navigator.share(payload);else{await navigator.clipboard.writeText(url);alert('Glossary link copied to clipboard.');}}catch(err){if(err.name!=='AbortError')alert('Could not share this glossary right now.');}}
+</script>
+</main>
+</body>
+</html>

@@ -47,7 +47,7 @@ body[data-theme="light"] .hero-title{background:linear-gradient(90deg,#111827,#1
 .hero-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--color-border-tertiary);border-radius:999px;background:var(--color-background-primary);color:var(--color-text-secondary);font-size:14px}
 .hero-chip strong{color:var(--color-text-primary)}
 .hero-cta-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}.hero-primary{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:11px 18px;background:#2563EB;color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(37,99,235,.34)}
-.hero-primary:hover{background:#1D4ED8}.hero-quiz{background:#0F6E56}.hero-quiz:hover{background:#0B5C49}
+.hero-primary:hover{background:#1D4ED8}.hero-quiz{background:#0F6E56}.hero-quiz:hover{background:#0B5C49}.hero-glossary{background:#534AB7}.hero-glossary:hover{background:#4338CA}
 @keyframes heroGlow{from{transform:translate3d(-2%,0,0) rotate(0deg)}to{transform:translate3d(2%,2%,0) rotate(8deg)}}
 .wrap{width:min(100%,1100px);margin:0 auto;padding:1.5rem clamp(14px,3vw,28px)}
 .domain-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
@@ -229,11 +229,13 @@ button,a{max-width:100%;white-space:normal}
           e('div',{className:'hero-chip'},e('strong',null,'5'),'domains'),
           e('div',{className:'hero-chip'},e('strong',null,'100%'),'exam blueprint'),
           e('div',{className:'hero-chip'},e('strong',null,'Dark / Light'),'theme'),
-          e('div',{className:'hero-chip'},e('strong',null,'100+'),'quiz questions')
+          e('div',{className:'hero-chip'},e('strong',null,'100+'),'quiz questions'),
+          e('div',{className:'hero-chip'},e('strong',null,'Glossary'),'cheat sheet')
         ),
         e('div',{className:'hero-cta-row'},
           e('button',{className:'hero-primary',onClick:() => document.getElementById('tabs')?.scrollIntoView({behavior:'smooth',block:'start'})},'Start learning'),
-          e('a',{className:'hero-primary hero-quiz',href:'quiz_mode.html'},'Quiz mode')
+          e('a',{className:'hero-primary hero-quiz',href:'quiz_mode.html'},'Quiz mode'),
+          e('a',{className:'hero-primary hero-glossary',href:'soa_c03_glossary_cheatsheet.html'},'Glossary cheat sheet')
         )
       )
     );
