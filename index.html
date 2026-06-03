@@ -193,9 +193,51 @@ button,a{max-width:100%;white-space:normal}
 .theme-toggle{animation:none!important}
 .share-icon{width:23px;height:23px;display:block;object-fit:contain}
 .share-link,.share-btn{overflow:hidden}
+.course-search-open{position:fixed;top:14px;right:64px;z-index:50;width:42px;height:42px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;font-weight:800;box-shadow:0 10px 24px rgba(0,0,0,.22);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.course-search-open:hover{transform:translateY(-2px);border-color:var(--color-text-info)}
+.search-overlay{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.72);backdrop-filter:blur(14px);display:flex;align-items:flex-start;justify-content:center;padding:5rem 14px 1rem}
+.search-overlay[hidden]{display:none!important}
+.search-panel{width:min(920px,100%);max-height:min(82vh,780px);overflow:auto;border:1px solid var(--color-border-secondary);border-radius:18px;background:color-mix(in srgb,var(--color-background-primary) 92%,transparent);box-shadow:0 30px 90px rgba(0,0,0,.42);padding:18px;animation:riseIn .24s ease both}
+.search-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.search-title{font-size:24px;font-weight:850;line-height:1.2}
+.search-sub{color:var(--color-text-secondary);font-size:15px;line-height:1.5;margin-top:4px}
+.search-close{width:38px;height:38px;border-radius:999px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer;font-size:20px}
+.course-search-box{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:12px}
+.course-search-input{width:100%;border:1px solid var(--color-border-secondary);border-radius:12px;background:var(--color-background-secondary);color:var(--color-text-primary);font-size:18px;padding:13px 14px;outline:none}
+.course-search-input:focus{border-color:var(--color-text-info);box-shadow:0 0 0 4px color-mix(in srgb,var(--color-text-info) 18%,transparent)}
+.course-search-submit{border:0;border-radius:12px;background:#2563EB;color:#fff;font-size:16px;font-weight:800;padding:0 18px;cursor:pointer}
+.search-status{font-size:14px;color:var(--color-text-tertiary);margin-bottom:10px}
+.search-results{display:grid;gap:10px}
+.search-result{border:1px solid var(--color-border-tertiary);border-radius:14px;background:var(--color-background-secondary);padding:13px 14px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.search-result:hover{transform:translateY(-2px);border-color:var(--color-text-info);box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.search-result-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.search-result-title{font-size:18px;font-weight:800;line-height:1.25;color:var(--color-text-primary)}
+.search-result-type{font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-info);white-space:nowrap}
+.search-snippet{margin-top:7px;color:var(--color-text-secondary);font-size:15.5px;line-height:1.62}
+.search-snippet mark{background:rgba(250,204,21,.28);color:var(--color-text-primary);border-radius:4px;padding:0 2px}
+.search-result-link{display:inline-flex;margin-top:10px;color:var(--color-text-info);font-weight:800;text-decoration:none}
+@media (max-width:700px){.course-search-open{right:62px!important;top:10px}.search-overlay{padding:4.4rem 10px 1rem}.search-panel{padding:14px;border-radius:14px}.search-title{font-size:21px}.course-search-box{grid-template-columns:1fr}.course-search-submit{min-height:44px}.search-result-top{display:grid}.search-result-type{white-space:normal}}
 </style>
 
+<button class="course-search-open" type="button" onclick="openCourseSearch()" aria-label="Search course" title="Search course">&#128269;</button>
 <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" title="Toggle theme"><span class="theme-sun">&#9728;</span><span class="theme-moon">&#9790;</span></button>
+<div class="search-overlay" id="course-search" hidden>
+  <section class="search-panel" role="dialog" aria-modal="true" aria-labelledby="course-search-title">
+    <div class="search-head">
+      <div>
+        <div class="search-title" id="course-search-title">Search AWS SOA-C03 Blueprint</div>
+        <div class="search-sub">Find keywords across the home page, study lessons, and all full deep dive pages.</div>
+      </div>
+      <button class="search-close" type="button" onclick="closeCourseSearch()" aria-label="Close search">&times;</button>
+    </div>
+    <div class="course-search-box">
+      <input class="course-search-input" id="course-search-input" type="search" placeholder="Search CloudWatch, NAT Gateway, CloudFormation..." oninput="queueCourseSearch()" onkeydown="if(event.key==='Enter')runCourseSearch()">
+      <button class="course-search-submit" type="button" onclick="runCourseSearch()">Search</button>
+    </div>
+    <div class="search-status" id="course-search-status">Type at least 2 characters to search.</div>
+    <div class="search-results" id="course-search-results"></div>
+  </section>
+</div>
 <div id="react-bit-hero" class="react-bit-hero"></div>
 <h2 class="sr-only">SOA-C03 interactive domain-by-domain course covering all 5 exam domains</h2>
 <div class="wrap">
@@ -234,6 +276,7 @@ button,a{max-width:100%;white-space:normal}
         ),
         e('div',{className:'hero-cta-row'},
           e('button',{className:'hero-primary',onClick:() => document.getElementById('tabs')?.scrollIntoView({behavior:'smooth',block:'start'})},'Start learning'),
+          e('button',{className:'hero-primary',onClick:() => window.openCourseSearch?.()},'Search course'),
           e('a',{className:'hero-primary hero-quiz',href:'quiz_mode.html'},'Quiz mode'),
           e('a',{className:'hero-primary hero-glossary',href:'soa_c03_glossary_cheatsheet.html'},'Glossary cheat sheet')
         )
@@ -262,6 +305,109 @@ async function shareDomain(){
   }
 }
 window.shareDomain = shareDomain;
+const SEARCH_DOCS = [
+  {title:'Home page: AWS SOA-C03 Blueprint', type:'Home', href:'index.html'},
+  {title:'Domain 1 Study Lesson: Monitoring and Logging', type:'Study lesson', href:'domain1_monitoring_lesson.html'},
+  {title:'Domain 1 Full Deep Dive: Monitoring and Logging', type:'Full deep dive', href:'domain1_deep_dive.html'},
+  {title:'Domain 2 Study Lesson: Reliability and Business Continuity', type:'Study lesson', href:'domain2_reliability_lesson.html'},
+  {title:'Domain 2 Full Deep Dive: Reliability and Business Continuity', type:'Full deep dive', href:'domain2_deep_dive.html'},
+  {title:'Domain 3 Study Lesson: Deployment and Provisioning', type:'Study lesson', href:'domain3_deployment_provisioning_lesson.html'},
+  {title:'Domain 3 Full Deep Dive: Deployment and Provisioning', type:'Full deep dive', href:'domain3_deep_dive.html'},
+  {title:'Domain 4 Study Lesson: Security and Compliance', type:'Study lesson', href:'domain4_security_compliance_lesson.html'},
+  {title:'Domain 4 Full Deep Dive: Security and Compliance', type:'Full deep dive', href:'domain4_deep_dive.html'},
+  {title:'Domain 5 Study Lesson: Networking and Content Delivery', type:'Study lesson', href:'domain5_networking_lesson.html'},
+  {title:'Domain 5 Full Deep Dive: Networking and Content Delivery', type:'Full deep dive', href:'domain5_deep_dive.html'}
+];
+let searchIndexPromise;
+let searchTimer;
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function textFromHTML(html){
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('script,style,noscript,svg').forEach(el => el.remove());
+  return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+}
+async function buildSearchIndex(){
+  const docs = await Promise.all(SEARCH_DOCS.map(async item => {
+    try{
+      const res = await fetch(item.href, {cache:'force-cache'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const html = await res.text();
+      return {...item, text:textFromHTML(html)};
+    }catch(err){
+      return {...item, text:'', error:true};
+    }
+  }));
+  return docs;
+}
+function makeSnippet(text, terms){
+  const lower = text.toLowerCase();
+  const first = terms.map(t => lower.indexOf(t)).filter(i => i >= 0).sort((a,b) => a-b)[0] ?? 0;
+  const start = Math.max(0, first - 90);
+  const end = Math.min(text.length, first + 210);
+  let snippet = escapeHTML((start ? '... ' : '') + text.slice(start, end) + (end < text.length ? ' ...' : ''));
+  terms.forEach(term => {
+    const safe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    snippet = snippet.replace(new RegExp(`(${safe})`, 'ig'), '<mark>$1</mark>');
+  });
+  return snippet;
+}
+function openCourseSearch(){
+  const overlay = document.getElementById('course-search');
+  overlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('course-search-input')?.focus(), 40);
+}
+function closeCourseSearch(){
+  document.getElementById('course-search').hidden = true;
+  document.body.style.overflow = '';
+}
+function queueCourseSearch(){
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(runCourseSearch, 180);
+}
+async function runCourseSearch(){
+  const input = document.getElementById('course-search-input');
+  const status = document.getElementById('course-search-status');
+  const resultsEl = document.getElementById('course-search-results');
+  const query = (input.value || '').trim().toLowerCase();
+  resultsEl.innerHTML = '';
+  if(query.length < 2){
+    status.textContent = 'Type at least 2 characters to search.';
+    return;
+  }
+  status.textContent = 'Searching course pages...';
+  searchIndexPromise ||= buildSearchIndex();
+  const docs = await searchIndexPromise;
+  const terms = query.split(/\s+/).filter(Boolean);
+  const results = docs.map(doc => {
+    const haystack = (doc.title + ' ' + doc.text).toLowerCase();
+    const phraseHit = haystack.includes(query);
+    const termHits = terms.filter(term => haystack.includes(term)).length;
+    const matched = phraseHit || termHits === terms.length;
+    return matched ? {...doc, score:(phraseHit ? 5 : 0) + termHits, snippet:makeSnippet(doc.text || doc.title, terms)} : null;
+  }).filter(Boolean).sort((a,b) => b.score - a.score || a.title.localeCompare(b.title));
+  const failed = docs.filter(doc => doc.error).length;
+  status.textContent = results.length ? `${results.length} result${results.length === 1 ? '' : 's'} found${failed ? ` (${failed} page${failed === 1 ? '' : 's'} unavailable)` : ''}.` : `No result found${failed ? ` (${failed} page${failed === 1 ? '' : 's'} unavailable)` : ''}.`;
+  resultsEl.innerHTML = results.map(result => `
+    <article class="search-result">
+      <div class="search-result-top">
+        <div class="search-result-title">${escapeHTML(result.title)}</div>
+        <div class="search-result-type">${escapeHTML(result.type)}</div>
+      </div>
+      <div class="search-snippet">${result.snippet}</div>
+      <a class="search-result-link" href="${escapeHTML(result.href)}">Open page</a>
+    </article>
+  `).join('');
+}
+window.openCourseSearch = openCourseSearch;
+window.closeCourseSearch = closeCourseSearch;
+window.queueCourseSearch = queueCourseSearch;
+window.runCourseSearch = runCourseSearch;
+document.addEventListener('keydown', event => {
+  if(event.key === 'Escape' && !document.getElementById('course-search')?.hidden) closeCourseSearch();
+});
 const domains = [
   {
     id:1, label:"Domain 1", short:"Monitoring & Logging", weight:"22%",
